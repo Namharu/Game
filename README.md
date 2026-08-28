@@ -2,6 +2,9 @@
 
 등수별 상품명과 수량을 설정해 사용하는 웹 뽑기판입니다.
 
+- 게임 목록: https://namharu.github.io/Game/
+- 추억의 뽑기: https://namharu.github.io/Game/draw/
+
 ## 주요 기능
 
 - 전체 뽑기 수 10~500개 설정
