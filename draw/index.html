@@ -1,0 +1,179 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f04f37">
+  <meta name="description" content="상품과 수량을 직접 정해 즐기는 추억의 뽑기판">
+  <title>추억의 뽑기</title>
+  <link rel="stylesheet" href="../styles.css?v=4">
+</head>
+<body>
+  <div class="paper-noise" aria-hidden="true"></div>
+  <main class="app-shell">
+    <header class="masthead">
+      <div class="brand-mark" aria-hidden="true">福</div>
+      <div>
+        <p class="eyebrow">오늘의 행운을 뽑아보세요</p>
+        <h1>추억의 <span>뽑기</span></h1>
+      </div>
+      <div class="header-stamp" aria-hidden="true">행운<br>가득</div>
+    </header>
+
+    <section id="start-screen" class="screen" aria-labelledby="setup-title">
+      <div id="continue-card" class="continue-card hidden">
+        <div>
+          <span class="mini-label">저장된 뽑기판</span>
+          <strong id="saved-summary">진행 중인 게임이 있습니다.</strong>
+        </div>
+        <button id="continue-button" class="primary-button" type="button">이어하기</button>
+      </div>
+
+      <div class="setup-card">
+        <div class="section-heading">
+          <div>
+            <p class="step">STEP 01</p>
+            <h2 id="setup-title">뽑기판 만들기</h2>
+          </div>
+            <p>등수와 상품을 정하면<br>마지막 등수는 남은 수량으로 자동 계산됩니다.</p>
+        </div>
+
+        <form id="setup-form" novalidate>
+          <div class="game-options">
+            <div class="total-row">
+              <label for="total-count">
+                <span>전체 뽑기 수</span>
+                <small>10개부터 500개까지</small>
+              </label>
+              <div class="number-field">
+                <input id="total-count" name="totalCount" type="number" inputmode="numeric" min="10" max="500" value="100" required>
+                <span>개</span>
+              </div>
+            </div>
+            <div class="rank-option">
+              <label for="rank-count">
+                <span>몇 등까지?</span>
+                <small>마지막 등수는 자동 수량</small>
+              </label>
+              <select id="rank-count" name="rankCount" aria-label="총 등수">
+                <option value="3">3등까지</option>
+                <option value="4">4등까지</option>
+                <option value="5">5등까지</option>
+                <option value="6">6등까지</option>
+                <option value="7" selected>7등까지</option>
+                <option value="8">8등까지</option>
+                <option value="9">9등까지</option>
+                <option value="10">10등까지</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="prize-table" role="group" aria-label="등수별 상품 설정">
+            <div class="table-head" aria-hidden="true">
+              <span>등수</span><span>상품 이름</span><span>수량</span>
+            </div>
+            <div id="prize-rows"></div>
+          </div>
+
+          <div class="setup-summary" aria-live="polite">
+            <div><span>상위 등수</span><strong id="winner-total">0개</strong></div>
+            <div><span id="last-rank-label">7등 자동</span><strong id="blank-total">100개</strong></div>
+            <div><span>합계</span><strong id="configured-total">100개</strong></div>
+          </div>
+
+          <label class="save-option">
+            <input id="save-mode" type="checkbox" checked>
+            <span class="switch" aria-hidden="true"></span>
+            <span>
+              <strong>자동 저장 모드</strong>
+              <small>이 컴퓨터에서 다음에 이어서 할 수 있어요.</small>
+            </span>
+          </label>
+
+          <p id="form-error" class="form-error" role="alert"></p>
+          <button class="start-button" type="submit">
+            <span>뽑기판 섞어서 시작</span>
+            <span aria-hidden="true">→</span>
+          </button>
+        </form>
+      </div>
+    </section>
+
+    <section id="game-screen" class="screen hidden" aria-labelledby="game-title">
+      <div class="game-toolbar">
+        <div>
+          <p class="step">STEP 02</p>
+          <h2 id="game-title">마음에 드는 번호를 골라보세요</h2>
+        </div>
+        <div class="toolbar-actions">
+          <span id="save-status" class="save-status"></span>
+          <button id="new-game-button" class="text-button" type="button">새 뽑기판</button>
+        </div>
+      </div>
+
+      <div class="status-strip">
+        <div><span>전체</span><strong id="status-total">0</strong></div>
+        <div><span>뽑은 수</span><strong id="status-opened">0</strong></div>
+        <div class="accent"><span>남은 수</span><strong id="status-remaining">0</strong></div>
+      </div>
+
+      <div class="game-layout">
+        <div class="board-wrap">
+          <div id="draw-board" class="draw-board" aria-label="뽑기판"></div>
+          <div id="empty-board" class="empty-board hidden">
+            <strong>모든 뽑기를 열었습니다!</strong>
+            <span>아래 당첨 기록을 확인해보세요.</span>
+          </div>
+        </div>
+
+        <aside class="prize-panel">
+          <div class="panel-title">
+            <span>남은 상품</span>
+            <small>실시간 현황</small>
+          </div>
+          <div id="remaining-prizes" class="remaining-prizes"></div>
+          <div class="blank-count"><span id="last-rank-remaining-label">남은 마지막 등수</span><strong id="remaining-blanks">0개</strong></div>
+        </aside>
+      </div>
+
+      <section class="history-section" aria-labelledby="history-title">
+        <div class="history-heading">
+          <h3 id="history-title">뽑기 기록</h3>
+          <button id="clear-history-button" class="text-button" type="button">기록만 숨기기</button>
+        </div>
+        <ol id="draw-history" class="draw-history"></ol>
+        <p id="history-empty" class="history-empty">아직 뽑은 번호가 없습니다.</p>
+      </section>
+    </section>
+  </main>
+
+  <div id="result-modal" class="modal hidden" role="dialog" aria-modal="true" aria-labelledby="result-title">
+    <div class="modal-backdrop"></div>
+    <div class="result-card">
+      <p id="result-kicker" class="result-kicker">당첨!</p>
+      <div id="result-badge" class="result-badge">1등</div>
+      <h2 id="result-title">식대권</h2>
+      <p id="result-message">축하합니다!</p>
+      <button id="result-close" class="primary-button" type="button">확인</button>
+    </div>
+  </div>
+
+  <template id="prize-row-template">
+    <div class="prize-row">
+      <div class="rank-chip"></div>
+      <label>
+        <span class="sr-only">상품 이름</span>
+        <input class="prize-name" type="text" maxlength="30" placeholder="상품 이름">
+      </label>
+      <label class="count-field">
+        <span class="sr-only">수량</span>
+        <input class="prize-count" type="number" inputmode="numeric" min="0" max="500" value="0">
+        <span>개</span>
+      </label>
+    </div>
+  </template>
+
+  <script src="../app.js?v=4"></script>
+</body>
+</html>
+
