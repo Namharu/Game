@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#081523">
   <meta name="description" content="참가자와 결과를 직접 정하고 경로를 확인하는 사다리 게임">
   <title>사다리 — NAMHARU GAME</title>
-  <link rel="stylesheet" href="styles.css?v=1">
+  <link rel="stylesheet" href="styles.css?v=3">
 </head>
 <body>
   <main>
@@ -40,15 +40,15 @@
 
         <section id="playScreen" class="screen play-screen" hidden>
           <div class="screen-head"><div><small>STEP 03</small><h2 id="playStatus">이름이나 결과를 선택하세요</h2></div><span id="seedLabel">LADDER 01</span></div>
-          <div class="board-scroll"><div id="playBoard" class="play-board"><div id="starters" class="starters"></div><canvas id="ladderCanvas" width="960" height="500" aria-label="사다리 게임판"></canvas><div id="outcomes" class="outcomes"></div></div></div>
-          <div class="play-actions"><button id="editSettings" class="secondary" type="button">설정 수정</button><button id="newLadder" type="button">새 사다리</button><button id="showAll" class="cyan" type="button">전체 결과</button></div>
+          <div class="board-scroll"><div id="playBoard" class="play-board"><div id="starters" class="starters"></div><div class="canvas-wrap"><canvas id="ladderCanvas" width="960" height="500" aria-label="사다리 게임판"></canvas><div id="ladderCover" class="ladder-cover">이름이나 결과를 선택하면<br>사다리가 공개됩니다</div></div><div id="outcomes" class="outcomes"></div></div></div>
+          <div class="play-actions"><button id="editSettings" class="secondary" type="button">처음으로</button><button id="newLadder" type="button">새 사다리</button><button id="showAll" class="cyan" type="button">전체 결과</button></div>
         </section>
 
         <section id="allResults" class="all-results" hidden><div class="result-head"><small>ALL RESULTS</small><button id="closeResults" type="button" aria-label="결과 닫기">×</button></div><h2>전체 결과</h2><ol id="resultList"></ol></section>
       </div>
     </section>
   </main>
-  <script src="game.js?v=1"></script>
+  <script src="game.js?v=3"></script>
 </body>
 </html>
 
