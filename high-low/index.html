@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#eee3cf">
+  <meta name="description" content="공개된 카드가 한 줄로 이어지는 하이로우 카드 게임">
+  <title>하이로우 — NAMHARU GAME</title>
+  <link rel="stylesheet" href="styles.css?v=1">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar"><a class="brand" href="../" aria-label="게임 목록으로 돌아가기"><span></span>게임 목록</a><div class="rules">A = 1 / 14 · JOKER = WIN</div></header>
+    <section class="game" aria-label="하이로우 카드 게임">
+      <div class="hud"><div><small>연승</small><strong id="streak">0</strong></div><div><small>최고 기록</small><strong id="best">0</strong></div></div>
+      <div class="table">
+        <div class="title"><span>NEXT CARD?</span><h1>하이 <em>or</em> 로우</h1><p>뽑은 카드는 오른쪽으로 계속 이어집니다.</p></div>
+        <div class="track-shell"><div id="cardTrack" class="card-track" aria-live="polite"></div></div>
+        <p id="message" class="message">다음 카드가 더 높을지 낮을지 선택하세요.</p>
+        <div class="choices"><button id="lowButton" class="choice low" type="button"><span>낮다</span><b>LOW ↓</b></button><button id="highButton" class="choice high" type="button"><span>높다</span><b>HIGH ↑</b></button></div>
+        <button id="restartButton" class="restart" type="button" hidden>다시 시작</button>
+      </div>
+    </section>
+  </main>
+  <script src="game.js?v=1"></script>
+</body>
+</html>
+
