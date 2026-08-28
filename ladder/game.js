@@ -4,6 +4,7 @@ const countValue=$('#countValue'),loadPanel=$('#loadPanel'),presetSelect=$('#pre
 const nameInputs=$('#nameInputs'),resultInputs=$('#resultInputs'),straightLines=$('#straightLines');
 const starters=$('#starters'),outcomes=$('#outcomes'),canvas=$('#ladderCanvas'),ctx=canvas.getContext('2d');
 const playStatus=$('#playStatus'),seedLabel=$('#seedLabel'),allResults=$('#allResults'),resultList=$('#resultList');
+const ladderCover=$('#ladderCover');
 const presetName=$('#presetName'),saveMessage=$('#saveMessage'),loadMessage=$('#loadMessage');
 const STORAGE_KEY='namharu-ladder-presets-v1';
 const colors=['#ff3f55','#13bdb6','#835cff','#ff8a2a','#1688e3','#e741aa','#3ca75b','#c29700','#7349c5','#e25834','#2f9ec8','#cb4d76'];
@@ -22,6 +23,7 @@ function buildConfig(initialNames=[],initialResults=[]){
 }
 function captureConfig(){names=values(nameInputs).map((value,index)=>value||`참가자 ${index+1}`);results=values(resultInputs).map((value,index)=>value||`결과 ${index+1}`)}
 function createLadder(){
+  ladderCover.hidden=false;
   const rows=Math.max(8,count*3);ladder=Array.from({length:rows},()=>[]);
   for(let row=0;row<rows;row++)for(let col=0;col<count-1;col++){if(ladder[row].includes(col-1)||Math.random()>.34)continue;ladder[row].push(col)}
   for(let col=0;col<count-1;col++)if(!ladder.some(row=>row.includes(col)))ladder[Math.floor(Math.random()*rows)].push(col);
@@ -43,7 +45,7 @@ function renderPlayLabels(){
   const columns=`repeat(${count},minmax(0,1fr))`;starters.style.gridTemplateColumns=columns;outcomes.style.gridTemplateColumns=columns;starters.innerHTML=names.map((name,index)=>`<button type="button" data-start="${index}">${escapeHtml(name)}</button>`).join('');outcomes.innerHTML=results.map((result,index)=>`<button type="button" data-end="${index}">${escapeHtml(result)}</button>`).join('');starters.querySelectorAll('button').forEach(button=>button.onclick=()=>run(Number(button.dataset.start)));outcomes.querySelectorAll('button').forEach(button=>button.onclick=()=>run(mapping.indexOf(Number(button.dataset.end))));if(activeStart>=0)starters.children[activeStart]?.classList.add('active');if(activeEnd>=0)outcomes.children[activeEnd]?.classList.add('active');
 }
 async function run(start){
-  if(animating||start<0)return;animating=true;activeStart=start;activeEnd=-1;renderPlayLabels();const route=trace(start),duration=1500,startTime=performance.now();playStatus.textContent=`${names[start]} 경로 확인 중`;
+  if(animating||start<0)return;ladderCover.hidden=true;animating=true;activeStart=start;activeEnd=-1;renderPlayLabels();const route=trace(start),duration=1500,startTime=performance.now();playStatus.textContent=`${names[start]} 경로 확인 중`;
   await new Promise(resolve=>{const frame=now=>{const progress=Math.min(1,(now-startTime)/duration);draw(progress,route.points);if(progress<1)requestAnimationFrame(frame);else resolve()};requestAnimationFrame(frame)});activeEnd=route.end;renderPlayLabels();draw(1,route.points);playStatus.textContent=`${names[start]} → ${results[route.end]}`;animating=false;
 }
 function startGame(){captureConfig();createLadder();showScreen('playScreen');allResults.hidden=true;requestAnimationFrame(resizeCanvas)}
@@ -54,4 +56,6 @@ function savePreset(){captureConfig();const key=presetName.value.trim()||'기본
 function loadSelected(){const key=presetSelect.value,data=readPresets()[key];if(!key||!data){loadMessage.textContent='불러올 설정을 선택하세요.';return}setCount(data.count);presetName.value=key;buildConfig(data.names,data.results);loadPanel.hidden=true}
 function deleteSelected(){const key=presetSelect.value;if(!key){loadMessage.textContent='삭제할 설정을 선택하세요.';return}const presets=readPresets();delete presets[key];writePresets(presets);refreshPresets();loadMessage.textContent=`‘${key}’ 삭제 완료`}
 $('#minusCount').onclick=()=>setCount(count-1);$('#plusCount').onclick=()=>setCount(count+1);$('#goConfig').onclick=()=>buildConfig();$('#openLoad').onclick=()=>{refreshPresets();loadPanel.hidden=!loadPanel.hidden};$('#backToCount').onclick=()=>{captureConfig();showScreen('countScreen')};$('#startLadder').onclick=startGame;$('#editSettings').onclick=()=>{allResults.hidden=true;buildConfig(names,results)};$('#newLadder').onclick=()=>{createLadder();allResults.hidden=true};$('#showAll').onclick=showAll;$('#closeResults').onclick=()=>allResults.hidden=true;$('#savePreset').onclick=savePreset;$('#loadPreset').onclick=loadSelected;$('#deletePreset').onclick=deleteSelected;addEventListener('resize',resizeCanvas);setCount(4);refreshPresets();showScreen('countScreen');
+$('#newLadder').onclick=()=>{allResults.hidden=true;buildConfig(names,results)};
+$('#editSettings').onclick=()=>{allResults.hidden=true;loadPanel.hidden=true;showScreen('countScreen')};
 
