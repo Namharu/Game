@@ -1,8 +1,6 @@
 "use strict";
 
 const STORAGE_KEY = "nostalgia-draw-game-v1";
-const DEFAULT_NAMES = ["", "", "", "", "", "", "", "", "", "꽝"];
-const DEFAULT_COUNTS = [1, 2, 3, 4, 5, 5, 10, 10, 10, 0];
 
 const elements = {
   startScreen: document.querySelector("#start-screen"),
@@ -10,7 +8,9 @@ const elements = {
   setupForm: document.querySelector("#setup-form"),
   totalCount: document.querySelector("#total-count"),
   rankCount: document.querySelector("#rank-count"),
+  prizeTable: document.querySelector("#prize-table"),
   prizeRows: document.querySelector("#prize-rows"),
+  setupSummary: document.querySelector("#setup-summary"),
   winnerTotal: document.querySelector("#winner-total"),
   blankTotal: document.querySelector("#blank-total"),
   lastRankLabel: document.querySelector("#last-rank-label"),
@@ -45,7 +45,7 @@ const elements = {
 let state = null;
 let historyVisible = true;
 
-function createPrizeRows(rankCount = Number.parseInt(elements.rankCount.value, 10)) {
+function createPrizeRows(rankCount) {
   const template = document.querySelector("#prize-row-template");
   const existingValues = [...elements.prizeRows.querySelectorAll(".prize-row")].map((row) => ({
     name: row.querySelector(".prize-name").value,
@@ -64,18 +64,25 @@ function createPrizeRows(rankCount = Number.parseInt(elements.rankCount.value, 1
     const isLast = rank === rankCount;
     row.classList.toggle("last-rank", isLast);
     const previous = existingValues[index];
-    if (isLast) {
-      nameInput.value = existingValues.length === rankCount && previous?.name ? previous.name : "꽝";
-    } else {
-      nameInput.value = previous?.wasAutomatic ? "" : (previous?.name || "");
-    }
+    nameInput.value = previous?.name || "";
     nameInput.setAttribute("aria-label", `${rank}등 상품 이름`);
-    countInput.value = isLast ? "0" : (previous?.wasAutomatic ? String(DEFAULT_COUNTS[index]) : (previous?.count || String(DEFAULT_COUNTS[index])));
+    countInput.value = isLast ? "0" : (previous?.wasAutomatic ? "0" : (previous?.count || "0"));
     countInput.readOnly = isLast;
     countInput.tabIndex = isLast ? -1 : 0;
     countInput.setAttribute("aria-label", `${rank}등 수량`);
     elements.prizeRows.appendChild(fragment);
   }
+}
+
+function refreshSetupFields() {
+  const total = Number.parseInt(elements.totalCount.value, 10);
+  const rankCount = Number.parseInt(elements.rankCount.value, 10);
+  const ready = total >= 10 && total <= 500 && rankCount >= 3 && rankCount <= 10;
+  elements.prizeTable.classList.toggle("hidden", !ready);
+  elements.setupSummary.classList.toggle("hidden", !ready);
+  if (!ready) return;
+  if (elements.prizeRows.children.length !== rankCount) createPrizeRows(rankCount);
+  updateSetupSummary();
 }
 
 function getSetupValues() {
@@ -92,6 +99,7 @@ function getSetupValues() {
 
 function updateSetupSummary() {
   const { total, prizes, manualTotal } = getSetupValues();
+  if (!prizes.length) return;
   const lastPrize = prizes.at(-1);
   const lastCountInput = elements.prizeRows.querySelector(".prize-row:last-child .prize-count");
   if (lastCountInput) lastCountInput.value = String(Math.max(0, total - manualTotal));
@@ -104,6 +112,8 @@ function updateSetupSummary() {
 
 function validateSetup(total, prizes) {
   if (total < 10 || total > 500) return "전체 뽑기 수는 10개 이상 500개 이하로 입력해 주세요.";
+  const rankCount = Number.parseInt(elements.rankCount.value, 10);
+  if (rankCount < 3 || rankCount > 10 || prizes.length !== rankCount) return "마지막 등수는 3등부터 10등까지 입력해 주세요.";
   const upperRanks = prizes.slice(0, -1).reduce((sum, prize) => sum + prize.count, 0);
   if (upperRanks > total) return `마지막 등수 전까지의 수량이 전체 뽑기 수보다 ${upperRanks - total}개 많습니다.`;
   const unnamed = prizes.find((prize) => prize.count > 0 && !prize.name);
@@ -293,8 +303,7 @@ function returnToSetup() {
   window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
-createPrizeRows();
-updateSetupSummary();
+refreshSetupFields();
 const savedOnLoad = loadSavedState();
 if (savedOnLoad) {
   state = savedOnLoad;
@@ -303,10 +312,9 @@ if (savedOnLoad) {
   refreshContinueCard();
 }
 
-elements.setupForm.addEventListener("input", updateSetupSummary);
-elements.rankCount.addEventListener("change", () => {
-  createPrizeRows();
-  updateSetupSummary();
+elements.setupForm.addEventListener("input", (event) => {
+  if (event.target === elements.totalCount || event.target === elements.rankCount) refreshSetupFields();
+  else updateSetupSummary();
 });
 elements.setupForm.addEventListener("submit", startGame);
 elements.continueButton.addEventListener("click", () => {

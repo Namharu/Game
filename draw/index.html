@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#f04f37">
   <meta name="description" content="상품과 수량을 직접 정해 즐기는 추억의 뽑기판">
   <title>추억의 뽑기</title>
-  <link rel="stylesheet" href="../styles.css?v=4">
+  <link rel="stylesheet" href="../styles.css?v=5">
 </head>
 <body>
   <div class="paper-noise" aria-hidden="true"></div>
@@ -35,7 +35,7 @@
             <p class="step">STEP 01</p>
             <h2 id="setup-title">뽑기판 만들기</h2>
           </div>
-            <p>등수와 상품을 정하면<br>마지막 등수는 남은 수량으로 자동 계산됩니다.</p>
+            <p>전체 수와 마지막 등수를 먼저 적으면<br>아래에 등수별 입력칸이 자동으로 만들어집니다.</p>
         </div>
 
         <form id="setup-form" novalidate>
@@ -46,7 +46,7 @@
                 <small>10개부터 500개까지</small>
               </label>
               <div class="number-field">
-                <input id="total-count" name="totalCount" type="number" inputmode="numeric" min="10" max="500" value="100" required>
+                <input id="total-count" name="totalCount" type="number" inputmode="numeric" min="10" max="500" placeholder="예: 100" required>
                 <span>개</span>
               </div>
             </div>
@@ -55,28 +55,22 @@
                 <span>몇 등까지?</span>
                 <small>마지막 등수는 자동 수량</small>
               </label>
-              <select id="rank-count" name="rankCount" aria-label="총 등수">
-                <option value="3">3등까지</option>
-                <option value="4">4등까지</option>
-                <option value="5">5등까지</option>
-                <option value="6">6등까지</option>
-                <option value="7" selected>7등까지</option>
-                <option value="8">8등까지</option>
-                <option value="9">9등까지</option>
-                <option value="10">10등까지</option>
-              </select>
+              <div class="number-field rank-number-field">
+                <input id="rank-count" name="rankCount" type="number" inputmode="numeric" min="3" max="10" placeholder="예: 7" aria-label="마지막 등수" required>
+                <span>등</span>
+              </div>
             </div>
           </div>
 
-          <div class="prize-table" role="group" aria-label="등수별 상품 설정">
+          <div id="prize-table" class="prize-table hidden" role="group" aria-label="등수별 상품 설정">
             <div class="table-head" aria-hidden="true">
               <span>등수</span><span>상품 이름</span><span>수량</span>
             </div>
             <div id="prize-rows"></div>
           </div>
 
-          <div class="setup-summary" aria-live="polite">
-            <div><span>상위 등수</span><strong id="winner-total">0개</strong></div>
+          <div id="setup-summary" class="setup-summary hidden" aria-live="polite">
+            <div><span>직접 입력 수량</span><strong id="winner-total">0개</strong></div>
             <div><span id="last-rank-label">7등 자동</span><strong id="blank-total">100개</strong></div>
             <div><span>합계</span><strong id="configured-total">100개</strong></div>
           </div>
@@ -173,7 +167,7 @@
     </div>
   </template>
 
-  <script src="../app.js?v=4"></script>
+  <script src="../app.js?v=5"></script>
 </body>
 </html>
 
