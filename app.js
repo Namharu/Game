@@ -1,7 +1,7 @@
 "use strict";
 
 const STORAGE_KEY = "nostalgia-draw-game-v1";
-const DEFAULT_NAMES = ["식대권", "카카오톡 선물", "편의점 상품권", "음료 교환권", "간식", "기념품", "행운상", "참가상", "아차상", "꽝"];
+const DEFAULT_NAMES = ["", "", "", "", "", "", "", "", "", "꽝"];
 const DEFAULT_COUNTS = [1, 2, 3, 4, 5, 5, 10, 10, 10, 0];
 
 const elements = {
@@ -67,7 +67,7 @@ function createPrizeRows(rankCount = Number.parseInt(elements.rankCount.value, 1
     if (isLast) {
       nameInput.value = existingValues.length === rankCount && previous?.name ? previous.name : "꽝";
     } else {
-      nameInput.value = previous?.wasAutomatic ? DEFAULT_NAMES[index] : (previous?.name || DEFAULT_NAMES[index]);
+      nameInput.value = previous?.wasAutomatic ? "" : (previous?.name || "");
     }
     nameInput.setAttribute("aria-label", `${rank}등 상품 이름`);
     countInput.value = isLast ? "0" : (previous?.wasAutomatic ? String(DEFAULT_COUNTS[index]) : (previous?.count || String(DEFAULT_COUNTS[index])));
