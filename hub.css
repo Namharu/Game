@@ -51,6 +51,11 @@ a { color: inherit; text-decoration: none; }
 .coming-card .card-content { position: absolute; inset: auto 0 0; }
 .coming-card .card-meta { color: var(--lime); }
 .coming-card .card-description { color: rgba(242,239,232,.6); }
+.ladder-card { display: grid; grid-template-columns: 1fr 1fr; background: var(--orange); }
+.ladder-visual { position: relative; min-height: 260px; margin: 48px 25px 25px; border-left: 5px solid var(--ink); border-right: 5px solid var(--ink); }
+.ladder-visual::before, .ladder-visual::after, .ladder-visual i { content: ""; position: absolute; left: 0; right: 0; height: 5px; background: var(--ink); }
+.ladder-visual::before { top: 14%; }.ladder-visual::after { top: 76%; }.ladder-visual i:nth-child(1) { top: 32%; width: 58%; }.ladder-visual i:nth-child(2) { top: 49%; left: 42%; }.ladder-visual i:nth-child(3) { top: 63%; width: 66%; }.ladder-visual i:nth-child(4) { top: 90%; left: 35%; }
+.ladder-card:hover .card-arrow, .lucky-card:hover .card-arrow { transform: translate(4px, -4px); }
 footer { display: flex; justify-content: space-between; gap: 20px; padding: 28px 0 42px; font-size: 10px; font-weight: 900; letter-spacing: .14em; }
 @media (max-width: 800px) {
   .intro { grid-template-columns: 1fr; min-height: 320px; }
@@ -68,6 +73,7 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 28px
   .intro { min-height: 285px; padding-top: 34px; }
   .intro h1 { font-size: clamp(58px, 22vw, 92px); }
   .draw-card { grid-template-columns: 1fr; }
+  .ladder-card { grid-template-columns: 1fr; }
   .card-visual { min-height: 200px; transform: skewX(-5deg) translate(-12px, -8px); }
   .card-content { padding: 26px; }
   .game-card { min-height: 440px; }
