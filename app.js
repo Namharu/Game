@@ -295,7 +295,13 @@ function returnToSetup() {
 
 createPrizeRows();
 updateSetupSummary();
-refreshContinueCard();
+const savedOnLoad = loadSavedState();
+if (savedOnLoad) {
+  state = savedOnLoad;
+  showGame();
+} else {
+  refreshContinueCard();
+}
 
 elements.setupForm.addEventListener("input", updateSetupSummary);
 elements.rankCount.addEventListener("change", () => {
