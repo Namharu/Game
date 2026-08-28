@@ -43,10 +43,10 @@
             <div class="total-row">
               <label for="total-count">
                 <span>전체 뽑기 수</span>
-                <small>10개부터 500개까지</small>
+                <small>100개부터 500개까지</small>
               </label>
               <div class="number-field">
-                <input id="total-count" name="totalCount" type="number" inputmode="numeric" min="10" max="500" placeholder="예: 100" required>
+                <input id="total-count" name="totalCount" type="number" inputmode="numeric" min="100" max="500" value="100" required>
                 <span>개</span>
               </div>
             </div>
@@ -56,7 +56,7 @@
                 <small>마지막 등수는 자동 수량</small>
               </label>
               <div class="number-field rank-number-field">
-                <input id="rank-count" name="rankCount" type="number" inputmode="numeric" min="3" max="10" placeholder="예: 7" aria-label="마지막 등수" required>
+                <input id="rank-count" name="rankCount" type="number" inputmode="numeric" min="3" max="10" value="7" aria-label="마지막 등수" required>
                 <span>등</span>
               </div>
             </div>
@@ -167,7 +167,7 @@
     </div>
   </template>
 
-  <script src="../app.js?v=5"></script>
+  <script src="../app.js?v=7"></script>
 </body>
 </html>
 

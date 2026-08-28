@@ -1,6 +1,7 @@
 "use strict";
 
 const STORAGE_KEY = "nostalgia-draw-game-v1";
+const DEFAULT_COUNTS = [1, 2, 3, 4, 5, 5, 10, 10, 10, 0];
 
 const elements = {
   startScreen: document.querySelector("#start-screen"),
@@ -64,9 +65,9 @@ function createPrizeRows(rankCount) {
     const isLast = rank === rankCount;
     row.classList.toggle("last-rank", isLast);
     const previous = existingValues[index];
-    nameInput.value = previous?.name || "";
+    nameInput.value = previous?.name || `${rank}등`;
     nameInput.setAttribute("aria-label", `${rank}등 상품 이름`);
-    countInput.value = isLast ? "0" : (previous?.wasAutomatic ? "0" : (previous?.count || "0"));
+    countInput.value = isLast ? "0" : (previous?.wasAutomatic ? String(DEFAULT_COUNTS[index]) : (previous?.count || String(DEFAULT_COUNTS[index])));
     countInput.readOnly = isLast;
     countInput.tabIndex = isLast ? -1 : 0;
     countInput.setAttribute("aria-label", `${rank}등 수량`);
@@ -77,7 +78,7 @@ function createPrizeRows(rankCount) {
 function refreshSetupFields() {
   const total = Number.parseInt(elements.totalCount.value, 10);
   const rankCount = Number.parseInt(elements.rankCount.value, 10);
-  const ready = total >= 10 && total <= 500 && rankCount >= 3 && rankCount <= 10;
+  const ready = total >= 100 && total <= 500 && rankCount >= 3 && rankCount <= 10;
   elements.prizeTable.classList.toggle("hidden", !ready);
   elements.setupSummary.classList.toggle("hidden", !ready);
   if (!ready) return;
@@ -111,7 +112,7 @@ function updateSetupSummary() {
 }
 
 function validateSetup(total, prizes) {
-  if (total < 10 || total > 500) return "전체 뽑기 수는 10개 이상 500개 이하로 입력해 주세요.";
+  if (total < 100 || total > 500) return "전체 뽑기 수는 100개 이상 500개 이하로 입력해 주세요.";
   const rankCount = Number.parseInt(elements.rankCount.value, 10);
   if (rankCount < 3 || rankCount > 10 || prizes.length !== rankCount) return "마지막 등수는 3등부터 10등까지 입력해 주세요.";
   const upperRanks = prizes.slice(0, -1).reduce((sum, prize) => sum + prize.count, 0);
