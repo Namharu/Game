@@ -12,4 +12,9 @@ button{border:0;border-radius:9px;background:var(--yellow);color:#10243d;padding
 #ladderCanvas{display:block;width:100%;height:500px;margin:6px 0;border:1px solid #345b73;border-radius:10px;background:#f3f7f2}.play-actions{display:grid;grid-template-columns:repeat(3,1fr);gap:9px;width:min(670px,100%);margin:14px auto 0}.all-results{position:absolute;z-index:10;right:20px;top:64px;width:min(340px,calc(100% - 40px));padding:18px;border:2px solid var(--yellow);border-radius:14px;background:#091d30f5;box-shadow:0 18px 50px #000b}.result-head{display:flex;align-items:center;justify-content:space-between}.result-head button{padding:0;background:transparent;color:#fff;font-size:25px;box-shadow:none}.all-results h2{margin:6px 0 12px}.all-results ol{margin:0;padding-left:25px;font-size:13px;line-height:2}.all-results li::marker{color:var(--yellow);font-weight:900}
 @media(max-width:850px){main{padding:8px}.game{grid-template-columns:1fr}aside{padding:14px}aside>p,.guide{display:none}.stage,.screen{min-height:650px}.screen{padding:20px 10px}.count-screen h2{font-size:24px}.first-actions{grid-template-columns:1fr 1fr;width:min(400px,100%)}h1{font-size:26px;margin:4px 0}}
 @media(prefers-reduced-motion:reduce){*{scroll-behavior:auto!important}}
+.straight-lines{position:relative;height:220px;margin:10px 0;border:1px dashed #557994;border-radius:12px;background:#0a2033}
+.straight-lines::before{content:"사다리는 시작 후 공개됩니다";position:absolute;inset:0;display:grid;place-items:center;color:#8faabc;font-size:12px;font-weight:900;letter-spacing:.04em}
+.straight-lines span{display:none}
+.canvas-wrap{position:relative}
+.ladder-cover{position:absolute;inset:6px 0;display:grid;place-items:center;padding:20px;color:#d9ecf6;background:linear-gradient(145deg,#123550,#081b2d);border:1px solid #4f7893;border-radius:10px;text-align:center;font-size:17px;font-weight:900;line-height:1.6;letter-spacing:-.02em}
 
