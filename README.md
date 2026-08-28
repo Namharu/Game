@@ -5,6 +5,7 @@
 - 게임 목록: https://namharu.github.io/Game/
 - 추억의 뽑기: https://namharu.github.io/Game/draw/
 - 뽑기판 2: https://namharu.github.io/Game/lucky-board/
+- 사다리: https://namharu.github.io/Game/ladder/
 
 ## 주요 기능
 
