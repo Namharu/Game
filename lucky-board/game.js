@@ -9,11 +9,25 @@ const foundBox = document.querySelector('#found');
 const summary = document.querySelector('#summary');
 const winnerNumbers = document.querySelector('#winnerNumbers');
 const celebration = document.querySelector('#celebration');
+const SETTINGS_KEY = 'namharu-lucky-board-settings-v1';
 let settings = { total: 30, winners: 10, ordered: false };
 let winningNumbers = new Set();
 let foundNumbers = [];
 let audioContext;
 let layout = { columns: 6, rows: 5 };
+
+function saveLastSettings() {
+  const total = Number(totalInput.value); const winners = Number(winnerInput.value);
+  if (!Number.isInteger(total) || total < 2 || total > 100 || !Number.isInteger(winners) || winners < 1 || winners >= total) return;
+  try { localStorage.setItem(SETTINGS_KEY, JSON.stringify({ total, winners })); } catch (error) { /* 저장 불가 환경에서는 기본값을 사용합니다. */ }
+}
+function restoreLastSettings() {
+  try {
+    const saved = JSON.parse(localStorage.getItem(SETTINGS_KEY));
+    if (!saved || !Number.isInteger(saved.total) || saved.total < 2 || saved.total > 100 || !Number.isInteger(saved.winners) || saved.winners < 1 || saved.winners >= saved.total) return;
+    totalInput.value = String(saved.total); winnerInput.value = String(saved.winners);
+  } catch (error) { /* 잘못된 저장값은 무시합니다. */ }
+}
 
 function getAudioContext() {
   const AudioContext = window.AudioContext || window.webkitAudioContext;
@@ -40,7 +54,7 @@ function validate() {
   const total = Number(totalInput.value); const winners = Number(winnerInput.value);
   if (!Number.isInteger(total) || total < 2 || total > 100) return '참여 인원은 2명부터 100명까지 입력해 주세요.';
   if (!Number.isInteger(winners) || winners < 1 || winners >= total) return '당첨 인원은 참여 인원보다 적게 입력해 주세요.';
-  settings = { total, winners, ordered: orderedInput.checked }; return '';
+  settings = { total, winners, ordered: orderedInput.checked }; saveLastSettings(); return '';
 }
 function makeCard(number) {
   const card = document.createElement('button'); card.className = 'card'; card.type = 'button'; card.dataset.number = number; card.setAttribute('aria-label', `${number}번 선택`);
@@ -79,5 +93,9 @@ document.querySelector('#start').addEventListener('click', () => { errorBox.text
 document.querySelector('#reset').addEventListener('click', () => { game.hidden = true; setup.hidden = false; });
 document.querySelector('#replay').addEventListener('click', startRound);
 window.addEventListener('resize', fitBoardToScreen);
-[totalInput, winnerInput].forEach(input => input.addEventListener('keydown', event => { if (event.key === 'Enter') document.querySelector('#start').click(); }));
+restoreLastSettings();
+[totalInput, winnerInput].forEach(input => {
+  input.addEventListener('input', saveLastSettings);
+  input.addEventListener('keydown', event => { if (event.key === 'Enter') document.querySelector('#start').click(); });
+});
 
