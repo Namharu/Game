@@ -296,7 +296,12 @@ function renderHistory() {
 
 function returnToSetup() {
   const hasProgress = state && state.opened.length > 0;
-  if (hasProgress && !window.confirm("현재 뽑기판을 나가고 새로 만들까요? 자동 저장된 기록은 새 게임을 시작할 때 교체됩니다.")) return;
+  if (hasProgress && !window.confirm("현재 뽑기판을 삭제하고 새로 만들까요? 저장된 진행 기록도 함께 삭제됩니다.")) return;
+  try {
+    localStorage.removeItem(STORAGE_KEY);
+  } catch (error) {
+    // 저장소를 사용할 수 없는 환경에서도 새 설정 화면으로 이동합니다.
+  }
   state = null;
   elements.gameScreen.classList.add("hidden");
   elements.startScreen.classList.remove("hidden");
