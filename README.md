@@ -7,6 +7,7 @@
 - 뽑기판 2: https://namharu.github.io/Game/lucky-board/
 - 사다리: https://namharu.github.io/Game/ladder/
 - 하이로우: https://namharu.github.io/Game/high-low/
+- 컬러볼 핀볼: https://namharu.github.io/Game/pinball/
 
 ## 주요 기능
 

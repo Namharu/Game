@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#eee3cf">
+  <meta name="description" content="색깔 공을 골라 핀볼 맵에서 순위를 겨루는 컬러볼 레이스">
+  <title>컬러볼 핀볼 — NAMHARU GAME</title>
+  <link rel="stylesheet" href="styles.css?v=1">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar">
+      <a href="../"><i></i> 게임 목록</a>
+      <span>COLOR BALL · PINBALL RACE</span>
+    </header>
+
+    <section class="intro">
+      <div><small>GAME 05</small><h1>컬러볼 <em>핀볼</em></h1></div>
+      <p>출전할 공을 고르고 시작하세요.<br>먼저 결승선을 통과한 공이 1등입니다.</p>
+    </section>
+
+    <section class="race-layout">
+      <div class="machine" aria-label="핀볼 경기장">
+        <div class="machine-head"><span>PINBALL COURSE</span><b id="raceState">공을 선택해 주세요</b></div>
+        <div class="canvas-wrap">
+          <canvas id="raceCanvas" width="620" height="900" aria-label="컬러볼 핀볼 레이스 화면"></canvas>
+          <div id="countdown" class="countdown" hidden></div>
+        </div>
+      </div>
+
+      <aside class="control-panel">
+        <section class="pick-section">
+          <div class="section-title"><span>01</span><div><small>CHOOSE BALLS</small><h2>출전 공 선택</h2></div></div>
+          <p>공을 눌러 선택하거나 제외하세요. 최소 2개가 필요합니다.</p>
+          <div id="ballPicker" class="ball-picker"></div>
+          <div class="selection-line"><span>선택된 공</span><strong id="selectedCount">7개</strong></div>
+        </section>
+
+        <section class="rank-section">
+          <div class="section-title"><span>02</span><div><small>LIVE RANKING</small><h2>도착 순위</h2></div></div>
+          <ol id="ranking" class="ranking"><li class="empty">경기를 시작하면 순위가 표시됩니다.</li></ol>
+        </section>
+
+        <p id="error" class="error" role="alert"></p>
+        <div class="actions">
+          <button id="resetButton" class="secondary" type="button">선택 초기화</button>
+          <button id="startButton" class="primary" type="button"><span>경기 시작</span><b>▶</b></button>
+        </div>
+      </aside>
+    </section>
+  </main>
+  <script src="game.js?v=1"></script>
+</body>
+</html>
+

@@ -57,6 +57,7 @@ a { color: inherit; text-decoration: none; }
 .ladder-visual::before { top: 14%; }.ladder-visual::after { top: 76%; }.ladder-visual i:nth-child(1) { top: 32%; width: 58%; }.ladder-visual i:nth-child(2) { top: 49%; left: 42%; }.ladder-visual i:nth-child(3) { top: 63%; width: 66%; }.ladder-visual i:nth-child(4) { top: 90%; left: 35%; }
 .ladder-card:hover .card-arrow, .lucky-card:hover .card-arrow { transform: translate(4px, -4px); }
 .highlow-card{display:grid;grid-template-columns:1fr 1fr;background:var(--blue);color:#fff}.highlow-visual{display:flex;align-items:center;justify-content:center;gap:10px;padding:55px 20px 25px}.highlow-visual i,.highlow-visual b{display:grid;place-items:center;width:78px;aspect-ratio:5/7;border:2px solid var(--ink);border-radius:7px;background:#fff;color:var(--ink);font:900 24px/1.2 Georgia;text-align:center;box-shadow:5px 6px 0 var(--ink);transform:rotate(-5deg)}.highlow-visual i:last-child{color:var(--orange);transform:rotate(6deg)}.highlow-visual b{width:58px;color:#fff;background:var(--orange);font-size:28px;transform:rotate(0)}.highlow-card:hover .card-arrow{transform:translate(4px,-4px)}
+.pinball-card{display:grid;grid-template-columns:1fr 1fr;background:#f3c946}.pinball-visual{position:relative;display:grid;grid-template-columns:repeat(6,8px);gap:24px 25px;place-content:center;min-height:280px;padding:55px 25px 25px;background:#1b2732}.pinball-visual b{width:8px;height:8px;background:#ead8b7;border-radius:50%;box-shadow:0 0 0 2px #594b39}.pinball-visual i{position:absolute;top:54px;width:28px;height:28px;border:2px solid var(--ink);border-radius:50%;box-shadow:inset -6px -7px 7px rgba(0,0,0,.25),inset 5px 4px 6px rgba(255,255,255,.5)}.pinball-visual i:nth-child(1){left:11%;background:#ef4035}.pinball-visual i:nth-child(2){left:22%;background:#ff8a27}.pinball-visual i:nth-child(3){left:33%;background:#f5cf33}.pinball-visual i:nth-child(4){left:44%;background:#38a55a}.pinball-visual i:nth-child(5){left:55%;background:#3184e6}.pinball-visual i:nth-child(6){left:66%;background:#3f51a3}.pinball-visual i:nth-child(7){left:77%;background:#9b4bc5}.pinball-card:hover .card-arrow{transform:translate(4px,-4px)}
 footer { display: flex; justify-content: space-between; gap: 20px; padding: 28px 0 42px; font-size: 10px; font-weight: 900; letter-spacing: .14em; }
 @media (max-width: 800px) {
   .intro { grid-template-columns: 1fr; min-height: 320px; }
@@ -76,6 +77,7 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 28px
   .draw-card { grid-template-columns: 1fr; }
   .ladder-card { grid-template-columns: 1fr; }
   .highlow-card { grid-template-columns: 1fr; }
+  .pinball-card { grid-template-columns: 1fr; }
   .card-visual { min-height: 200px; transform: skewX(-5deg) translate(-12px, -8px); }
   .card-content { padding: 26px; }
   .game-card { min-height: 440px; }
