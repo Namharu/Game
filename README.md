@@ -8,6 +8,8 @@
 - 사다리: https://namharu.github.io/Game/ladder/
 - 하이로우: https://namharu.github.io/Game/high-low/
 - 컬러볼 핀볼: https://namharu.github.io/Game/pinball/
+- 동물경주: https://namharu.github.io/Game/animal-race/
+- 대포: https://namharu.github.io/Game/cannon/
 
 ## 주요 기능
 
