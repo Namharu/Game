@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#eee3cf">
+  <meta name="description" content="1부터 45까지 번호 중 6개와 보너스 번호를 애니메이션으로 추첨하는 로또번호 추첨기">
+  <title>로또번호 추첨기 — NAMHARU GAME</title>
+  <link rel="stylesheet" href="styles.css?v=1">
+</head>
+<body>
+  <main class="shell">
+    <header class="topbar"><a href="../"><i></i> GAME HOME</a><span>LOTTO 6 / 45</span></header>
+    <section class="game-card">
+      <aside class="guide">
+        <small>LUCKY NUMBER MACHINE</small>
+        <h1>로또번호<br><em>추첨기</em></h1>
+        <p>1부터 45까지의 공을 섞어 당첨번호 6개와 보너스 번호 1개를 순서대로 공개합니다.</p>
+        <div class="legend" aria-label="번호별 공 색상"><span><i class="c1"></i>1–10</span><span><i class="c2"></i>11–20</span><span><i class="c3"></i>21–30</span><span><i class="c4"></i>31–40</span><span><i class="c5"></i>41–45</span></div>
+        <div class="actions">
+          <button id="startButton" class="primary" type="button">추첨 시작 <b>▶</b></button>
+          <button id="quickButton" type="button">빠른 추첨</button>
+          <button id="resetButton" type="button">초기화</button>
+        </div>
+      </aside>
+
+      <section class="machine-area" aria-label="로또 추첨기">
+        <div class="machine-head"><span id="status">추첨 준비</span><strong id="progress">0 / 7</strong></div>
+        <div class="canvas-wrap"><canvas id="machineCanvas" width="900" height="500" aria-label="45개의 번호 공이 섞이는 추첨기"></canvas><div id="drawnBall" class="drawn-ball" hidden></div></div>
+        <div class="result-panel">
+          <div class="winning"><span class="result-label">당첨번호</span><div id="winningNumbers" class="number-row"><i>?</i><i>?</i><i>?</i><i>?</i><i>?</i><i>?</i></div></div>
+          <span class="plus">+</span>
+          <div class="bonus"><span class="result-label">보너스</span><div id="bonusNumber" class="number-row"><i>?</i></div></div>
+        </div>
+        <div class="utility"><button id="copyButton" type="button" disabled>번호 복사</button><span id="copyMessage" aria-live="polite"></span></div>
+      </section>
+    </section>
+
+    <section class="history-card">
+      <div><small>RECENT DRAW</small><h2>최근 추첨 기록</h2></div>
+      <ol id="history"><li class="empty">아직 추첨 기록이 없습니다.</li></ol>
+    </section>
+  </main>
+  <script src="game.js?v=1"></script>
+</body>
+</html>

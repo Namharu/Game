@@ -68,6 +68,11 @@ a { color: inherit; text-decoration: none; }
 .cannon-visual i::after{content:"";position:absolute;left:18px;bottom:-35px;width:52px;height:52px;border:4px solid var(--ink);border-radius:50%;background:#c9f43b}
 .cannon-visual b{z-index:1;display:grid;place-items:center;width:52px;height:52px;margin-top:-105px;border:3px solid var(--ink);border-radius:50%;background:#fff;font-size:23px;box-shadow:4px 5px 0 var(--ink)}
 .cannon-card:hover .card-arrow{transform:translate(4px,-4px)}
+.lotto-card{display:grid;grid-template-columns:1fr 1fr;background:#3057e1;color:#fff}
+.lotto-visual{display:grid;grid-template-columns:repeat(3,64px);place-content:center;gap:16px;padding:62px 24px 28px;background:#171717}
+.lotto-visual i{display:grid;place-items:center;width:64px;height:64px;border:3px solid #fff;border-radius:50%;color:#171717;background:#f4c843;font-size:20px;font-style:normal;font-weight:950;box-shadow:5px 6px 0 #ff5b2e}
+.lotto-visual i:nth-child(2){background:#62a5ff}.lotto-visual i:nth-child(3){background:#ff7058}.lotto-visual i:nth-child(4){background:#d9d9d9}.lotto-visual i:nth-child(5){background:#6dce78}.lotto-visual i:nth-child(6){background:#fff;color:#3057e1}
+.lotto-card:hover .card-arrow{transform:translate(4px,-4px)}
 footer { display: flex; justify-content: space-between; gap: 20px; padding: 28px 0 42px; font-size: 10px; font-weight: 900; letter-spacing: .14em; }
 @media (max-width: 800px) {
   .intro { grid-template-columns: 1fr; min-height: 320px; }
@@ -90,6 +95,7 @@ footer { display: flex; justify-content: space-between; gap: 20px; padding: 28px
   .pinball-card { grid-template-columns: 1fr; }
   .animal-race-card { grid-template-columns: 1fr; }
   .cannon-card { grid-template-columns: 1fr; }
+  .lotto-card { grid-template-columns: 1fr; }
   .card-visual { min-height: 200px; transform: skewX(-5deg) translate(-12px, -8px); }
   .card-content { padding: 26px; }
   .game-card { min-height: 440px; }

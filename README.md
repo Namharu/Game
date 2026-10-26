@@ -10,6 +10,7 @@
 - 컬러볼 핀볼: https://namharu.github.io/Game/pinball/
 - 동물경주: https://namharu.github.io/Game/animal-race/
 - 대포: https://namharu.github.io/Game/cannon/
+- 로또번호 추첨기: https://namharu.github.io/Game/lotto/
 
 ## 주요 기능
 
