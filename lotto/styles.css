@@ -14,3 +14,8 @@
 html.embedded,html.embedded body{margin:0;width:880px;height:600px;overflow:hidden}.embedded header,.embedded footer{display:none}.embedded main{margin:0;border-radius:0;box-shadow:none}header a{font-size:13px;color:inherit}
 
 #drawSpeed{font:inherit;font-size:14px;width:100%;padding:8px;border:1px solid #cdbfa9;border-radius:7px;background:#fff;margin:6px 0 12px}
+
+.draw-options label{align-items:center;justify-content:flex-start;gap:8px;margin:0 0 6px}.draw-options input{width:16px;height:16px;margin:0}.draw-options select{width:100%;font:inherit;font-size:13px;padding:5px;margin-bottom:9px;border:1px solid #cdbfa9;border-radius:6px}#drawSpeed{margin:4px 0 8px;padding:0}#drawResults{padding:7px;margin-bottom:6px}#drawNumbers{gap:2px}#drawNumbers span{padding:0}aside h1{margin:4px 0 8px}
+
+#drawNumbers{line-height:12px}
+
