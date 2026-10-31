@@ -24,7 +24,9 @@ const values=container=>[...container.querySelectorAll('input')].map(input=>inpu
 let revealed = new Set(), currentProgress = 0, animationEpoch = 0;
 const showScreen=id=>{if(id!=='playScreen'){hideMatchPopup();animationEpoch++;animating=false;currentProgress=0;revealed.clear();renderMatches();}screens.forEach(screen=>screen.hidden=screen.id!==id)};
 
-function setCount(next){count=Math.max(2,Math.min(12,next));countValue.textContent=count}
+const COUNT_KEY='namharu-ladder-last-count-v1';
+function readLastCount(){try{const saved=Number(localStorage.getItem(COUNT_KEY));return Number.isInteger(saved)&&saved>=2&&saved<=12?saved:4;}catch{return 4;}}
+function setCount(next){count=Math.max(2,Math.min(12,next));countValue.textContent=count;try{localStorage.setItem(COUNT_KEY,String(count));}catch{}}
 function buildConfig(initialNames=[],initialResults=[]){
   names=Array.from({length:count},(_,index)=>initialNames[index]||`참가자 ${index+1}`);results=Array.from({length:count},(_,index)=>initialResults[index]||`결과 ${index+1}`);
   const columns=`repeat(${count},minmax(0,1fr))`;[nameInputs,resultInputs,straightLines].forEach(element=>element.style.gridTemplateColumns=columns);
@@ -81,7 +83,7 @@ function refreshPresets(selected=''){const presets=readPresets();presetSelect.in
 function savePreset(){captureConfig();const key=presetName.value.trim()||'기본 설정',presets=readPresets();presets[key]={count,names,results};writePresets(presets);refreshPresets(key);saveMessage.textContent=`‘${key}’ 저장 완료`;setTimeout(()=>saveMessage.textContent='',1800)}
 function loadSelected(){const key=presetSelect.value,data=readPresets()[key];if(!key||!data){loadMessage.textContent='불러올 설정을 선택하세요.';return}setCount(data.count);presetName.value=key;buildConfig(data.names,data.results);loadPanel.hidden=true}
 function deleteSelected(){const key=presetSelect.value;if(!key){loadMessage.textContent='삭제할 설정을 선택하세요.';return}const presets=readPresets();delete presets[key];writePresets(presets);refreshPresets();loadMessage.textContent=`‘${key}’ 삭제 완료`}
-$('#minusCount').onclick=()=>setCount(count-1);$('#plusCount').onclick=()=>setCount(count+1);$('#goConfig').onclick=()=>buildConfig();$('#openLoad').onclick=()=>{refreshPresets();loadPanel.hidden=!loadPanel.hidden};$('#backToCount').onclick=()=>{captureConfig();showScreen('countScreen')};$('#startLadder').onclick=startGame;$('#editSettings').onclick=()=>{allResults.hidden=true;buildConfig(names,results)};$('#newLadder').onclick=()=>{createLadder();allResults.hidden=true};$('#showAll').onclick=showAll;$('#closeResults').onclick=()=>allResults.hidden=true;$('#savePreset').onclick=savePreset;$('#loadPreset').onclick=loadSelected;$('#deletePreset').onclick=deleteSelected;addEventListener('resize',resizeCanvas);setCount(4);refreshPresets();showScreen('countScreen');
+$('#minusCount').onclick=()=>setCount(count-1);$('#plusCount').onclick=()=>setCount(count+1);$('#goConfig').onclick=()=>buildConfig();$('#openLoad').onclick=()=>{refreshPresets();loadPanel.hidden=!loadPanel.hidden};$('#backToCount').onclick=()=>{captureConfig();showScreen('countScreen')};$('#startLadder').onclick=startGame;$('#editSettings').onclick=()=>{allResults.hidden=true;buildConfig(names,results)};$('#newLadder').onclick=()=>{createLadder();allResults.hidden=true};$('#showAll').onclick=showAll;$('#closeResults').onclick=()=>allResults.hidden=true;$('#savePreset').onclick=savePreset;$('#loadPreset').onclick=loadSelected;$('#deletePreset').onclick=deleteSelected;addEventListener('resize',resizeCanvas);setCount(readLastCount());refreshPresets();showScreen('countScreen');
 $('#newLadder').onclick=()=>{allResults.hidden=true;buildConfig(names,results)};
 $('#editSettings').onclick=()=>{allResults.hidden=true;loadPanel.hidden=true;showScreen('countScreen')};
 
