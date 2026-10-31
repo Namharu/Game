@@ -1,0 +1,4 @@
+Based on Marble Roulette by lazygyu (https://github.com/lazygyu/roulette), MIT License.
+Modified for Namharu: 600px game area, local color/number balls, structured content/count controls, custom winning rank.
+Original license is preserved in LICENSE.txt.
+Build source is maintained locally in ../pinball-local-lab (production.html, production.css, src/local.ts).

@@ -130,3 +130,4 @@ button, a { font: inherit; }
 .home-screen h2 { margin:0 0 14px; font-size:32px; }
 .home-screen strong { display:block; padding:18px 24px; border-radius:12px; background:#fee500; font-size:28px; }
 .title-actions [hidden] { display:none!important; }
+.play-window[data-game="pinball"] { width:880px; height:600px; }
