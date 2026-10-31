@@ -5,7 +5,7 @@ const animals=[['토끼','🐰','rabbit'],['원숭이','🐵','monkey'],['고양
 const WORLD_FINISH=2500,LANE_H=66;
 let W=960,H=720,dpr=1,ready=false,running=false,last=performance.now(),startedAt=0,cameraX=0,racers=[],obstacles=[],effects=[],finishOrder=[],sprites=[];
 
-function resize(){const r=host.getBoundingClientRect();dpr=Math.min(devicePixelRatio||1,1.5);W=Math.max(620,r.width);H=Math.max(560,r.height);canvas.width=W*dpr;canvas.height=H*dpr;canvas.style.width=W+'px';canvas.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0);ctx.imageSmoothingEnabled=true}addEventListener('resize',resize);resize();
+function resize(){const r=host.getBoundingClientRect();dpr=Math.min(devicePixelRatio||1,1.5);W=Math.max(320,r.width);H=Math.max(320,r.height);canvas.width=W*dpr;canvas.height=H*dpr;canvas.style.width=W+'px';canvas.style.height=H+'px';ctx.setTransform(dpr,0,0,dpr,0,0);ctx.imageSmoothingEnabled=true}addEventListener('resize',resize);resize();
 function trackTop(){return (H-racers.length*LANE_H)/2}function laneY(i){return trackTop()+(i+.5)*LANE_H}
 
 function removeChecker(img){const c=document.createElement('canvas');c.width=img.width;c.height=img.height;const x=c.getContext('2d',{willReadFrequently:true});x.drawImage(img,0,0);const im=x.getImageData(0,0,c.width,c.height),d=im.data,w=c.width,h=c.height,seen=new Uint8Array(w*h),q=new Int32Array(w*h);let head=0,tail=0;const bg=p=>{const i=p*4,r=d[i],g=d[i+1],b=d[i+2],mx=Math.max(r,g,b),mn=Math.min(r,g,b);return mx>198&&mx-mn<18};const add=p=>{if(p>=0&&p<w*h&&!seen[p]&&bg(p)){seen[p]=1;q[tail++]=p}};for(let i=0;i<w;i++){add(i);add((h-1)*w+i)}for(let y=0;y<h;y++){add(y*w);add(y*w+w-1)}while(head<tail){const p=q[head++],px=p%w;d[p*4+3]=0;if(px)add(p-1);if(px<w-1)add(p+1);add(p-w);add(p+w)}x.putImageData(im,0,0);return c}

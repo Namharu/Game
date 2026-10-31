@@ -1,0 +1,94 @@
+/* The capture surface is always 600 × 600 CSS pixels; text is never scaled. */
+.square-layout body { overflow:auto; }
+.square-layout .square-shell { display:grid; grid-template-columns:600px 280px; width:880px; min-height:600px; color:#252019; background:#fffaf0; }
+.square-layout .square-stage { position:relative; width:600px; height:600px; overflow:hidden; isolation:isolate; }
+.square-layout .square-controls { width:280px; height:600px; overflow:auto; padding:18px; border:0; border-left:2px solid #cbbda5; border-radius:0; background:#fffaf0; box-shadow:none; font-size:16px; }
+.square-layout .square-controls > * { max-width:100%; }
+.square-layout main { padding:12px; }
+.square-layout button,.square-layout input,.square-layout select { font-family:inherit; }
+.square-layout .square-controls button { font-size:16px; }
+.square-layout .square-controls p { font-size:14px; line-height:1.6; }
+.square-layout .square-controls h1 { font-size:26px; }
+.square-layout .square-controls aside { border:0; padding:0; box-shadow:none; }
+.square-layout .square-controls .names { grid-template-columns:1fr; max-height:none; }
+.square-layout .square-controls .names label { font-size:14px; }
+.square-layout .square-controls .names input { font-size:16px; padding:7px; }
+.square-layout .square-controls .count-label { font-size:15px; }
+.square-layout.embed-animal-race main { padding:0; }
+.square-layout.embed-animal-race .game { display:block; }
+.square-layout.embed-animal-race .stage { border:0; border-radius:0; }
+.square-layout.embed-animal-race .intro { padding:20px; }
+.square-layout.embed-lotto main { padding:0; }
+.square-layout.embed-lotto .game-card { display:block; border:0; border-radius:0; }
+.square-layout.embed-lotto .machine-area { height:600px; grid-template-rows:48px 394px 110px 48px; }
+.square-layout.embed-lotto .guide { padding:0; }
+.square-layout.embed-lotto .guide p { font-size:15px; }
+.square-layout.embed-lotto .number-row { gap:8px; }
+.square-layout.embed-lotto .number-row i { width:56px; height:56px; font-size:24px; }
+.square-layout.embed-high-low .table { padding:30px 12px; }
+.square-layout.embed-high-low .card { width:130px; }
+.square-layout.embed-high-low .choices { display:grid; gap:16px; grid-template-columns:1fr; margin:20px 0; }
+.square-layout.embed-high-low .choice { width:100%; }
+.square-layout.embed-high-low .restart { width:100%; margin-top:20px; }
+.square-layout.embed-cannon main { padding:0; }
+.square-layout.embed-cannon .game-card { border:0; border-radius:0; }
+.square-layout.embed-cannon .copy h1 { font-size:40px; }
+.square-layout.embed-cannon .sound { position:static; margin-top:20px; }
+.square-layout.embed-cannon .launch { width:100%; margin-top:24px; }
+.square-layout.embed-cannon .results { flex-wrap:wrap; }
+.square-layout.embed-pinball main.arcade { grid-template-columns:150px 450px; padding:0; }
+.square-layout.embed-pinball .machine { min-height:0; border-right:2px solid #e8ffff; border-bottom:0; }
+.square-layout.embed-pinball .stage { height:600px; }
+.square-layout.embed-pinball .stage-title { top:18px; left:16px; }
+.square-layout.embed-pinball .rank-section { top:100px; right:18px; }
+.square-layout.embed-pinball .ranking li { font-size:20px; }
+.square-layout.embed-pinball .pick-section { top:76%; width:420px; }
+.square-layout.embed-pinball .ball-picker { flex-wrap:wrap; gap:10px; }
+.square-layout.embed-pinball .ball-option { width:48px; font-size:16px; }
+.square-layout.embed-pinball .ball-option i { width:44px; height:44px; }
+.square-layout.embed-pinball .console-panel { position:static; display:flex; flex-direction:column; width:100%; min-height:0; padding:0; color:#252019; background:transparent; box-shadow:none; }
+.square-layout.embed-pinball .console-info { display:flex; padding:0; border:0; }
+.square-layout.embed-pinball .console-info span { min-height:80px; background:#eee3cf; }
+.square-layout.embed-pinball .console-controls { padding:16px 0; }
+.square-layout.embed-pinball .selection-line { color:#fff; }
+.square-layout.embed-pinball .error { color:#b32b21; }
+.square-layout.embed-pinball .actions { grid-template-columns:1fr; }
+.square-layout.embed-draw #game-screen { grid-template-rows:78px 44px minmax(0,1fr); }
+.square-layout.embed-draw .game-layout { display:block; height:100%; }
+.square-layout.embed-draw .board-wrap { height:100%; }
+.square-layout.embed-draw .game-toolbar { align-items:start; padding:6px; }
+.square-layout.embed-draw .game-toolbar h2 { font-size:19px; }
+.square-layout.embed-draw .toolbar-actions { display:flex; flex-wrap:wrap; justify-content:flex-end; max-width:230px; gap:6px; }
+.square-layout.embed-draw .prize-panel { margin-bottom:20px; }
+.square-layout.embed-draw .remaining-item { font-size:15px; padding:6px 0; }
+.square-layout.embed-draw .remaining-prizes { max-height:280px; }
+.square-layout.embed-draw .history-section { max-height:220px; padding:8px; }
+.square-layout.embed-draw .draw-history li { font-size:14px; }
+.square-layout.embed-draw:has(#game-screen.hidden) .square-controls { visibility:hidden; }
+.square-layout.embed-draw .section-heading { display:block; }
+.square-layout.embed-draw .section-heading > div:last-child { text-align:left; }
+.square-layout.embed-draw .setup-card { padding:10px; }
+.square-layout.embed-draw #setup-form[data-mode="simple"] { padding:20px; }
+.square-layout.embed-draw .prize-row { grid-template-columns:38px minmax(0,1fr) 78px; padding:1px 4px; }
+.square-layout.embed-draw .prize-row input { font-size:14px; }
+.square-layout.embed-draw .modal { width:600px; height:600px; right:auto; bottom:auto; }
+.square-layout.embed-ladder .screen { padding:12px; }
+.square-layout.embed-ladder #ladderCanvas { height:320px!important; }
+.square-layout.embed-ladder .input-row input { min-width:0; }
+.square-layout.embed-ladder .screen-head h2 { font-size:20px; }
+@media(max-width:879px) {
+ .square-layout .square-shell { width:600px; grid-template-columns:600px; }
+ .square-layout .square-controls { width:600px; height:auto; min-height:180px; border-left:0; border-top:2px solid #cbbda5; }
+ .square-layout.embed-draw:has(#game-screen.hidden) .square-controls { display:none; }
+}
+.square-layout.embed-draw:has(#game-screen.hidden) .square-controls { visibility:visible; display:block; }
+.square-layout.embed-draw:has(#game-screen.hidden) .square-controls > :not(.square-draw-setup) { display:none; }
+.square-layout.embed-draw:has(#start-screen.hidden) .square-draw-setup { display:none; }
+.square-layout.embed-draw .square-draw-setup .setup-summary { display:grid; grid-template-columns:1fr; font-size:16px; }
+.square-layout.embed-draw .square-draw-setup .save-option { font-size:15px; margin:20px 0; }
+.square-layout.embed-draw .square-draw-setup .start-button { width:100%; padding:14px; }
+.square-layout.embed-draw .square-draw-setup .form-error { font-size:14px; min-height:40px; }
+.square-layout.embed-cannon .controls { left:24px; right:24px; width:auto; }
+.square-layout.embed-cannon .results i { font-size:24px; }
+.square-layout.embed-draw .board-wrap { grid-template-rows:minmax(0,1fr); }
+.square-layout.embed-draw .draw-board { min-height:0; }
