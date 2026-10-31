@@ -206,6 +206,7 @@ function showGame() {
 function renderGame() {
   if (!state) return;
   const openedSet = new Set(state.opened);
+  elements.board.style.setProperty("--board-columns", String(Math.ceil(Math.sqrt(state.total * 1.7))));
   elements.board.textContent = "";
   state.outcomes.forEach((outcome, index) => {
     const button = document.createElement("button");
