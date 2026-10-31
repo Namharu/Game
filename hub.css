@@ -141,3 +141,5 @@ button, a { font: inherit; }
 
 @media(min-width:1101px){.game-list{gap:3px}.game-list button{min-height:38px}}
 
+
+#home-screen{position:relative}#home-screen #timer-launch{position:absolute;top:24px;right:24px;padding:12px 18px;border:1px solid #c8b894;border-radius:8px;background:#fffaf0;color:#254d91;font:700 15px system-ui,sans-serif;cursor:pointer}#home-screen #timer-launch:hover{background:#f1e5cc}

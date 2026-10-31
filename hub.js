@@ -24,7 +24,7 @@ function renderGame(slug) {
   });
   const title = games[slug] || '남하루 미니게임';
   document.querySelector('#game-title').textContent = title;
-  document.querySelector('#game-number').textContent = slug ? 'GAME ' + String(Object.keys(games).indexOf(slug) + 2).padStart(2, '0') : 'HOME';
+  document.querySelector('#game-number').textContent = slug ? 'GAME ' + String(Object.keys(games).indexOf(slug) + 1).padStart(2, '0') : 'HOME';
   document.title = title + ' — NAMHARU GAME';
   standalone.hidden = !slug;
   frame = null;
@@ -74,7 +74,7 @@ standalone.addEventListener('click', event => {
 syncRoute();
 
 let timerWindow=null;
-document.querySelector('#timer-launch').addEventListener('click',()=>{
+homeScreen.querySelector('#timer-launch').addEventListener('click',()=>{
  if(timerWindow&&!timerWindow.closed){timerWindow.focus();return;}
  timerWindow=window.open('./timer/','namharu-countdown-timer','popup=yes,width=360,height=420,resizable=yes,scrollbars=no');
  if(timerWindow)timerWindow.focus();else alert('타이머 창이 차단되었습니다. 이 사이트의 팝업을 허용한 뒤 다시 눌러주세요.');
