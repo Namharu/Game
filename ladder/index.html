@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#081523">
   <meta name="description" content="참가자와 결과를 직접 정하고 경로를 확인하는 사다리 게임">
   <title>사다리 — NAMHARU GAME</title>
-  <link rel="stylesheet" href="styles.css?v=4">
+  <link rel="stylesheet" href="styles.css?v=6">
   <script>if (new URLSearchParams(location.search).get('embed') === '1') document.documentElement.classList.add('embedded', 'embed-ladder');</script>
   <link rel="stylesheet" href="../embed.css?v=1">
   <link rel="stylesheet" href="../square.css?v=1">
@@ -23,7 +23,7 @@
         <p class="save-note">저장한 설정은 현재 브라우저에 보관됩니다.</p>
       </aside>
 
-      <div class="stage">
+      <div class="stage"><div id="matchPopup" hidden role="status"><div><small>매칭 결과</small><strong id="matchPopupText"></strong></div></div>
         <section id="countScreen" class="screen count-screen">
           <small>STEP 01</small><h2>참가 인원을 정해주세요</h2>
           <div class="count-stepper" aria-label="참가 인원"><button id="minusCount" type="button" aria-label="인원 줄이기">−</button><strong id="countValue">4</strong><button id="plusCount" type="button" aria-label="인원 늘리기">＋</button></div>
@@ -37,14 +37,14 @@
 
         <section id="configScreen" class="screen config-screen" hidden>
           <div class="screen-head"><div><small>STEP 02</small><h2>이름과 결과를 입력하세요</h2></div><span id="configCount">4 PLAYERS</span></div>
-          <div class="config-scroll"><div id="configBoard" class="config-board"><div id="nameInputs" class="input-row"></div><div id="straightLines" class="straight-lines"></div><div id="resultInputs" class="input-row"></div></div></div>
+          <div class="config-scroll"><div id="configBoard" class="config-board"><p class="input-caption">참가자 이름</p><div id="nameInputs" class="input-row"></div><div id="straightLines" class="straight-lines"></div><p class="input-caption">결과</p><div id="resultInputs" class="input-row"></div></div></div>
           <div class="config-actions"><button id="backToCount" class="secondary" type="button">돌아가기</button><button id="startLadder" type="button">사다리 시작</button></div>
           <div class="save-bar"><div><label for="presetName">현재 설정 저장</label><input id="presetName" maxlength="20" value="기본 설정" placeholder="저장 이름"></div><button id="savePreset" type="button">저장</button><p id="saveMessage" aria-live="polite"></p></div>
         </section>
 
         <section id="playScreen" class="screen play-screen" hidden>
           <div class="screen-head"><div><small>STEP 03</small><h2 id="playStatus">이름이나 결과를 선택하세요</h2></div><span id="seedLabel">LADDER 01</span></div>
-          <div class="board-scroll"><div id="playBoard" class="play-board"><div id="starters" class="starters"></div><div class="canvas-wrap"><canvas id="ladderCanvas" width="960" height="500" aria-label="사다리 게임판"></canvas><div id="ladderCover" class="ladder-cover">이름이나 결과를 선택하면<br>선택한 경로만 공개됩니다</div></div><div id="outcomes" class="outcomes"></div></div></div>
+          <div class="board-scroll"><div id="playBoard" class="play-board"><div id="starters" class="starters"></div><div class="canvas-wrap"><canvas id="ladderCanvas" width="960" height="500" aria-label="사다리 게임판"></canvas></div><div id="outcomes" class="outcomes"></div></div></div>
           <div class="play-actions"><button id="editSettings" class="secondary" type="button">처음으로</button><button id="newLadder" type="button">새 사다리</button><button id="showAll" class="cyan" type="button">전체 결과</button></div>
         </section>
 
@@ -53,7 +53,7 @@
     </section>
   </main>
   <script src="../square.js?v=1"></script>
-  <script src="game.js?v=4"></script>
+  <script src="game.js?v=6"></script>
 </body>
 </html>
 
