@@ -134,3 +134,5 @@ button, a { font: inherit; }
 .play-window[data-game="wheel"] { width:880px; height:600px; }
 
 .play-window[data-game="cannon"]{width:880px;height:600px}
+
+.play-window[data-game="lotto"]{width:880px;height:600px}

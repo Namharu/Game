@@ -1,29 +1,75 @@
-(()=>{'use strict';
-const canvas=document.querySelector('#machineCanvas'),ctx=canvas.getContext('2d'),statusEl=document.querySelector('#status'),progressEl=document.querySelector('#progress'),drawnBall=document.querySelector('#drawnBall'),winningEl=document.querySelector('#winningNumbers'),startButton=document.querySelector('#startButton'),quickButton=document.querySelector('#quickButton'),resetButton=document.querySelector('#resetButton'),copyButton=document.querySelector('#copyButton'),copyMessage=document.querySelector('#copyMessage');
-const colors=['#f4c843','#4c91e8','#ed5945','#a7adb3','#55a66c'];
-let balls=[],last=performance.now(),running=false,timers=[],currentNumbers=[],drawnSet=new Set(),rotorAngle=0;
-const colorFor=n=>colors[Math.min(4,Math.floor((n-1)/10))];
-function randomFloat(){const data=new Uint32Array(1);crypto.getRandomValues(data);return data[0]/4294967296}
-function shuffledNumbers(){const values=Array.from({length:45},(_,i)=>i+1);for(let i=values.length-1;i>0;i--){const j=Math.floor(randomFloat()*(i+1));[values[i],values[j]]=[values[j],values[i]]}return values.slice(0,6)}
-function geometry(w=canvas.clientWidth,h=canvas.clientHeight){const radius=Math.min(h*.285,w*.22),cx=w*.55,cy=h*.43;return{cx,cy,radius,domeY:cy-radius-24,baseY:h*.92}}
-function resize(){const box=canvas.getBoundingClientRect(),dpr=Math.min(devicePixelRatio||1,2);canvas.width=Math.max(1,Math.round(box.width*dpr));canvas.height=Math.max(1,Math.round(box.height*dpr));ctx.setTransform(dpr,0,0,dpr,0,0);initBalls(box.width,box.height)}
-function initBalls(w=canvas.clientWidth,h=canvas.clientHeight){const g=geometry(w,h),rows=[7,8,9,10,11],offsets=[.68,.5,.32,.14,-.04];balls=[];let number=1;rows.forEach((count,row)=>{const y=g.cy+g.radius*offsets[row],half=Math.sqrt(Math.max(0,(g.radius-15)**2-(y-g.cy)**2))*.92;for(let col=0;col<count;col++){const x=count===1?g.cx:g.cx-half+(half*2*col)/(count-1);balls.push({n:number++,x:x+(randomFloat()-.5)*2,y:y+(randomFloat()-.5)*2,vx:0,vy:0,r:8.7+randomFloat()*1.2})}})}
-function launchBalls(){for(const b of balls){if(drawnSet.has(b.n))continue;const angle=randomFloat()*Math.PI*2,speed=240+randomFloat()*240;b.vx=Math.cos(angle)*speed;b.vy=Math.sin(angle)*speed}}
-function update(dt,w,h){const g=geometry(w,h),visible=balls.filter(b=>!drawnSet.has(b.n));rotorAngle+=dt*(running?10.8:.55);for(const b of visible){const dx=b.x-g.cx,dy=b.y-g.cy;if(running){const swirl=Math.sin(rotorAngle*.46+b.n*.19)*7.4;b.vx+=((randomFloat()-.5)*2100-dy*swirl-dx*2.5)*dt;b.vy+=((randomFloat()-.5)*2100+dx*swirl-dy*2.5)*dt;const speed=Math.hypot(b.vx,b.vy),limit=500;if(speed>limit){b.vx=b.vx/speed*limit;b.vy=b.vy/speed*limit}}else{b.vy+=390*dt;const drag=Math.pow(.982,dt*60);b.vx*=drag;b.vy*=Math.pow(.994,dt*60)}b.x+=b.vx*dt;b.y+=b.vy*dt;const wallX=b.x-g.cx,wallY=b.y-g.cy,dist=Math.hypot(wallX,wallY)||1,max=g.radius-b.r-7;if(dist>max){const nx=wallX/dist,ny=wallY/dist;b.x=g.cx+nx*max;b.y=g.cy+ny*max;const outward=b.vx*nx+b.vy*ny;if(outward>0){const bounce=running?.93:.14;b.vx-=(1+bounce)*outward*nx;b.vy-=(1+bounce)*outward*ny}}}for(let i=0;i<visible.length;i++){for(let j=i+1;j<visible.length;j++){const a=visible[i],b=visible[j],dx=b.x-a.x,dy=b.y-a.y,dist=Math.hypot(dx,dy)||.001,min=a.r+b.r;if(dist>=min)continue;const nx=dx/dist,ny=dy/dist,push=(min-dist)/2;a.x-=nx*push;a.y-=ny*push;b.x+=nx*push;b.y+=ny*push;const relative=(b.vx-a.vx)*nx+(b.vy-a.vy)*ny;if(relative<0){const impulse=-(1+(running?.92:.05))*relative/2;a.vx-=impulse*nx;a.vy-=impulse*ny;b.vx+=impulse*nx;b.vy+=impulse*ny}}}}
-function drawRotor(g){ctx.save();ctx.strokeStyle='rgba(178,232,255,.42)';ctx.lineWidth=4;ctx.lineCap='round';for(let i=-1;i<=1;i++){const sway=Math.sin(rotorAngle+i)*g.radius*.18;ctx.beginPath();ctx.moveTo(g.cx+i*20,g.cy+g.radius*.72);ctx.bezierCurveTo(g.cx+i*30+sway,g.cy+g.radius*.34,g.cx-i*38-sway,g.cy-g.radius*.08,g.cx+i*18,g.cy-g.radius*.57);ctx.stroke()}ctx.restore()}
-function drawMachine(w,h,g){const glow='#9f70ff',silver=ctx.createLinearGradient(g.cx-g.radius,g.cy,g.cx+g.radius,g.baseY);silver.addColorStop(0,'#6e7682');silver.addColorStop(.2,'#dce3e8');silver.addColorStop(.48,'#7c8791');silver.addColorStop(.72,'#eef4f7');silver.addColorStop(1,'#66717d');
-ctx.save();ctx.fillStyle='rgba(0,0,0,.38)';ctx.beginPath();ctx.ellipse(g.cx,g.baseY+13,g.radius*.95,19,0,0,Math.PI*2);ctx.fill();ctx.beginPath();ctx.moveTo(g.cx-g.radius*.7,g.cy+g.radius*.7);ctx.lineTo(g.cx-g.radius*.5,g.baseY);ctx.quadraticCurveTo(g.cx,g.baseY+18,g.cx+g.radius*.5,g.baseY);ctx.lineTo(g.cx+g.radius*.7,g.cy+g.radius*.7);ctx.closePath();ctx.fillStyle=silver;ctx.fill();ctx.strokeStyle='rgba(255,255,255,.65)';ctx.lineWidth=2;ctx.stroke();ctx.shadowColor=glow;ctx.shadowBlur=20;ctx.fillStyle='#512a94';ctx.beginPath();ctx.ellipse(g.cx,g.cy+g.radius*.73,g.radius*.76,15,0,0,Math.PI*2);ctx.fill();ctx.strokeStyle='#b98cff';ctx.stroke();ctx.shadowBlur=0;ctx.fillStyle='#311e5f';ctx.beginPath();ctx.ellipse(g.cx,g.baseY-4,g.radius*.53,11,0,0,Math.PI*2);ctx.fill();ctx.fillStyle='#eee';ctx.font='900 11px system-ui, sans-serif';ctx.textAlign='center';ctx.fillText('LOTTO 6/45',g.cx,g.baseY);ctx.restore();
-ctx.save();ctx.beginPath();ctx.arc(g.cx,g.cy,g.radius,0,Math.PI*2);ctx.clip();const glass=ctx.createRadialGradient(g.cx-g.radius*.4,g.cy-g.radius*.46,6,g.cx,g.cy,g.radius);glass.addColorStop(0,'rgba(255,255,255,.22)');glass.addColorStop(.58,'rgba(121,195,219,.08)');glass.addColorStop(1,'rgba(13,35,52,.28)');ctx.fillStyle=glass;ctx.fillRect(g.cx-g.radius,g.cy-g.radius,g.radius*2,g.radius*2);ctx.fillStyle='rgba(49,55,72,.78)';ctx.fillRect(g.cx-9,g.cy-g.radius*.93,18,g.radius*1.7);ctx.fillStyle='rgba(255,255,255,.34)';ctx.fillRect(g.cx-6,g.cy-g.radius*.9,4,g.radius*1.62);drawRotor(g);for(const b of balls){if(drawnSet.has(b.n))continue;ctx.save();if(running){ctx.globalAlpha=.24;ctx.strokeStyle=colorFor(b.n);ctx.lineWidth=Math.max(5,b.r*.9);ctx.lineCap='round';ctx.beginPath();ctx.moveTo(b.x-b.vx*.085,b.y-b.vy*.085);ctx.lineTo(b.x,b.y);ctx.stroke();ctx.globalAlpha=.12;ctx.beginPath();ctx.arc(b.x-b.vx*.04,b.y-b.vy*.04,b.r*.9,0,Math.PI*2);ctx.fillStyle=colorFor(b.n);ctx.fill();ctx.globalAlpha=1;ctx.filter='blur(.7px)'}ctx.shadowColor=colorFor(b.n);ctx.shadowBlur=running?15:5;ctx.beginPath();ctx.arc(b.x,b.y,b.r,0,Math.PI*2);ctx.fillStyle=colorFor(b.n);ctx.fill();ctx.strokeStyle='#fff';ctx.lineWidth=running?1:1.4;ctx.stroke();ctx.filter='none';if(!running){ctx.fillStyle='#18202a';ctx.font=`900 ${Math.max(7,b.r*.7)}px system-ui, sans-serif`;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(b.n,b.x,b.y+.5)}ctx.restore()}ctx.restore();
-ctx.save();ctx.beginPath();ctx.arc(g.cx,g.cy,g.radius,0,Math.PI*2);ctx.strokeStyle='rgba(238,252,255,.88)';ctx.lineWidth=6;ctx.shadowColor='#c9f7ff';ctx.shadowBlur=16;ctx.stroke();ctx.shadowBlur=0;ctx.beginPath();ctx.arc(g.cx-g.radius*.26,g.cy-g.radius*.28,g.radius*.58,Math.PI*1.04,Math.PI*1.54);ctx.strokeStyle='rgba(255,255,255,.7)';ctx.lineWidth=4;ctx.stroke();ctx.restore();
-ctx.save();const domeBottom=g.cy-g.radius*.72,domeW=g.radius*.82,domeTop=Math.max(12,g.domeY-g.radius*.24);ctx.beginPath();ctx.moveTo(g.cx-domeW*.5,domeBottom);ctx.quadraticCurveTo(g.cx-domeW*.46,domeTop,g.cx,domeTop);ctx.quadraticCurveTo(g.cx+domeW*.46,domeTop,g.cx+domeW*.5,domeBottom);ctx.closePath();ctx.fillStyle='rgba(185,229,240,.1)';ctx.fill();ctx.strokeStyle='rgba(241,253,255,.82)';ctx.lineWidth=4;ctx.shadowColor='#d6f9ff';ctx.shadowBlur=12;ctx.stroke();ctx.shadowBlur=0;ctx.fillStyle='#252a34';ctx.beginPath();ctx.roundRect(g.cx-24,domeTop-10,48,18,8);ctx.fill();ctx.strokeStyle='#aeb6bf';ctx.lineWidth=2;ctx.stroke();ctx.fillStyle='rgba(53,58,69,.9)';ctx.fillRect(g.cx-8,domeTop+5,16,domeBottom-domeTop+g.radius*.7);ctx.fillStyle='rgba(255,255,255,.38)';ctx.fillRect(g.cx-5,domeTop+8,3,domeBottom-domeTop+g.radius*.62);ctx.restore();ctx.fillStyle='#b995ff';ctx.font='700 10px system-ui, sans-serif';ctx.textAlign='center';ctx.fillText(running?'AIR MIXING · VENUS DRAW':'VENUS · 45 BALLS READY',g.cx,g.baseY+25)}
-function draw(now){const w=canvas.clientWidth,h=canvas.clientHeight,dt=Math.min(.032,(now-last)/1000||.016),g=geometry(w,h);last=now;update(dt,w,h);ctx.clearRect(0,0,w,h);const bg=ctx.createLinearGradient(0,0,0,h);bg.addColorStop(0,'#102a43');bg.addColorStop(1,'#07131f');ctx.fillStyle=bg;ctx.fillRect(0,0,w,h);drawMachine(w,h,g);requestAnimationFrame(draw)}
-function setBallStyle(el,n){el.textContent=n;el.style.background=colorFor(n);el.style.color='#17202a'}
-function clearTimers(){timers.forEach(clearTimeout);timers=[]}
-function clearSlots(){drawnSet.clear();[...winningEl.children].forEach(el=>{el.textContent='?';el.removeAttribute('style');el.classList.remove('pop')});progressEl.textContent='0 / 6';drawnBall.hidden=true;copyButton.disabled=true;copyMessage.textContent=''}
-function reveal(number,index,instant=false){drawnSet.add(number);const target=winningEl.children[index];setBallStyle(target,number);target.classList.remove('pop');void target.offsetWidth;target.classList.add('pop');progressEl.textContent=`${index+1} / 6`;if(!instant){drawnBall.hidden=true;void drawnBall.offsetWidth;setBallStyle(drawnBall,number);drawnBall.hidden=false;timers.push(setTimeout(()=>{drawnBall.hidden=true},900))}}
-function finish(){running=false;currentNumbers.sort((a,b)=>a-b);currentNumbers.forEach((number,index)=>setBallStyle(winningEl.children[index],number));statusEl.textContent='추첨 완료 · 작은 수부터 정렬';startButton.disabled=false;quickButton.disabled=false;copyButton.disabled=false}
-function startDraw(instant=false){clearTimers();clearSlots();currentNumbers=shuffledNumbers();running=true;launchBalls();statusEl.textContent=instant?'번호를 뽑았습니다':'추첨통을 돌리는 중';startButton.disabled=true;quickButton.disabled=true;if(instant){currentNumbers.forEach((n,i)=>reveal(n,i,true));finish();return}currentNumbers.forEach((n,i)=>{timers.push(setTimeout(()=>{statusEl.textContent=`${i+1}번째 번호 배출`;reveal(n,i);if(i===5)timers.push(setTimeout(finish,800))},1100+i*1150))})}
-function reset(){clearTimers();running=false;currentNumbers=[];statusEl.textContent='추첨 준비';startButton.disabled=false;quickButton.disabled=false;clearSlots();initBalls()}
-async function copyNumbers(){if(currentNumbers.length!==6)return;const text=`로또 번호: ${currentNumbers.join(', ')}`;try{await navigator.clipboard.writeText(text);copyMessage.textContent='복사했습니다.'}catch{copyMessage.textContent='복사할 수 없습니다.'}setTimeout(()=>copyMessage.textContent='',1800)}
-addEventListener('resize',resize);startButton.addEventListener('click',()=>startDraw(false));quickButton.addEventListener('click',()=>startDraw(true));resetButton.addEventListener('click',reset);copyButton.addEventListener('click',copyNumbers);resize();requestAnimationFrame(draw);
-})();
+import * as T from './vendor/three.module.js';
+import {parseSettings,drawOrder} from './draw-rules.js';
+const $=s=>document.querySelector(s);
+try{
+const renderer=new T.WebGLRenderer({antialias:true,alpha:false});renderer.setSize(600,600);renderer.setPixelRatio(Math.min(devicePixelRatio,1.5));renderer.setClearColor(0x090c13);renderer.toneMapping=T.ACESFilmicToneMapping;renderer.toneMappingExposure=1.12;$('#view').append(renderer.domElement);
+const scene=new T.Scene(),camera=new T.PerspectiveCamera(37,1,.1,100);camera.position.set(0,0,9.9);camera.lookAt(0,-.15,0);
+const env=new T.Scene();env.background=new T.Color(0x343a48);for(const [x,y,z,w,h] of [[-4,3,2,3,6],[4,2,1,2,5],[0,6,-2,6,3],[0,1,6,2,4]]){const card=new T.Mesh(new T.PlaneGeometry(w,h),new T.MeshBasicMaterial({color:0xffffff}));card.position.set(x,y,z);card.lookAt(0,0,0);env.add(card)}const pmrem=new T.PMREMGenerator(renderer);scene.environment=pmrem.fromScene(env,.08).texture;
+scene.add(new T.HemisphereLight(0xd6e2ff,0x172037,2));for(const [x,y,z,c,p] of [[-4,5,5,0xe8efff,65],[4,2,4,0x9fbaff,42],[0,-1,-3,0x655cff,20]]){const l=new T.PointLight(c,p,30);l.position.set(x,y,z);scene.add(l)}
+const metal=new T.MeshStandardMaterial({color:0x7c8598,metalness:.9,roughness:.2}),dark=new T.MeshStandardMaterial({color:0x171c28,metalness:.8,roughness:.28}),glass=new T.MeshPhysicalMaterial({color:0xe4edff,metalness:0,roughness:.07,transmission:.97,thickness:.06,ior:1.45,transparent:true,opacity:.23,depthWrite:false,side:T.DoubleSide});
+function mesh(g,m,x=0,y=0,z=0,parent=scene){const o=new T.Mesh(g,m);o.position.set(x,y,z);parent.add(o);return o}function ring(r,t,z,m){return mesh(new T.TorusGeometry(r,t,12,128),m,0,0,z)}
+const R=2.22,br=.145,depth=.4;mesh(new T.BoxGeometry(4.6,.24,1.65),dark,0,-2.7,-.1);mesh(new T.BoxGeometry(3.8,.08,1.3),metal,0,-2.54,-.1);
+for(const x of [-2.05,2.05]){mesh(new T.BoxGeometry(.3,4.85,.32),dark,x,-.15,-.72);mesh(new T.BoxGeometry(.07,4.65,.025),metal,x-.08,-.15,-.53)}
+ring(R+.04,.025,.42,metal);ring(R-.11,.022,-.43,new T.MeshBasicMaterial({color:0xafbaff}));ring(R-.08,.06,-.44,new T.MeshBasicMaterial({color:0x5361ad,transparent:true,opacity:.27}));
+const cover=mesh(new T.SphereGeometry(R,80,40),glass);cover.renderOrder=5;
+// Air outlet sits below the transparent bowl.
+mesh(new T.CylinderGeometry(.65,.82,.18,48),dark,0,-2.29,0);
+for(let i=-2;i<=2;i++)mesh(new T.BoxGeometry(.055,.012,.7),metal,i*.19,-2.19,0);
+// Soft reflection streaks on the acrylic face; no opaque cover over the balls.
+for(const [a,len] of [[.18,.55],[2.15,.35],[4.05,.4]]){const arc=new T.Mesh(new T.TorusGeometry(R-.02,.016,8,50,len),new T.MeshBasicMaterial({color:0xe7f0ff,transparent:true,opacity:.55}));arc.rotation.z=a;arc.position.z=.54;scene.add(arc)}
+const palette=['#f6d13b','#3e98e9','#ec4384','#47b66b','#f0f2ed'];
+function texture(n,color){const c=document.createElement('canvas');c.width=256;c.height=128;const x=c.getContext('2d');x.fillStyle=color;x.fillRect(0,0,256,128);for(const px of [64,192]){x.fillStyle='#fff8ea';x.beginPath();x.arc(px,64,32,0,Math.PI*2);x.fill();x.fillStyle='#202c45';x.font='bold 39px Arial';x.textAlign='center';x.textBaseline='middle';x.fillText(n,px,66)}const tex=new T.CanvasTexture(c);tex.colorSpace=T.SRGBColorSpace;return tex}
+const sphere=new T.SphereGeometry(br,24,16),balls=[];let airTime=0,airPower=0,mixing=false,mult=1,last=performance.now(),acc=0;
+for(let i=0;i<45;i++){const m=mesh(sphere,new T.MeshPhysicalMaterial({map:texture(i+1,palette[i%5]),roughness:.19,metalness:.04,clearcoat:1,clearcoatRoughness:.1}));balls.push({m,x:0,y:0,z:0,vx:0,vy:0,vz:0});}
+let running=false,order=[],drawn=[],winning=new Set(),flight=null,nextDraw=0;
+function lockSettings(locked){$('#drawCount').disabled=locked;$('#winningNumbers').disabled=locked;}
+function reset(){running=false;flight=null;drawn=[];order=[];lockSettings(false);$('#mix').disabled=false;$('#resultBalls').replaceChildren();$('#drawNumbers').replaceChildren();$('#matchPanel').dataset.status='waiting';$('#resultTitle').textContent='추첨 번호';$('#matchSummary').textContent='설정을 입력하고 추첨을 시작하세요.';$('#validation').textContent='';mixing=false;airPower=0;airTime=0;balls.forEach((b,i)=>{b.drawn=false;b.flying=false;b.m.visible=true;b.m.scale.setScalar(1);const row=Math.floor(i/9),col=i%9;b.x=(col-4)*.32;b.y=-1.58+row*.31;b.z=(i%3-1)*.19;b.vx=0;b.vy=0;b.vz=0;b.m.rotation.set(Math.random()*6,Math.random()*6,0)});$('#mix').textContent='추첨 시작 ▶';$('#state').textContent='대기 중 · 공이 바닥에 모입니다';}
+function step(dt){
+ const live=balls.filter(b=>!b.drawn&&!b.flying);
+ airTime+=dt;airPower+=((mixing?mult:0)-airPower)*Math.min(1,dt*5);
+ for(const b of live){
+  b.vy-=9.8*dt;
+  if(airPower>.001){
+   // A broad bottom jet breaks into moving plumes and weakens near the top.
+   const h=Math.max(0,Math.min(1,(b.y+2.1)/4.2));
+   const jetX=.55*Math.sin(airTime*2.7),jetZ=.45*Math.cos(airTime*3.1);
+   const plume=Math.exp(-((b.x-jetX)**2+(b.z-jetZ)**2)/1.5);
+   const pulse=.85+.25*Math.sin(airTime*8+b.x*3-b.z*4);
+   const lift=(18*(1-h)**2+36*plume*(1-h))*pulse;
+   const flutterX=Math.sin(airTime*11+b.y*5+b.z*7);
+   const flutterZ=Math.cos(airTime*9+b.x*6-b.y*4);
+   b.vx+=airPower*((h>.55?4:-5)*b.x+8*flutterX)*dt;
+   b.vz+=airPower*((h>.55?4:-5)*b.z+8*flutterZ)*dt;
+   b.vy+=airPower*lift*dt;
+  }
+  const drag=Math.exp(-.3*dt);b.vx*=drag;b.vy*=drag;b.vz*=drag;
+  b.x+=b.vx*dt;b.y+=b.vy*dt;b.z+=b.vz*dt;
+  const d=Math.hypot(b.x,b.y,b.z),max=R-br-.025;if(d>max){const nx=b.x/d,ny=b.y/d,nz=b.z/d;b.x=nx*max;b.y=ny*max;b.z=nz*max;const vn=b.vx*nx+b.vy*ny+b.vz*nz;if(vn>0){b.vx-=1.65*vn*nx;b.vy-=1.65*vn*ny;b.vz-=1.65*vn*nz}b.vx*=.97;b.vy*=.97;b.vz*=.97}const speed=Math.hypot(b.vx,b.vy);if(speed>12){b.vx*=12/speed;b.vy*=12/speed}
+ }
+ for(let pass=0;pass<2;pass++)for(let i=0;i<live.length;i++)for(let j=i+1;j<live.length;j++){const a=live[i],b=live[j],dx=b.x-a.x,dy=b.y-a.y,dz=b.z-a.z,d=Math.hypot(dx,dy,dz);if(d>0&&d<br*2){const nx=dx/d,ny=dy/d,nz=dz/d,p=(br*2-d)*.5;a.x-=nx*p;a.y-=ny*p;a.z-=nz*p;b.x+=nx*p;b.y+=ny*p;b.z+=nz*p;const v=(b.vx-a.vx)*nx+(b.vy-a.vy)*ny+(b.vz-a.vz)*nz;if(v<0){const k=-v*.88;a.vx-=k*nx;a.vy-=k*ny;a.vz-=k*nz;b.vx+=k*nx;b.vy+=k*ny;b.vz+=k*nz}}}
+ // Constrain the drum again after pair separation.
+ for(const b of live){const d=Math.hypot(b.x,b.y,b.z),limit=R-br-.025;if(d>limit){const nx=b.x/d,ny=b.y/d,nz=b.z/d;b.x=nx*limit;b.y=ny*limit;b.z=nz*limit;const v=b.vx*nx+b.vy*ny+b.vz*nz;if(v>0){b.vx-=1.65*v*nx;b.vy-=1.65*v*ny;b.vz-=1.65*v*nz;}}b.vz*=.9995;}
+}
+function loop(now){acc+=Math.min(.06,(now-last)/1000)*(mixing?1.5:1);last=now;while(acc>=1/240){step(1/240);acc-=1/240}for(const b of balls){if(b.drawn||b.flying)continue;b.m.position.set(b.x,b.y,b.z);b.m.rotation.x+=b.vy*.003;b.m.rotation.z-=b.vx*.003}updateDraw(now);renderer.render(scene,camera);requestAnimationFrame(loop)}
+function showResults(done=false){
+ $('#resultBalls').replaceChildren(...[...drawn].sort((a,b)=>a-b).map(n=>{const el=document.createElement('span');el.className='result-ball'+(winning.has(n)?' hit':'');el.style.setProperty('--ball-color',palette[(n-1)%palette.length]);el.textContent=n;el.title=winning.has(n)?n+'번 당첨':n+'번';return el;}));
+ $('#drawNumbers').replaceChildren(...drawn.map(n=>{const el=document.createElement('span');el.textContent=n;el.className=winning.has(n)?'hit':'';return el;}));
+ const hits=drawn.filter(n=>winning.has(n)).sort((a,b)=>a-b);
+ $('#resultTitle').textContent=(done?'추첨 완료':'추첨 중')+' · '+drawn.length+' / '+order.length;
+ $('#matchPanel').dataset.status=hits.length?'hit':done?'miss':'waiting';
+ $('#matchSummary').textContent=hits.length?'당첨 '+hits.length+'개 · '+hits.join(', '):(done?'일치하는 당첨번호가 없습니다.':'당첨번호 확인 중…');
+}
+function updateDraw(now){
+ if(!running)return;
+ if(flight){
+  const t=Math.min(1,(now-flight.start)/700),u=1-(1-t)**3;
+  flight.ball.m.position.set(flight.x*(1-u),flight.y*(1-u)+.7*u,flight.z*(1-u)+3*u);flight.ball.m.scale.setScalar(1+u*1.5);
+  if(t===1){const ball=flight.ball;ball.drawn=true;ball.flying=false;ball.m.visible=false;ball.m.scale.setScalar(1);drawn.push(flight.number);flight=null;const done=drawn.length===order.length;showResults(done);nextDraw=now+450;if(done){running=false;mixing=false;$('#state').textContent='추첨 완료 · 공이 가라앉습니다';$('#mix').textContent='다시 추첨 ▶';$('#mix').disabled=false;lockSettings(false);}}
+ }else if(now>=nextDraw){const number=order[drawn.length],ball=balls[number-1];ball.flying=true;flight={number,ball,start:now,x:ball.x,y:ball.y,z:ball.z};$('#state').textContent=(drawn.length+1)+'번째 공 추첨 중';}
+}
+$('#mix').onclick=()=>{
+ let config;try{config=parseSettings($('#drawCount').value,$('#winningNumbers').value);}catch(e){$('#validation').textContent=e.message;return;}
+ reset();winning=config.winning;order=drawOrder(config.count);running=true;mixing=true;nextDraw=performance.now()+2200;lockSettings(true);$('#mix').disabled=true;$('#mix').textContent='추첨 중…';$('#state').textContent='공을 섞고 있습니다';showResults();
+};$('#reset').onclick=reset;$('#mix').disabled=$('#reset').disabled=false;reset();requestAnimationFrame(loop);
+}catch(e){$('#error').hidden=false;$('#error').textContent='3D 화면을 시작하지 못했습니다: '+e.message;$('#state').textContent='실행 오류';console.error(e)}
+
