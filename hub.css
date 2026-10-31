@@ -125,3 +125,8 @@ button, a { font: inherit; }
  .frame-viewport { margin:0; }
 }
 @media(max-width:903px) { .play-window { height:1200px; } }
+.home-screen { display:grid; place-items:center; width:600px; height:600px; padding:36px; text-align:center; background:#fffaf0; color:#252019; }
+.home-screen p { margin:0 0 32px; font-size:24px; }
+.home-screen h2 { margin:0 0 14px; font-size:32px; }
+.home-screen strong { display:block; padding:18px 24px; border-radius:12px; background:#fee500; font-size:28px; }
+.title-actions [hidden] { display:none!important; }

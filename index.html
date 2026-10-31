@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#ede6d6">
   <meta name="description" content="방송 화면 하나로 즐기는 남하루 미니게임 모음">
   <title>NAMHARU GAME — 미니게임</title>
-  <link rel="stylesheet" href="hub.css?v=7">
+  <link rel="stylesheet" href="hub.css?v=9">
   <link rel="stylesheet" href="typography.css?v=1">
 </head>
 <body>
@@ -24,6 +24,7 @@
         </div>
 
         <nav id="game-list" class="game-list" aria-label="게임 목록">
+          <button type="button" data-game=""><span>⌂</span><b>메인 화면</b></button>
           <button type="button" data-game="draw"><span>01</span><b>통합 뽑기</b></button>
           <button type="button" data-game="ladder"><span>02</span><b>사다리</b></button>
           <button type="button" data-game="high-low"><span>03</span><b>하이로우</b></button>
@@ -38,22 +39,22 @@
       <section class="game-area">
         <header class="game-titlebar">
           <div>
-            <span id="game-number">GAME 01</span>
-            <h1 id="game-title">추억의 뽑기</h1>
+            <span id="game-number">HOME</span>
+            <h1 id="game-title">남하루 미니게임</h1>
           </div>
           <div class="title-actions">
             <span class="live-dot"><i></i> GAME READY</span>
-            <a id="standalone-link" href="./draw/" target="_blank" rel="noopener">새 창으로 열기 ↗</a>
+            <a hidden id="standalone-link" href="./draw/" target="_blank" rel="noopener">새 창으로 열기 ↗</a>
           </div>
         </header>
 
         <div class="play-window">
-          <iframe id="game-frame" title="추억의 뽑기" allow="autoplay; fullscreen" scrolling="no"></iframe>
+          <section id="home-screen" class="home-screen" aria-label="게임 제작 문의"><div><p>게임 추가 / 전용 제작 문의</p><h2>오픈 카톡</h2><strong>남하루 미니게임 검색</strong></div></section>
         </div>
       </section>
     </main>
   </div>
 
-  <script src="hub.js?v=8"></script>
+  <script src="hub.js?v=9"></script>
 </body>
 </html>
