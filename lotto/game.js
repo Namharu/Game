@@ -74,7 +74,7 @@ function syncButtons(){
  const isManual=$('#drawMode').value==='manual';$('#stage').classList.toggle('manual-mode',isManual);
  $('#manualDraw').hidden=!isManual;$('#mix').hidden=isManual;
  $('#manualDraw').disabled=running&&(!!flight||requested);
- $('#manualDraw').textContent=running?'다음 공 뽑기 ▶':drawn.length?'다시 추첨 ▶':'공 하나 뽑기 ▶';
+ $('#manualDraw').textContent='번호추첨';
  $('#mix').disabled=false;$('#mix').textContent=running?(paused?'계속 추첨 ▶':'일시정지 ⏸'):drawn.length?'다시 추첨 ▶':'추첨 시작 ▶';
 }
 function setTiming(){
