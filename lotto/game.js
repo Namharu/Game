@@ -71,8 +71,9 @@ function updateDraw(now){
  }else if(now>=nextDraw&&(!manual||requested)){requested=false;const number=order[drawn.length],ball=balls[number-1];ball.flying=true;flight={number,ball,start:now,x:ball.x,y:ball.y,z:ball.z};$('#state').textContent=(drawn.length+1)+'번째 공 추첨 중';}
 }
 function syncButtons(){
+ const finished=!running&&order.length>0&&drawn.length===order.length;
  const isManual=$('#drawMode').value==='manual';$('#stage').classList.toggle('manual-mode',isManual);
- $('#manualDraw').hidden=!isManual;$('#mix').hidden=isManual;
+ $('#manualDraw').hidden=!isManual||finished;$('#mix').hidden=isManual||finished;
  $('#manualDraw').disabled=running&&(!!flight||requested);
  $('#manualDraw').textContent='번호추첨';
  $('#mix').disabled=false;$('#mix').textContent=running?(paused?'계속 추첨 ▶':'일시정지 ⏸'):drawn.length?'다시 추첨 ▶':'추첨 시작 ▶';
