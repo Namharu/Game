@@ -72,11 +72,11 @@ function updateDraw(now){
 }
 function syncButtons(){
  const finished=!running&&order.length>0&&drawn.length===order.length;
- const isManual=$('#drawMode').value==='manual';$('#stage').classList.toggle('manual-mode',isManual);
- $('#manualDraw').hidden=!isManual||finished;$('#mix').hidden=isManual||finished;
- $('#manualDraw').disabled=running&&(!!flight||requested);
- $('#manualDraw').textContent='번호추첨';
- $('#mix').disabled=false;$('#mix').textContent=running?(paused?'계속 추첨 ▶':'일시정지 ⏸'):drawn.length?'다시 추첨 ▶':'추첨 시작 ▶';
+ const isManual=$('#drawMode').value==='manual',button=$('#mix');
+ $('#stage').classList.toggle('manual-mode',isManual);button.classList.toggle('manual-action',isManual);
+ const parent=isManual?$('#stage'):$('.actions');if(button.parentElement!==parent)parent.append(button);
+ button.hidden=false;button.disabled=isManual&&running&&(!!flight||requested);
+ button.textContent=finished?'새 게임':isManual?'번호추첨':running?(paused?'계속 추첨 ▶':'일시정지 ⏸'):'추첨 시작 ▶';
 }
 function setTiming(){
  const rate=Math.max(.5,Math.min(10,Number($('#drawSpeed').value)||1));
@@ -85,6 +85,7 @@ function setTiming(){
  timing=next;
 }
 function triggerDraw(){
+ if(!running&&order.length>0&&drawn.length===order.length){reset();return;}
  if(running){
   if(manual){if(!flight&&!requested){requested=true;nextDraw=drawClock;}}
   else{paused=!paused;$('#drawSpeed').disabled=!paused;$('#state').textContent=paused?'일시정지 · 속도를 조절할 수 있습니다':'추첨을 계속합니다';}
@@ -93,7 +94,7 @@ function triggerDraw(){
  let config;try{config=parseSettings($('#drawCount').value,$('#winningNumbers').value);}catch(e){$('#validation').textContent=e.message;return;}
  reset(drawn.length===0);setTiming();winning=config.winning;order=drawOrder(config.count);manual=$('#drawMode').value==='manual';requested=manual;running=true;mixing=true;nextDraw=drawClock+timing.mix;lockSettings(true);$('#state').textContent='공을 섞고 있습니다';showResults();syncButtons();
 }
-$('#mix').onclick=triggerDraw;$('#manualDraw').onclick=triggerDraw;
+$('#mix').onclick=triggerDraw;
 const settingsKey='namharu-lotto-air-settings-v1';
 function saveSettings(){try{localStorage.setItem(settingsKey,JSON.stringify({count:$('#drawCount').value,winning:$('#winningNumbers').value,mode:$('#drawMode').value,speed:$('#drawSpeed').value,sort:$('#sortNumbers').checked}));}catch{}}
 function loadSettings(){try{const v=JSON.parse(localStorage.getItem(settingsKey));if(!v||typeof v!=='object')return;
@@ -107,6 +108,6 @@ function loadSettings(){try{const v=JSON.parse(localStorage.getItem(settingsKey)
 }catch{}}
 for(const id of ['drawCount','winningNumbers','drawMode','drawSpeed','sortNumbers'])$('#'+id).addEventListener('input',saveSettings);
 loadSettings();setTiming();
-$('#sortNumbers').onchange=()=>{if(order.length)showResults(drawn.length===order.length);};$('#drawMode').onchange=syncButtons;$('#drawSpeed').oninput=e=>{$('#drawSpeedValue').textContent=Number(e.target.value).toFixed(1)+'배';setTiming();};$('#reset').onclick=()=>reset();$('#mix').disabled=$('#reset').disabled=false;reset();requestAnimationFrame(loop);
+$('#sortNumbers').onchange=()=>{if(order.length)showResults(drawn.length===order.length);};$('#drawMode').onchange=syncButtons;$('#drawSpeed').oninput=e=>{$('#drawSpeedValue').textContent=Number(e.target.value).toFixed(1)+'배';setTiming();};$('#mix').disabled=false;reset();requestAnimationFrame(loop);
 }catch(e){$('#error').hidden=false;$('#error').textContent='3D 화면을 시작하지 못했습니다: '+e.message;$('#state').textContent='실행 오류';console.error(e)}
 
