@@ -29,7 +29,7 @@ function renderGame(slug) {
   standalone.hidden = !slug;
   frame = null;
   if (!slug) { playWindow.replaceChildren(homeScreen); return; }
-  standalone.href = './' + slug + '/?embed=1&layout=15';
+  standalone.href = './' + slug + '/?embed=1&layout=16';
   // A fresh iframe has no previous game in its own navigation history.
   // Parent history is the single source of truth for both title and content.
   frame = document.createElement('iframe');
