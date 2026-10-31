@@ -11,7 +11,8 @@ const colors=['#ff3f55','#13bdb6','#835cff','#ff8a2a','#1688e3','#e741aa','#3ca7
 let count=4,names=[],results=[],ladder=[],mapping=[],seed=0,activeStart=-1,activeEnd=-1,animating=false;
 const escapeHtml=value=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const values=container=>[...container.querySelectorAll('input')].map(input=>input.value.trim());
-const showScreen=id=>screens.forEach(screen=>screen.hidden=screen.id!==id);
+let revealed = new Set(), currentProgress = 0, animationEpoch = 0;
+const showScreen=id=>{if(id!=='playScreen'){animationEpoch++;animating=false;currentProgress=0;}screens.forEach(screen=>screen.hidden=screen.id!==id)};
 
 function setCount(next){count=Math.max(2,Math.min(12,next));countValue.textContent=count}
 function buildConfig(initialNames=[],initialResults=[]){
@@ -23,6 +24,7 @@ function buildConfig(initialNames=[],initialResults=[]){
 }
 function captureConfig(){names=values(nameInputs).map((value,index)=>value||`참가자 ${index+1}`);results=values(resultInputs).map((value,index)=>value||`결과 ${index+1}`)}
 function createLadder(){
+  animationEpoch++;animating=false;revealed.clear();currentProgress=0;
   ladderCover.hidden=false;
   const rows=Math.max(8,count*3);ladder=Array.from({length:rows},()=>[]);
   for(let row=0;row<rows;row++)for(let col=0;col<count-1;col++){if(ladder[row].includes(col-1)||Math.random()>.34)continue;ladder[row].push(col)}
@@ -35,21 +37,33 @@ function trace(start){
   ladder.forEach((rungs,row)=>{const y=yAt(row);points.push({x:xAt(col),y});if(rungs.includes(col)){col++;points.push({x:xAt(col),y})}else if(rungs.includes(col-1)){col--;points.push({x:xAt(col),y})}});points.push({x:xAt(col),y:m.bottom});return{end:col,points};
 }
 function resizeCanvas(){if($('#playScreen').hidden)return;const width=Math.max(664,canvas.parentElement.clientWidth-16),height=500,dpr=Math.min(devicePixelRatio||1,1.5);canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);canvas.style.width=`${width}px`;canvas.style.height=`${height}px`;ctx.setTransform(dpr,0,0,dpr,0,0);draw()}
-function draw(progress=0,path=null){
-  const m=boardMetrics(),xAt=col=>m.left+(m.right-m.left)*col/(count-1),yAt=row=>m.top+(m.bottom-m.top)*(row+1)/(ladder.length+1);ctx.clearRect(0,0,m.width,m.height);const paper=ctx.createLinearGradient(0,0,0,m.height);paper.addColorStop(0,'#f7faf4');paper.addColorStop(1,'#dfe9e1');ctx.fillStyle=paper;ctx.fillRect(0,0,m.width,m.height);ctx.lineCap='round';ctx.strokeStyle='#243945';ctx.lineWidth=4;
-  for(let col=0;col<count;col++){ctx.beginPath();ctx.moveTo(xAt(col),m.top);ctx.lineTo(xAt(col),m.bottom);ctx.stroke()}ctx.strokeStyle='#60727c';ctx.lineWidth=3;ladder.forEach((rungs,row)=>rungs.forEach(col=>{const y=yAt(row);ctx.beginPath();ctx.moveTo(xAt(col),y);ctx.lineTo(xAt(col+1),y);ctx.stroke()}));if(!path||progress<=0)return;
-  const lengths=[],total=path.slice(1).reduce((sum,point,index)=>{const previous=path[index],length=Math.hypot(point.x-previous.x,point.y-previous.y);lengths.push(length);return sum+length},0);let remaining=total*Math.min(1,progress),current=path[0];ctx.strokeStyle=colors[activeStart%colors.length];ctx.lineWidth=9;ctx.shadowColor=ctx.strokeStyle;ctx.shadowBlur=10;ctx.beginPath();ctx.moveTo(current.x,current.y);
-  for(let index=1;index<path.length&&remaining>0;index++){const next=path[index],segment=lengths[index-1];if(remaining>=segment){ctx.lineTo(next.x,next.y);remaining-=segment;current=next}else{const ratio=remaining/segment;ctx.lineTo(current.x+(next.x-current.x)*ratio,current.y+(next.y-current.y)*ratio);remaining=0}}ctx.stroke();ctx.shadowBlur=0;
+function draw(){
+  const m=boardMetrics();ctx.clearRect(0,0,m.width,m.height);
+  const paper=ctx.createLinearGradient(0,0,0,m.height);paper.addColorStop(0,'#f7faf4');paper.addColorStop(1,'#dfe9e1');ctx.fillStyle=paper;ctx.fillRect(0,0,m.width,m.height);
+  // Only completed routes and the currently traversed portion are visible.
+  for(const start of revealed) paintRoute(trace(start).points,1,start);
+  if(animating && activeStart>=0) paintRoute(trace(activeStart).points,currentProgress,activeStart);
+}
+function paintRoute(path,progress,start){
+  if(progress<=0)return;
+  const lengths=[],total=path.slice(1).reduce((sum,point,index)=>{const previous=path[index],length=Math.hypot(point.x-previous.x,point.y-previous.y);lengths.push(length);return sum+length},0);
+  let remaining=total*Math.min(1,progress),current=path[0];ctx.lineCap='round';ctx.lineJoin='round';ctx.strokeStyle=colors[start%colors.length];ctx.lineWidth=6;ctx.beginPath();ctx.moveTo(current.x,current.y);
+  for(let index=1;index<path.length&&remaining>0;index++){const next=path[index],segment=lengths[index-1];if(remaining>=segment){ctx.lineTo(next.x,next.y);remaining-=segment;current=next}else{const ratio=remaining/segment;ctx.lineTo(current.x+(next.x-current.x)*ratio,current.y+(next.y-current.y)*ratio);remaining=0}}ctx.stroke();
 }
 function renderPlayLabels(){
-  const columns=`repeat(${count},minmax(0,1fr))`;starters.style.gridTemplateColumns=columns;outcomes.style.gridTemplateColumns=columns;starters.innerHTML=names.map((name,index)=>`<button type="button" data-start="${index}">${escapeHtml(name)}</button>`).join('');outcomes.innerHTML=results.map((result,index)=>`<button type="button" data-end="${index}">${escapeHtml(result)}</button>`).join('');starters.querySelectorAll('button').forEach(button=>button.onclick=()=>run(Number(button.dataset.start)));outcomes.querySelectorAll('button').forEach(button=>button.onclick=()=>run(mapping.indexOf(Number(button.dataset.end))));if(activeStart>=0)starters.children[activeStart]?.classList.add('active');if(activeEnd>=0)outcomes.children[activeEnd]?.classList.add('active');
+  const columns=`repeat(${count},minmax(0,1fr))`;starters.style.gridTemplateColumns=columns;outcomes.style.gridTemplateColumns=columns;starters.innerHTML=names.map((name,index)=>`<button type="button" data-start="${index}">${escapeHtml(name)}</button>`).join('');outcomes.innerHTML=results.map((result,index)=>`<button type="button" data-end="${index}">${escapeHtml(result)}</button>`).join('');starters.querySelectorAll('button').forEach(button=>button.onclick=()=>run(Number(button.dataset.start)));outcomes.querySelectorAll('button').forEach(button=>button.onclick=()=>run(mapping.indexOf(Number(button.dataset.end))));for(const start of revealed){starters.children[start]?.classList.add('revealed');outcomes.children[mapping[start]]?.classList.add('revealed');}if(activeStart>=0)starters.children[activeStart]?.classList.add('active');if(activeEnd>=0)outcomes.children[activeEnd]?.classList.add('active');
 }
 async function run(start){
-  if(animating||start<0)return;ladderCover.hidden=true;animating=true;activeStart=start;activeEnd=-1;renderPlayLabels();const route=trace(start),duration=1500,startTime=performance.now();playStatus.textContent=`${names[start]} 경로 확인 중`;
-  await new Promise(resolve=>{const frame=now=>{const progress=Math.min(1,(now-startTime)/duration);draw(progress,route.points);if(progress<1)requestAnimationFrame(frame);else resolve()};requestAnimationFrame(frame)});activeEnd=route.end;renderPlayLabels();draw(1,route.points);playStatus.textContent=`${names[start]} → ${results[route.end]}`;animating=false;
+  if(animating||start<0)return;
+  ladderCover.hidden=true;activeStart=start;activeEnd=-1;currentProgress=0;
+  if(revealed.has(start)){activeEnd=mapping[start];renderPlayLabels();draw();playStatus.textContent=names[start]+' → '+results[activeEnd];return;}
+  animating=true;const epoch=++animationEpoch;renderPlayLabels();const duration=1500,startTime=performance.now();playStatus.textContent=names[start]+' 경로 확인 중';
+  await new Promise(resolve=>{const frame=now=>{if(epoch!==animationEpoch){resolve();return;}currentProgress=Math.min(1,(now-startTime)/duration);draw();if(currentProgress<1)requestAnimationFrame(frame);else resolve();};requestAnimationFrame(frame);});
+  if(epoch!==animationEpoch)return;
+  activeEnd=mapping[start];revealed.add(start);animating=false;currentProgress=0;renderPlayLabels();draw();playStatus.textContent=names[start]+' → '+results[activeEnd];
 }
 function startGame(){captureConfig();createLadder();showScreen('playScreen');allResults.hidden=true;requestAnimationFrame(resizeCanvas)}
-function showAll(){resultList.innerHTML=mapping.map((end,start)=>`<li><b>${escapeHtml(names[start])}</b> → ${escapeHtml(results[end])}</li>`).join('');allResults.hidden=false}
+function showAll(){animationEpoch++;animating=false;currentProgress=0;revealed=new Set(names.map((_,i)=>i));ladderCover.hidden=true;draw();renderPlayLabels();resultList.innerHTML=mapping.map((end,start)=>`<li><b>${escapeHtml(names[start])}</b> → ${escapeHtml(results[end])}</li>`).join('');allResults.hidden=false}
 function readPresets(){try{return JSON.parse(localStorage.getItem(STORAGE_KEY))||{}}catch{return{}}}function writePresets(presets){localStorage.setItem(STORAGE_KEY,JSON.stringify(presets))}
 function refreshPresets(selected=''){const presets=readPresets();presetSelect.innerHTML='<option value="">설정을 선택하세요</option>'+Object.keys(presets).map(name=>`<option value="${escapeHtml(name)}">${escapeHtml(name)}</option>`).join('');presetSelect.value=selected}
 function savePreset(){captureConfig();const key=presetName.value.trim()||'기본 설정',presets=readPresets();presets[key]={count,names,results};writePresets(presets);refreshPresets(key);saveMessage.textContent=`‘${key}’ 저장 완료`;setTimeout(()=>saveMessage.textContent='',1800)}
