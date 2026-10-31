@@ -143,3 +143,5 @@ button, a { font: inherit; }
 
 
 #home-screen{position:relative}#home-screen #timer-launch{position:absolute;top:24px;right:24px;padding:12px 18px;border:1px solid #c8b894;border-radius:8px;background:#fffaf0;color:#254d91;font:700 15px system-ui,sans-serif;cursor:pointer}#home-screen #timer-launch:hover{background:#f1e5cc}
+
+#home-screen{display:flex;flex-direction:column;justify-content:flex-start;gap:36px;padding:20px}.home-timer{width:100%;display:grid;grid-template-columns:minmax(0,1fr) 112px;align-items:start;gap:8px;padding:12px;border:1px solid #d7c8aa;border-radius:12px;background:#fffaf0}.home-timer iframe{width:100%;height:260px;border:0}#home-screen #timer-launch{position:static;padding:10px 8px;font-size:13px;margin-top:4px}.home-intro{width:100%;padding-top:8px}.home-screen .home-intro p{font-size:21px;margin:0 0 20px}.home-screen .home-intro h2{font-size:27px}.home-screen .home-intro strong{font-size:23px;padding:14px}
