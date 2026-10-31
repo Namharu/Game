@@ -9,6 +9,26 @@
 }
 .draw-board .draw-ticket { aspect-ratio:auto; }
 .board-wrap { display:grid; }
+.section-heading > div:last-child { text-align:right; font-size:12px; }
+.section-heading #mode-help { margin:0 0 5px; }
+#preset-dialog { width:min(520px,95vw); max-height:90vh; padding:24px; color:#252019; background:#fffaf0; border:3px solid #244f9e; border-radius:16px; font:14px system-ui,sans-serif; }
+#preset-dialog::backdrop { background:#16120c99; }
+.preset-heading { display:flex; justify-content:space-between; align-items:center; }
+.preset-heading h2 { margin:0; font-size:22px; }
+#preset-dialog p { line-height:1.6; }
+#preset-dialog label { display:block; margin:16px 0 6px; font-weight:800; }
+.preset-row { display:flex; gap:8px; }
+#preset-dialog input,#preset-dialog select { min-width:0; padding:9px; border:1px solid #d4c4aa; border-radius:6px; background:#fff; font:inherit; }
+#preset-dialog input { flex:1; }
+#preset-dialog select { width:100%; }
+#preset-dialog option { padding:6px; }
+#preset-dialog button { padding:9px 12px; border:0; border-radius:6px; background:#244f9e; color:white; font:inherit; cursor:pointer; }
+#preset-dialog button:disabled { opacity:.45; cursor:default; }
+#preset-dialog #preset-close { background:transparent; color:#252019; font-size:24px; padding:0 6px; }
+#preset-dialog #preset-delete { background:#807568; }
+#preset-detail { min-height:32px; padding:8px 0; font-size:12px; color:#746b60; }
+#preset-message { min-height:22px; margin:10px 0; color:#244f9e; font-weight:700; }
+#preset-dialog small { color:#746b60; }
 [data-mode="simple"] .setup-summary { margin-top:24px; }
 [data-mode="content"] .table-head { display:none; }
 .embedded .draw-modes { margin-bottom:10px; }

@@ -9,7 +9,7 @@
   <link rel="stylesheet" href="../styles.css?v=5">
   <script>if (new URLSearchParams(location.search).get('embed') === '1') document.documentElement.classList.add('embedded', 'embed-draw');</script>
   <link rel="stylesheet" href="../embed.css?v=2">
-  <link rel="stylesheet" href="unified.css?v=2">
+  <link rel="stylesheet" href="unified.css?v=3">
 </head>
 <body>
   <div class="paper-noise" aria-hidden="true"></div>
@@ -38,7 +38,7 @@
             <p class="step">STEP 01</p>
             <h2 id="setup-title">뽑기판 만들기</h2>
           </div>
-            <p id="mode-help">당첨 개수를 정하면 나머지는 꽝이 됩니다.</p>
+            <div><p id="mode-help">당첨 개수를 정하면 나머지는 꽝이 됩니다.</p><button type="button" class="text-button" data-open-presets>설정 저장·불러오기</button></div>
         </div>
 
         <form id="setup-form" novalidate>
@@ -110,6 +110,7 @@
         </div>
         <div class="toolbar-actions">
           <span id="save-status" class="save-status"></span>
+          <button type="button" class="text-button" data-open-presets>설정 저장·불러오기</button>
           <button id="new-game-button" class="text-button" type="button">새 뽑기판</button>
         </div>
       </div>
@@ -176,7 +177,21 @@
     </div>
   </template>
 
-  <script src="../app.js?v=12"></script>
+  <dialog id="preset-dialog" aria-labelledby="preset-title">
+    <div class="preset-heading"><h2 id="preset-title">내 뽑기 설정</h2><button type="button" id="preset-close" aria-label="닫기">×</button></div>
+    <p>설정을 이름별로 저장합니다. 자동 저장을 켜면 같은 모드·내용의 마지막 진행 기록도 보관합니다.</p>
+    <label for="preset-name">저장할 이름</label>
+    <div class="preset-row"><input id="preset-name" maxlength="40" placeholder="예: 방송용 / 벌칙 뽑기"><button id="preset-save" type="button">현재 설정 저장</button></div>
+    <label for="preset-list">저장된 설정</label>
+    <select id="preset-list" size="5" aria-label="저장된 뽑기 설정"></select>
+    <div id="preset-detail"></div>
+    <fieldset id="preset-resume" hidden><legend id="preset-progress-summary">이전 진행 기록</legend><label><input type="radio" name="preset-start" value="resume" checked> 마지막 기록 이어서 진행</label><label><input type="radio" name="preset-start" value="fresh"> 처음부터 시작 (이 설정의 진행 기록 초기화)</label></fieldset>
+    <div class="preset-row"><button id="preset-load" type="button">선택한 설정 불러오기</button><button id="preset-delete" type="button">삭제</button></div>
+    <p id="preset-message" role="status" aria-live="polite"></p>
+    <small>이 브라우저에 저장됩니다. 다른 설정의 진행 기록은 유지됩니다.</small>
+  </dialog>
+  <script src="../app.js?v=13"></script>
+  <script src="presets.js?v=1"></script>
 </body>
 </html>
 

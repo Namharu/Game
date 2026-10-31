@@ -226,7 +226,10 @@ function startGame(event) {
 function persistState() {
   if (!state) return;
   try {
-    if (state.saveMode) localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    if (state.saveMode) {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+      window.saveDrawPresetProgress?.(state);
+    }
     else localStorage.removeItem(STORAGE_KEY);
   } catch (error) {
     elements.saveStatus.textContent = "저장 공간을 사용할 수 없습니다";
@@ -365,6 +368,7 @@ function returnToSetup() {
   } catch (error) {
     // 저장소를 사용할 수 없는 환경에서도 새 설정 화면으로 이동합니다.
   }
+  window.clearDrawPresetProgress?.(state);
   state = null;
   elements.gameScreen.classList.add("hidden");
   elements.startScreen.classList.remove("hidden");
