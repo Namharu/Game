@@ -1,0 +1,17 @@
+.draw-modes { display:flex; gap:8px; padding:0; margin:0 0 14px; border:0; }
+.draw-modes label { flex:1; padding:10px 14px; border:1px solid #d4c4aa; border-radius:8px; background:#f4ead4; font-weight:800; cursor:pointer; text-align:center; }
+.draw-modes label:has(:checked) { background:#244f9e; color:#fff; border-color:#244f9e; }
+.draw-modes input { accent-color:#ed5039; }
+[data-mode="simple"] .setup-summary { margin-top:24px; }
+[data-mode="content"] .table-head { display:none; }
+.embedded .draw-modes { margin-bottom:10px; }
+.embedded .draw-modes label { padding:8px; font-size:14px; }
+.embedded #prize-rows { display:grid; grid-template-columns:1fr 1fr; }
+.embedded .prize-row { grid-template-columns:55px minmax(0,1fr) 100px; gap:4px; min-height:40px; }
+.embedded .prize-row:nth-child(odd) { border-right:1px solid var(--line); }
+.embedded .prize-row input { min-width:0; }
+.embedded .table-head { display:none; }
+.embedded #setup-form[data-mode="simple"] { padding:35px 30px; }
+.embedded .draw-ticket.opened { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding:2px; font-size:11px; }
+.embedded .remaining-prizes { max-height:calc(100% - 85px); overflow:auto; scrollbar-width:none; }
+@media(max-width:650px) { .draw-modes { gap:4px; } .draw-modes label { padding:8px 4px; font-size:12px; } }

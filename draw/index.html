@@ -5,10 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#f04f37">
   <meta name="description" content="상품과 수량을 직접 정해 즐기는 추억의 뽑기판">
-  <title>추억의 뽑기</title>
+  <title>통합 뽑기</title>
   <link rel="stylesheet" href="../styles.css?v=5">
   <script>if (new URLSearchParams(location.search).get('embed') === '1') document.documentElement.classList.add('embedded', 'embed-draw');</script>
-  <link rel="stylesheet" href="../embed.css?v=1">
+  <link rel="stylesheet" href="../embed.css?v=2">
+  <link rel="stylesheet" href="unified.css?v=1">
 </head>
 <body>
   <div class="paper-noise" aria-hidden="true"></div>
@@ -37,29 +38,35 @@
             <p class="step">STEP 01</p>
             <h2 id="setup-title">뽑기판 만들기</h2>
           </div>
-            <p>전체 수와 마지막 등수를 먼저 적으면<br>아래에 등수별 입력칸이 자동으로 만들어집니다.</p>
+            <p id="mode-help">당첨 개수를 정하면 나머지는 꽝이 됩니다.</p>
         </div>
 
         <form id="setup-form" novalidate>
+          <fieldset class="draw-modes">
+            <legend class="sr-only">뽑기 방식</legend>
+            <label><input type="radio" name="draw-mode" value="simple" checked> 당첨·꽝</label>
+            <label><input type="radio" name="draw-mode" value="content"> 내용 뽑기</label>
+            <label><input type="radio" name="draw-mode" value="rank"> 등수 뽑기</label>
+          </fieldset>
           <div class="game-options">
             <div class="total-row">
               <label for="total-count">
                 <span>전체 뽑기 수</span>
-                <small>100개부터 500개까지</small>
+                <small>2개부터 500개까지</small>
               </label>
               <div class="number-field">
-                <input id="total-count" name="totalCount" type="number" inputmode="numeric" min="100" max="500" value="100" required>
+                <input id="total-count" name="totalCount" type="number" inputmode="numeric" min="2" max="500" value="100" required>
                 <span>개</span>
               </div>
             </div>
             <div class="rank-option">
               <label for="rank-count">
-                <span>몇 등까지?</span>
-                <small>마지막 등수는 자동 수량</small>
+                <span id="option-label">당첨 개수</span>
+                <small id="option-help">나머지는 자동으로 꽝</small>
               </label>
               <div class="number-field rank-number-field">
-                <input id="rank-count" name="rankCount" type="number" inputmode="numeric" min="3" max="10" value="7" aria-label="마지막 등수" required>
-                <span>등</span>
+                <input id="rank-count" name="rankCount" type="number" inputmode="numeric" min="1" max="500" value="1" aria-label="당첨 개수" required>
+                <span id="option-unit">개</span>
               </div>
             </div>
           </div>
@@ -148,7 +155,7 @@
     <div class="result-card">
       <p id="result-kicker" class="result-kicker">당첨!</p>
       <div id="result-badge" class="result-badge">1등</div>
-      <h2 id="result-title">식대권</h2>
+      <h2 id="result-title">결과</h2>
       <p id="result-message">축하합니다!</p>
       <button id="result-close" class="primary-button" type="button">확인</button>
     </div>
@@ -169,7 +176,7 @@
     </div>
   </template>
 
-  <script src="../app.js?v=10"></script>
+  <script src="../app.js?v=11"></script>
 </body>
 </html>
 

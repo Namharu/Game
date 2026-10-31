@@ -1,6 +1,6 @@
 "use strict";
 const games = {
-  draw: "추억의 뽑기", "lucky-board": "뽑기판 2", ladder: "사다리",
+  draw: "통합 뽑기", ladder: "사다리",
   "high-low": "하이로우", pinball: "컬러볼 핀볼", "animal-race": "동물경주",
   cannon: "대포", lotto: "로또번호 추첨기"
 };
@@ -15,6 +15,7 @@ function fitBroadcastFrame() {
   style.setProperty("--frame-viewport-height", 720 * scale + "px");
 }
 function selectGame(slug) {
+  if (slug === "lucky-board") slug = "draw";
   if (!Object.hasOwn(games, slug)) slug = "draw";
   if (current === slug) return;
   current = slug;
@@ -26,7 +27,7 @@ function selectGame(slug) {
   document.querySelector("#game-number").textContent = "GAME " + String(Object.keys(games).indexOf(slug) + 1).padStart(2, "0");
   document.querySelector("#standalone-link").href = "./" + slug + "/?embed=1&layout=5";
   frame.title = games[slug];
-  frame.src = "./" + slug + "/?embed=1&layout=5";
+  frame.src = "./" + slug + "/?embed=1&layout=6";
   history.replaceState(null, "", "#" + slug);
   document.title = games[slug] + " — NAMHARU GAME";
   try { localStorage.setItem(key, slug); } catch {}
