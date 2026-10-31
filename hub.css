@@ -136,3 +136,8 @@ button, a { font: inherit; }
 .play-window[data-game="cannon"]{width:880px;height:600px}
 
 .play-window[data-game="lotto"]{width:880px;height:600px}
+
+.play-window[data-game="coin"],.play-window[data-game="dice"]{width:880px;height:600px}
+
+@media(min-width:1101px){.game-list{gap:3px}.game-list button{min-height:38px}}
+
