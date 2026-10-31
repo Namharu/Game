@@ -1,0 +1,45 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f7f2e6">
+  <title>돌림판 — NAMHARU GAME</title>
+  <script>if(new URLSearchParams(location.search).get('embed')==='1')document.documentElement.classList.add('embedded');</script>
+  <link rel="stylesheet" href="styles.css?v=1">
+</head>
+<body>
+  <header><a href="../">← 남하루 미니게임</a><b>돌림판</b></header>
+  <main class="layout">
+    <section class="wheel-panel" aria-label="돌림판 게임 화면">
+      <div class="result-heading">오늘의 선택</div>
+      <div class="wheel-wrap">
+        <div id="pointerLabel" class="pointer-label" aria-live="polite"></div>
+        <div class="pointer"></div>
+        <canvas id="wheel" width="720" height="720" aria-label="가중치에 따라 조각 크기가 달라지는 돌림판"></canvas>
+      </div>
+      <p class="stage-note">시작 후 멈춤을 누르면 결과가 결정됩니다.</p>
+    </section>
+    <aside aria-label="돌림판 설정">
+      <section class="settings">
+        <small>SPIN THE WHEEL</small><h1>돌림판 설정</h1>
+        <p class="help">항목과 가중치를 입력하세요.<br>같은 이름은 합쳐지며 비율대로 추첨됩니다.</p>
+        <div class="add-row"><input id="newItem" maxlength="24" placeholder="항목 내용" aria-label="추가할 항목"><input id="newWeight" type="number" min="1" max="999" value="1" aria-label="추가 가중치"><button id="add" type="button">추가</button></div>
+        <div class="item-head"><span>색</span><span>항목</span><span>가중치</span><span>확률</span><span></span></div>
+        <div id="items" class="items" aria-label="항목 목록"></div>
+      </section>
+      <section class="save-box">
+        <h2>저장 · 불러오기</h2>
+        <div class="save-row"><input id="saveName" maxlength="20" placeholder="저장 이름" aria-label="저장 이름"><button id="save" type="button">저장</button></div>
+        <p>마지막 설정은 이 브라우저에 자동 저장됩니다.</p>
+        <div id="presets" class="presets"></div>
+      </section>
+      <section class="actions">
+        <div class="speed" aria-label="회전 속도"><span>속도</span><button type="button" class="selected" data-speed="1">1배</button><button type="button" data-speed="2">2배</button><button type="button" data-speed="5">5배</button></div>
+        <button id="spin" class="spin" type="button">시작</button>
+      </section>
+    </aside>
+  </main>
+  <script src="game.js?v=1"></script>
+</body>
+</html>
