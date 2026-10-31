@@ -2,6 +2,13 @@
 .draw-modes label { flex:1; padding:10px 14px; border:1px solid #d4c4aa; border-radius:8px; background:#f4ead4; font-weight:800; cursor:pointer; text-align:center; }
 .draw-modes label:has(:checked) { background:#244f9e; color:#fff; border-color:#244f9e; }
 .draw-modes input { accent-color:#ed5039; }
+.draw-board, .embed-draw .draw-board {
+  grid-template-columns:repeat(var(--board-columns,10),minmax(0,80px));
+  grid-template-rows:repeat(var(--board-rows,1),minmax(0,64px));
+  place-content:center;
+}
+.draw-board .draw-ticket { aspect-ratio:auto; }
+.board-wrap { display:grid; }
 [data-mode="simple"] .setup-summary { margin-top:24px; }
 [data-mode="content"] .table-head { display:none; }
 .embedded .draw-modes { margin-bottom:10px; }
