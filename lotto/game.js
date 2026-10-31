@@ -17,10 +17,11 @@ mesh(new T.CylinderGeometry(.65,.82,.18,48),dark,0,-2.29,0);
 for(let i=-2;i<=2;i++)mesh(new T.BoxGeometry(.055,.012,.7),metal,i*.19,-2.19,0);
 // Soft reflection streaks on the acrylic face; no opaque cover over the balls.
 for(const [a,len] of [[.18,.55],[2.15,.35],[4.05,.4]]){const arc=new T.Mesh(new T.TorusGeometry(R-.02,.016,8,50,len),new T.MeshBasicMaterial({color:0xe7f0ff,transparent:true,opacity:.55}));arc.rotation.z=a;arc.position.z=.54;scene.add(arc)}
-const palette=['#f6d13b','#3e98e9','#ec4384','#47b66b','#f0f2ed'];
+const palette=['#f6c839','#438fe5','#ed5353','#a7adb7','#4aac70'];
+const ballColor=n=>palette[Math.min(4,Math.floor((n-1)/10))];
 function texture(n,color){const c=document.createElement('canvas');c.width=256;c.height=128;const x=c.getContext('2d');x.fillStyle=color;x.fillRect(0,0,256,128);for(const px of [64,192]){x.fillStyle='#fff8ea';x.beginPath();x.arc(px,64,32,0,Math.PI*2);x.fill();x.fillStyle='#202c45';x.font='bold 39px Arial';x.textAlign='center';x.textBaseline='middle';x.fillText(n,px,66)}const tex=new T.CanvasTexture(c);tex.colorSpace=T.SRGBColorSpace;return tex}
 const sphere=new T.SphereGeometry(br,24,16),balls=[];let airTime=0,airPower=1,mixing=true,mult=1,last=performance.now(),acc=0;
-for(let i=0;i<45;i++){const m=mesh(sphere,new T.MeshPhysicalMaterial({map:texture(i+1,palette[i%5]),roughness:.19,metalness:.04,clearcoat:1,clearcoatRoughness:.1}));balls.push({m,x:0,y:0,z:0,vx:0,vy:0,vz:0});}
+for(let i=0;i<45;i++){const m=mesh(sphere,new T.MeshPhysicalMaterial({map:texture(i+1,ballColor(i+1)),roughness:.19,metalness:.04,clearcoat:1,clearcoatRoughness:.1}));balls.push({m,x:0,y:0,z:0,vx:0,vy:0,vz:0});}
 let timing={mix:2200,flight:700,gap:500};
 let manual=false,requested=false,paused=false,drawClock=0;
 let running=false,order=[],drawn=[],winning=new Set(),flight=null,nextDraw=0;
@@ -55,8 +56,8 @@ function step(dt){
 function loop(now){const delta=Math.min(.06,(now-last)/1000);if(!paused)drawClock+=delta*1000;acc+=delta*1.5;last=now;while(acc>=1/240){step(1/240);acc-=1/240}for(const b of balls){if(b.drawn||b.flying)continue;b.m.position.set(b.x,b.y,b.z);b.m.rotation.x+=b.vy*.003;b.m.rotation.z-=b.vx*.003}updateDraw(drawClock);renderer.render(scene,camera);requestAnimationFrame(loop)}
 function showResults(done=false){
  const displayed=$('#sortNumbers').checked?[...drawn].sort((a,b)=>a-b):drawn;
- $('#resultBalls').replaceChildren(...displayed.map(n=>{const el=document.createElement('span');el.className='result-ball'+(winning.has(n)?' hit':'');el.style.setProperty('--ball-color',palette[(n-1)%palette.length]);el.textContent=n;el.title=winning.has(n)?n+'번 당첨':n+'번';return el;}));
- $('#drawNumbers').replaceChildren(...drawn.map(n=>{const el=document.createElement('span');el.textContent=n;el.style.setProperty('--ball-color',palette[(n-1)%palette.length]);el.className=winning.has(n)?'hit':'';return el;}));
+ $('#resultBalls').replaceChildren(...displayed.map(n=>{const el=document.createElement('span');el.className='result-ball'+(winning.has(n)?' hit':'');el.style.setProperty('--ball-color',ballColor(n));el.textContent=n;el.title=winning.has(n)?n+'번 당첨':n+'번';return el;}));
+ $('#drawNumbers').replaceChildren(...drawn.map(n=>{const el=document.createElement('span');el.textContent=n;el.style.setProperty('--ball-color',ballColor(n));el.className=winning.has(n)?'hit':'';return el;}));
  const hits=drawn.filter(n=>winning.has(n)).sort((a,b)=>a-b);
  $('#resultTitle').textContent=(done?'추첨 완료':'추첨 중')+' · '+drawn.length+' / '+order.length;
  $('#matchPanel').dataset.status=hits.length?'hit':done?'miss':'waiting';
