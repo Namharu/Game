@@ -10,10 +10,15 @@ $('#reset').onclick=()=>{running=paused=finished=false;lock(false);configure();}
 function adjustTime(seconds){
  const now=Date.now(),active=running||paused;
  if(running)remaining=Math.max(0,deadline-now);
- remaining=Math.max(active?0:1000,Math.min(59999000,remaining+seconds*1000));
+ const previousTotal=total;
+ total=Math.max(1000,Math.min(59999000,(active?total:remaining)+seconds*1000));
+ remaining=active?Math.max(0,remaining+total-previousTotal):total;
+ const configuredSeconds=Math.round(total/1000);
+ $('#minutes').value=Math.floor(configuredSeconds/60);$('#seconds').value=configuredSeconds%60;
+ save();
  $('#error').textContent='';
  if(active){
-  total=Math.max(total,remaining);if(running)deadline=now+remaining;
+  if(running)deadline=now+remaining;
   if(remaining===0){running=paused=false;finished=true;lock(false);$('#status').textContent='시간이 종료되었습니다';$('#start').textContent='다시 시작';}
  }else{
   const value=Math.ceil(remaining/1000);$('#minutes').value=Math.floor(value/60);$('#seconds').value=value%60;total=remaining;finished=false;$('#status').textContent='시간을 설정하세요';$('#start').textContent='시작';save();

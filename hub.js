@@ -76,6 +76,6 @@ syncRoute();
 let timerWindow=null;
 homeScreen.querySelector('#timer-launch').addEventListener('click',()=>{
  if(timerWindow&&!timerWindow.closed){timerWindow.focus();return;}
- timerWindow=window.open('./timer/?v=2','namharu-countdown-timer','popup=yes,width=360,height=420,resizable=yes,scrollbars=no');
+ timerWindow=window.open('./timer/?v=3','namharu-countdown-timer','popup=yes,width=360,height=420,resizable=yes,scrollbars=no');
  if(timerWindow)timerWindow.focus();else alert('타이머 창이 차단되었습니다. 이 사이트의 팝업을 허용한 뒤 다시 눌러주세요.');
 });
