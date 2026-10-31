@@ -56,7 +56,7 @@ function loop(now){const delta=Math.min(.06,(now-last)/1000);if(!paused)drawCloc
 function showResults(done=false){
  const displayed=$('#sortNumbers').checked?[...drawn].sort((a,b)=>a-b):drawn;
  $('#resultBalls').replaceChildren(...displayed.map(n=>{const el=document.createElement('span');el.className='result-ball'+(winning.has(n)?' hit':'');el.style.setProperty('--ball-color',palette[(n-1)%palette.length]);el.textContent=n;el.title=winning.has(n)?n+'번 당첨':n+'번';return el;}));
- $('#drawNumbers').replaceChildren(...drawn.map(n=>{const el=document.createElement('span');el.textContent=n;el.className=winning.has(n)?'hit':'';return el;}));
+ $('#drawNumbers').replaceChildren(...drawn.map(n=>{const el=document.createElement('span');el.textContent=n;el.style.setProperty('--ball-color',palette[(n-1)%palette.length]);el.className=winning.has(n)?'hit':'';return el;}));
  const hits=drawn.filter(n=>winning.has(n)).sort((a,b)=>a-b);
  $('#resultTitle').textContent=(done?'추첨 완료':'추첨 중')+' · '+drawn.length+' / '+order.length;
  $('#matchPanel').dataset.status=hits.length?'hit':done?'miss':'waiting';

@@ -23,3 +23,5 @@ html.embedded,html.embedded body{margin:0;width:880px;height:600px;overflow:hidd
 #manualDraw{position:absolute;top:367px;left:200px;width:200px;z-index:3;background:#315fa7;color:white;border:1px solid #7798d1;box-shadow:0 3px #173b70}.manual-mode #view canvas{transform:scale(.63)}.manual-mode #resultBalls .result-ball{height:22px;min-width:26px}.manual-mode #resultBalls{gap:3px}
 
 #mix.manual-action{position:absolute;top:367px;left:200px;width:200px;z-index:3;border:1px solid #7798d1}
+
+#drawNumbers span,#drawNumbers .hit{background:var(--ball-color);color:#152136;font-weight:700;border-radius:50%;line-height:20px;min-width:20px;box-shadow:inset -1px -2px 3px #0003}#drawNumbers .hit{outline:2px solid #bb8300;outline-offset:0}#drawNumbers{gap:3px}
