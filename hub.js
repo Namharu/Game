@@ -18,9 +18,9 @@ function selectGame(slug) {
   });
   document.querySelector("#game-title").textContent = games[slug];
   document.querySelector("#game-number").textContent = "GAME " + String(Object.keys(games).indexOf(slug) + 1).padStart(2, "0");
-  document.querySelector("#standalone-link").href = "./" + slug + "/?embed=1&layout=7";
+  document.querySelector("#standalone-link").href = "./" + slug + "/?embed=1&layout=8";
   frame.title = games[slug];
-  frame.src = "./" + slug + "/?embed=1&layout=7";
+  frame.src = "./" + slug + "/?embed=1&layout=8";
   history.replaceState(null, "", "#" + slug);
   document.title = games[slug] + " — NAMHARU GAME";
   try { localStorage.setItem(key, slug); } catch {}

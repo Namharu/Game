@@ -1,0 +1,13 @@
+/* Use the device's familiar UI font throughout menus and all games. */
+:root { --ui-font: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", "Malgun Gothic", sans-serif; }
+html, body, body *, body *::before, body *::after {
+  font-family: var(--ui-font) !important;
+  font-style: normal !important;
+  letter-spacing: normal !important;
+  text-shadow: none !important;
+}
+body, body * { font-weight: 400 !important; }
+body h1, body h2, body h3, body h4, body strong, body b,
+body button, body button *, body .rank-chip, body .result-badge {
+  font-weight: 600 !important;
+}
