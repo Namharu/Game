@@ -108,3 +108,5 @@ input:focus,select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(36,7
 .stage{position:relative}#matchPopup{position:absolute;inset:0;z-index:20;display:grid;place-items:center;background:#fff8e955;cursor:pointer;padding:20px}#matchPopup>div{width:100%;padding:28px 20px;border:2px solid #c8a34c;border-radius:18px;background:#fffaf0f5;box-shadow:0 12px 40px #33240044;text-align:center}#matchPopup small{display:block;font-size:14px;color:#836525;margin-bottom:12px}#matchPopupText{display:block;font-size:32px;line-height:1.5;color:#254d91;overflow-wrap:anywhere}#matchPopup[hidden]{display:none}
 
 .starters button.revealed,.outcomes button.revealed{background:#dce0e3;color:#59636d;border-color:#aeb6be;box-shadow:0 2px #a5adb5}.starters button.revealed.active,.outcomes button.revealed.active{background:#cbd2d9;color:#35414c;border-color:#727f8c;box-shadow:0 0 0 2px #727f8c33}.starters button.revealed:hover,.outcomes button.revealed:hover{background:#cbd2d9}
+
+#matchPopup{pointer-events:none}

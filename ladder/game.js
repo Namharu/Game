@@ -15,13 +15,13 @@ const presetName=$('#presetName'),saveMessage=$('#saveMessage'),loadMessage=$('#
 let popupTimer;
 function hideMatchPopup(){clearTimeout(popupTimer);$('#matchPopup').hidden=true;}
 function showMatchPopup(start){hideMatchPopup();$('#matchPopupText').textContent=names[start]+' - '+results[mapping[start]];$('#matchPopup').hidden=false;popupTimer=setTimeout(hideMatchPopup,3000);}
-$('.stage').addEventListener('click',event=>{if(!$('#matchPopup').hidden){hideMatchPopup();event.preventDefault();event.stopPropagation();}},true);
+$('.stage').addEventListener('click',event=>{if(!$('#matchPopup').hidden){const selected=event.target.closest('[data-start], [data-end]');hideMatchPopup();if(!selected){event.preventDefault();event.stopPropagation();}}},true);
 const STORAGE_KEY='namharu-ladder-presets-v1';
 const colors=['#ff3f55','#13bdb6','#835cff','#ff8a2a','#1688e3','#e741aa','#3ca75b','#c29700','#7349c5','#e25834','#2f9ec8','#cb4d76'];
 let count=4,names=[],results=[],ladder=[],mapping=[],seed=0,activeStart=-1,activeEnd=-1,animating=false;
 const escapeHtml=value=>String(value).replace(/[&<>"']/g,char=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[char]));
 const values=container=>[...container.querySelectorAll('input')].map(input=>input.value.trim());
-let revealed = new Set(), currentProgress = 0, animationEpoch = 0;
+let revealed = new Set(), currentProgress = 0, animationEpoch = 0, reverseRoute = false;
 const showScreen=id=>{if(id!=='playScreen'){hideMatchPopup();animationEpoch++;animating=false;currentProgress=0;revealed.clear();renderMatches();}screens.forEach(screen=>screen.hidden=screen.id!==id)};
 
 const COUNT_KEY='namharu-ladder-last-count-v1';
@@ -55,7 +55,7 @@ function draw(){
   const paper=ctx.createLinearGradient(0,0,0,m.height);paper.addColorStop(0,'#f7faf4');paper.addColorStop(1,'#dfe9e1');ctx.fillStyle=paper;ctx.fillRect(0,0,m.width,m.height);
   // Only completed routes and the currently traversed portion are visible.
   for(const start of revealed) paintRoute(trace(start).points,1,start);
-  if(animating && activeStart>=0) paintRoute(trace(activeStart).points,currentProgress,activeStart);
+  if(animating && activeStart>=0) paintRoute(reverseRoute?[...trace(activeStart).points].reverse():trace(activeStart).points,currentProgress,activeStart);
 }
 function paintRoute(path,progress,start){
   if(progress<=0)return;
@@ -65,13 +65,13 @@ function paintRoute(path,progress,start){
 }
 function renderPlayLabels(){
  renderMatches();
-  const columns=`repeat(${count},minmax(0,1fr))`;starters.style.gridTemplateColumns=columns;outcomes.style.gridTemplateColumns=columns;starters.innerHTML=names.map((name,index)=>`<button type="button" data-start="${index}">${escapeHtml(name)}</button>`).join('');outcomes.innerHTML=results.map((result,index)=>`<button type="button" data-end="${index}">${escapeHtml(result)}</button>`).join('');starters.querySelectorAll('button').forEach(button=>button.onclick=()=>run(Number(button.dataset.start)));outcomes.querySelectorAll('button').forEach(button=>button.onclick=()=>run(mapping.indexOf(Number(button.dataset.end))));for(const start of revealed){starters.children[start]?.classList.add('revealed');outcomes.children[mapping[start]]?.classList.add('revealed');starters.children[start]?.setAttribute('title','확인 완료 · '+names[start]);outcomes.children[mapping[start]]?.setAttribute('title','확인 완료 · '+results[mapping[start]]);}if(activeStart>=0)starters.children[activeStart]?.classList.add('active');if(activeEnd>=0)outcomes.children[activeEnd]?.classList.add('active');
+  const columns=`repeat(${count},minmax(0,1fr))`;starters.style.gridTemplateColumns=columns;outcomes.style.gridTemplateColumns=columns;starters.innerHTML=names.map((name,index)=>`<button type="button" data-start="${index}">${escapeHtml(name)}</button>`).join('');outcomes.innerHTML=results.map((result,index)=>`<button type="button" data-end="${index}">${escapeHtml(result)}</button>`).join('');starters.querySelectorAll('button').forEach(button=>button.onclick=()=>run(Number(button.dataset.start)));outcomes.querySelectorAll('button').forEach(button=>button.onclick=()=>run(mapping.indexOf(Number(button.dataset.end)),true));for(const start of revealed){starters.children[start]?.classList.add('revealed');outcomes.children[mapping[start]]?.classList.add('revealed');starters.children[start]?.setAttribute('title','확인 완료 · '+names[start]);outcomes.children[mapping[start]]?.setAttribute('title','확인 완료 · '+results[mapping[start]]);}if(activeStart>=0&&!(animating&&reverseRoute))starters.children[activeStart]?.classList.add('active');if(activeEnd>=0)outcomes.children[activeEnd]?.classList.add('active');
 }
-async function run(start){
+async function run(start,reverse=false){
   if(animating||start<0)return;
-  activeStart=start;activeEnd=-1;currentProgress=0;
+  reverseRoute=reverse;activeStart=start;activeEnd=reverse?mapping[start]:-1;currentProgress=0;
   if(revealed.has(start)){activeEnd=mapping[start];renderPlayLabels();draw();playStatus.textContent=names[start]+' → '+results[activeEnd];showMatchPopup(start);return;}
-  animating=true;const epoch=++animationEpoch;renderPlayLabels();const duration=1500,startTime=performance.now();playStatus.textContent=names[start]+' 경로 확인 중';
+  animating=true;const epoch=++animationEpoch;renderPlayLabels();const duration=1500,startTime=performance.now();playStatus.textContent=(reverse?results[mapping[start]]:names[start])+' 경로 확인 중';
   await new Promise(resolve=>{const frame=now=>{if(epoch!==animationEpoch){resolve();return;}currentProgress=Math.min(1,(now-startTime)/duration);draw();if(currentProgress<1)requestAnimationFrame(frame);else resolve();};requestAnimationFrame(frame);});
   if(epoch!==animationEpoch)return;
   activeEnd=mapping[start];revealed.add(start);animating=false;currentProgress=0;renderPlayLabels();draw();playStatus.textContent=names[start]+' → '+results[activeEnd];showMatchPopup(start);
