@@ -132,3 +132,5 @@ button, a { font: inherit; }
 .title-actions [hidden] { display:none!important; }
 .play-window[data-game="pinball"] { width:880px; height:600px; }
 .play-window[data-game="wheel"] { width:880px; height:600px; }
+
+.play-window[data-game="cannon"]{width:880px;height:600px}
