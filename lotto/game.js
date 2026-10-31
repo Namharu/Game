@@ -21,8 +21,10 @@ const palette=['#f6d13b','#3e98e9','#ec4384','#47b66b','#f0f2ed'];
 function texture(n,color){const c=document.createElement('canvas');c.width=256;c.height=128;const x=c.getContext('2d');x.fillStyle=color;x.fillRect(0,0,256,128);for(const px of [64,192]){x.fillStyle='#fff8ea';x.beginPath();x.arc(px,64,32,0,Math.PI*2);x.fill();x.fillStyle='#202c45';x.font='bold 39px Arial';x.textAlign='center';x.textBaseline='middle';x.fillText(n,px,66)}const tex=new T.CanvasTexture(c);tex.colorSpace=T.SRGBColorSpace;return tex}
 const sphere=new T.SphereGeometry(br,24,16),balls=[];let airTime=0,airPower=0,mixing=false,mult=1,last=performance.now(),acc=0;
 for(let i=0;i<45;i++){const m=mesh(sphere,new T.MeshPhysicalMaterial({map:texture(i+1,palette[i%5]),roughness:.19,metalness:.04,clearcoat:1,clearcoatRoughness:.1}));balls.push({m,x:0,y:0,z:0,vx:0,vy:0,vz:0});}
+const drawTimings={fast:{mix:1000,flight:300,gap:200},normal:{mix:2200,flight:700,gap:500},slow:{mix:3500,flight:1000,gap:1500}};
+let timing=drawTimings.normal;
 let running=false,order=[],drawn=[],winning=new Set(),flight=null,nextDraw=0;
-function lockSettings(locked){$('#drawCount').disabled=locked;$('#winningNumbers').disabled=locked;}
+function lockSettings(locked){$('#drawSpeed').disabled=locked;$('#drawCount').disabled=locked;$('#winningNumbers').disabled=locked;}
 function reset(){running=false;flight=null;drawn=[];order=[];lockSettings(false);$('#mix').disabled=false;$('#resultBalls').replaceChildren();$('#drawNumbers').replaceChildren();$('#matchPanel').dataset.status='waiting';$('#resultTitle').textContent='추첨 번호';$('#matchSummary').textContent='설정을 입력하고 추첨을 시작하세요.';$('#validation').textContent='';mixing=false;airPower=0;airTime=0;balls.forEach((b,i)=>{b.drawn=false;b.flying=false;b.m.visible=true;b.m.scale.setScalar(1);const row=Math.floor(i/9),col=i%9;b.x=(col-4)*.32;b.y=-1.58+row*.31;b.z=(i%3-1)*.19;b.vx=0;b.vy=0;b.vz=0;b.m.rotation.set(Math.random()*6,Math.random()*6,0)});$('#mix').textContent='추첨 시작 ▶';$('#state').textContent='대기 중 · 공이 바닥에 모입니다';}
 function step(dt){
  const live=balls.filter(b=>!b.drawn&&!b.flying);
@@ -62,14 +64,14 @@ function showResults(done=false){
 function updateDraw(now){
  if(!running)return;
  if(flight){
-  const t=Math.min(1,(now-flight.start)/700),u=1-(1-t)**3;
+  const t=Math.min(1,(now-flight.start)/timing.flight),u=1-(1-t)**3;
   flight.ball.m.position.set(flight.x*(1-u),flight.y*(1-u)+.7*u,flight.z*(1-u)+3*u);flight.ball.m.scale.setScalar(1+u*1.5);
-  if(t===1){const ball=flight.ball;ball.drawn=true;ball.flying=false;ball.m.visible=false;ball.m.scale.setScalar(1);drawn.push(flight.number);flight=null;const done=drawn.length===order.length;showResults(done);nextDraw=now+450;if(done){running=false;mixing=false;$('#state').textContent='추첨 완료 · 공이 가라앉습니다';$('#mix').textContent='다시 추첨 ▶';$('#mix').disabled=false;lockSettings(false);}}
+  if(t===1){const ball=flight.ball;ball.drawn=true;ball.flying=false;ball.m.visible=false;ball.m.scale.setScalar(1);drawn.push(flight.number);flight=null;const done=drawn.length===order.length;showResults(done);nextDraw=now+timing.gap;if(done){running=false;mixing=false;$('#state').textContent='추첨 완료 · 공이 가라앉습니다';$('#mix').textContent='다시 추첨 ▶';$('#mix').disabled=false;lockSettings(false);}}
  }else if(now>=nextDraw){const number=order[drawn.length],ball=balls[number-1];ball.flying=true;flight={number,ball,start:now,x:ball.x,y:ball.y,z:ball.z};$('#state').textContent=(drawn.length+1)+'번째 공 추첨 중';}
 }
 $('#mix').onclick=()=>{
  let config;try{config=parseSettings($('#drawCount').value,$('#winningNumbers').value);}catch(e){$('#validation').textContent=e.message;return;}
- reset();winning=config.winning;order=drawOrder(config.count);running=true;mixing=true;nextDraw=performance.now()+2200;lockSettings(true);$('#mix').disabled=true;$('#mix').textContent='추첨 중…';$('#state').textContent='공을 섞고 있습니다';showResults();
+ reset();timing=drawTimings[$('#drawSpeed').value]||drawTimings.normal;winning=config.winning;order=drawOrder(config.count);running=true;mixing=true;nextDraw=performance.now()+timing.mix;lockSettings(true);$('#mix').disabled=true;$('#mix').textContent='추첨 중…';$('#state').textContent='공을 섞고 있습니다';showResults();
 };$('#reset').onclick=reset;$('#mix').disabled=$('#reset').disabled=false;reset();requestAnimationFrame(loop);
 }catch(e){$('#error').hidden=false;$('#error').textContent='3D 화면을 시작하지 못했습니다: '+e.message;$('#state').textContent='실행 오류';console.error(e)}
 

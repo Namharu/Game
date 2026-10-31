@@ -12,3 +12,5 @@
 
 
 html.embedded,html.embedded body{margin:0;width:880px;height:600px;overflow:hidden}.embedded header,.embedded footer{display:none}.embedded main{margin:0;border-radius:0;box-shadow:none}header a{font-size:13px;color:inherit}
+
+#drawSpeed{font:inherit;font-size:14px;width:100%;padding:8px;border:1px solid #cdbfa9;border-radius:7px;background:#fff;margin:6px 0 12px}
