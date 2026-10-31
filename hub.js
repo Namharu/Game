@@ -21,6 +21,9 @@ const gameTitle = document.querySelector("#game-title");
 const gameNumber = document.querySelector("#game-number");
 const standaloneLink = document.querySelector("#standalone-link");
 const gameButtons = [...document.querySelectorAll("[data-game]")];
+let embeddedMutationObserver = null;
+let fitAnimationFrame = 0;
+let delayedFitTimer = 0;
 
 function fitBroadcastFrame() {
   const availableWidth = Math.max(320, window.innerWidth - OUTER_GAP);
@@ -39,6 +42,52 @@ function gameFromLocation() {
     if (games[saved]) return saved;
   } catch (error) {}
   return "draw";
+}
+
+function fitEmbeddedGame() {
+  cancelAnimationFrame(fitAnimationFrame);
+  fitAnimationFrame = requestAnimationFrame(() => {
+    let documentRoot;
+    let documentBody;
+    try {
+      documentRoot = frame.contentDocument?.documentElement;
+      documentBody = frame.contentDocument?.body;
+    } catch (error) {
+      return;
+    }
+    if (!documentRoot || !documentBody) return;
+
+    documentBody.style.transform = "none";
+    documentBody.style.transformOrigin = "top center";
+    documentRoot.style.overflow = "hidden";
+    documentBody.style.overflow = "hidden";
+
+    requestAnimationFrame(() => {
+      const viewportWidth = frame.clientWidth;
+      const viewportHeight = frame.clientHeight;
+      const contentWidth = Math.max(documentRoot.scrollWidth, documentBody.scrollWidth, viewportWidth);
+      const contentHeight = Math.max(documentRoot.scrollHeight, documentBody.scrollHeight, viewportHeight);
+      const scale = Math.min(1, viewportWidth / contentWidth, viewportHeight / contentHeight);
+
+      documentRoot.style.setProperty("--hub-embed-scale", String(scale));
+      documentBody.style.transform = `scale(${scale})`;
+    });
+  });
+}
+
+function watchEmbeddedGame() {
+  embeddedMutationObserver?.disconnect();
+  let documentBody;
+  try { documentBody = frame.contentDocument?.body; } catch (error) { return; }
+  if (!documentBody) return;
+
+  embeddedMutationObserver = new MutationObserver(fitEmbeddedGame);
+  embeddedMutationObserver.observe(documentBody, { childList: true, subtree: true });
+  frame.contentWindow?.addEventListener("click", () => setTimeout(fitEmbeddedGame, 60), { capture: true });
+  frame.contentWindow?.addEventListener("change", () => setTimeout(fitEmbeddedGame, 60), { capture: true });
+  fitEmbeddedGame();
+  clearTimeout(delayedFitTimer);
+  delayedFitTimer = setTimeout(fitEmbeddedGame, 500);
 }
 
 function selectGame(slug, updateHistory = true) {
@@ -61,8 +110,14 @@ function selectGame(slug, updateHistory = true) {
 }
 
 gameButtons.forEach((button) => button.addEventListener("click", () => selectGame(button.dataset.game)));
-frame.addEventListener("load", () => loadingCover.classList.add("hidden"));
-window.addEventListener("resize", fitBroadcastFrame, { passive: true });
+frame.addEventListener("load", () => {
+  loadingCover.classList.add("hidden");
+  watchEmbeddedGame();
+});
+window.addEventListener("resize", () => {
+  fitBroadcastFrame();
+  fitEmbeddedGame();
+}, { passive: true });
 window.addEventListener("hashchange", () => selectGame(gameFromLocation(), false));
 fitBroadcastFrame();
 selectGame(gameFromLocation(), !location.hash);
