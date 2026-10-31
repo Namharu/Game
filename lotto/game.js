@@ -26,7 +26,7 @@ let timing={mix:2200,flight:700,gap:500};
 let manual=false,requested=false,paused=false,drawClock=0;
 let running=false,order=[],drawn=[],winning=new Set(),flight=null,nextDraw=0;
 function lockSettings(locked){$('#drawMode').disabled=locked;$('#drawSpeed').disabled=locked;$('#drawCount').disabled=locked;$('#winningNumbers').disabled=locked;}
-function reset(keepBalls=false){paused=false;requested=false;running=false;flight=null;drawn=[];order=[];lockSettings(false);$('#mix').disabled=false;$('#resultBalls').replaceChildren();$('#drawNumbers').replaceChildren();$('#matchPanel').dataset.status='waiting';$('#resultTitle').textContent='추첨 번호';$('#matchSummary').textContent='설정을 입력하고 추첨을 시작하세요.';$('#validation').textContent='';mixing=true;airPower=1;airTime=0;balls.forEach((b,i)=>{if(keepBalls===true)return;b.drawn=false;b.flying=false;b.m.visible=true;b.m.scale.setScalar(1);const row=Math.floor(i/9),col=i%9;b.x=(col-4)*.32;b.y=-1.58+row*.31;b.z=(i%3-1)*.19;b.vx=0;b.vy=0;b.vz=0;b.m.rotation.set(Math.random()*6,Math.random()*6,0)});$('#mix').textContent=$('#drawMode').value==='manual'?'공 하나 뽑기 ▶':'추첨 시작 ▶';$('#state').textContent='대기 중 · 공을 섞고 있습니다';syncButtons();}
+function reset(keepBalls=false){paused=false;requested=false;running=false;flight=null;drawn=[];order=[];lockSettings(false);$('#mix').disabled=false;$('#resultBalls').replaceChildren();$('#drawNumbers').replaceChildren();$('#winningBalls').replaceChildren();$('#matchPanel').dataset.status='waiting';$('#resultTitle').textContent='추첨 번호';$('#matchSummary').textContent='설정을 입력하고 추첨을 시작하세요.';$('#validation').textContent='';mixing=true;airPower=1;airTime=0;balls.forEach((b,i)=>{if(keepBalls===true)return;b.drawn=false;b.flying=false;b.m.visible=true;b.m.scale.setScalar(1);const row=Math.floor(i/9),col=i%9;b.x=(col-4)*.32;b.y=-1.58+row*.31;b.z=(i%3-1)*.19;b.vx=0;b.vy=0;b.vz=0;b.m.rotation.set(Math.random()*6,Math.random()*6,0)});$('#mix').textContent=$('#drawMode').value==='manual'?'공 하나 뽑기 ▶':'추첨 시작 ▶';$('#state').textContent='대기 중 · 공을 섞고 있습니다';syncButtons();}
 function step(dt){
  const live=balls.filter(b=>!b.drawn&&!b.flying);
  airTime+=dt;airPower+=((mixing?mult:0)-airPower)*Math.min(1,dt*5);
@@ -61,7 +61,8 @@ function showResults(done=false){
  const hits=drawn.filter(n=>winning.has(n)).sort((a,b)=>a-b);
  $('#resultTitle').textContent=(done?'추첨 완료':'추첨 중')+' · '+drawn.length+' / '+order.length;
  $('#matchPanel').dataset.status=hits.length?'hit':done?'miss':'waiting';
- $('#matchSummary').textContent=hits.length?'당첨 '+hits.length+'개 · '+hits.join(', '):(done?'일치하는 당첨번호가 없습니다.':'당첨번호 확인 중…');
+ $('#winningBalls').replaceChildren(...hits.map(n=>{const ball=document.createElement('span');ball.className='winning-ball';ball.style.setProperty('--ball-color',ballColor(n));const number=document.createElement('b');number.textContent=n;ball.append(number);ball.setAttribute('aria-label',n+'번 당첨');return ball;}));
+ $('#matchSummary').textContent=hits.length?'당첨 '+hits.length+'개':(done?'일치하는 당첨번호가 없습니다.':'당첨번호 확인 중…');
 }
 function updateDraw(now){
  if(!running||paused)return;
