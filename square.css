@@ -27,7 +27,7 @@
 .square-layout.embed-lotto .number-row i { width:56px; height:56px; font-size:24px; }
 .square-layout.embed-high-low .table { padding:30px 12px; }
 .square-layout.embed-high-low .card { width:130px; }
-.square-layout.embed-high-low .choices { display:grid; gap:16px; grid-template-columns:1fr; margin:20px 0; }
+.square-layout.embed-high-low .choices { display:grid; gap:12px; grid-template-columns:1fr 1fr; margin:20px auto 0; }
 .square-layout.embed-high-low .choice { width:100%; }
 .square-layout.embed-high-low .restart { width:100%; margin-top:20px; }
 .square-layout.embed-cannon main { padding:0; }
@@ -105,3 +105,4 @@
 .square-layout.embed-lotto .guide .actions { grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:10px; }
 .square-layout.embed-lotto .actions button { min-height:46px; padding:10px; white-space:nowrap; font-size:15px; }
 .square-layout.embed-lotto .actions .primary { min-height:54px; padding:14px 18px; font-size:18px; }
+.square-layout.embed-high-low .choice.high{order:-1}.square-layout.embed-high-low .choice span{font-size:20px}

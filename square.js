@@ -28,7 +28,7 @@
   }
   if (root.classList.contains('embed-animal-race')) move('.game > aside');
   if (root.classList.contains('embed-lotto')) move('.guide');
-  if (root.classList.contains('embed-high-low')) move('.choices, .restart');
+  if (root.classList.contains('embed-high-low')) move('.restart');
   if (root.classList.contains('embed-pinball')) move('.console-panel');
   if (root.classList.contains('embed-cannon')) move('#startButton, #soundButton');
   if (!controls.children.length) {
