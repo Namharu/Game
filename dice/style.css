@@ -2,3 +2,5 @@
 html.embedded,html.embedded body{margin:0;width:880px;height:600px;overflow:hidden}.embedded header,.embedded footer{display:none}.embedded main{margin:0;border-radius:0;box-shadow:none}header a{font-size:13px;color:inherit}
 
 [hidden]{display:none!important}#diceArea{top:140px}#prediction{position:absolute;top:390px;left:100px;width:400px;display:flex;gap:12px}#prediction button{flex:1;padding:9px;background:#ffe08a;color:#273b34;font-size:20px;border:0;box-shadow:0 3px #ae8e36}#prediction button:hover:not(:disabled){background:#ffedba}.result{top:448px;padding:7px}.result strong{font-size:30px}#formula{top:521px}aside h2{margin-bottom:14px}aside select{margin:6px 0 12px}aside input{margin:10px 0 16px}#history{flex:1;min-height:0}#status{padding:0 16px;font-size:16px;font-weight:650}
+
+.result{grid-template-columns:repeat(3,minmax(0,1fr))}.result>div+div{border-left:1px solid #a9d0bc44}#verdict[data-correct="true"]{color:#8ff0af}#verdict[data-correct="false"]{color:#ffaaa0}
