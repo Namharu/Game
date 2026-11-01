@@ -1,7 +1,7 @@
 "use strict";
 const games = {
   draw: "통합 뽑기", ladder: "사다리",
-  "high-low": "하이로우", pinball: "핀볼", "animal-race": "동물경주",
+  "high-low": "카드게임", pinball: "핀볼", "animal-race": "동물경주",
   cannon: "대포", lotto: "로또번호 추첨기", wheel: "돌림판", coin: "동전 앞뒤", dice: "주사위 던지기"
 };
 const playWindow = document.querySelector('.play-window');
@@ -29,7 +29,7 @@ function renderGame(slug) {
   standalone.hidden = !slug;
   frame = null;
   if (!slug) { playWindow.replaceChildren(homeScreen); return; }
-  standalone.href = './' + slug + '/?embed=1&layout=22';
+  standalone.href = './' + slug + '/?embed=1&layout=23';
   // A fresh iframe has no previous game in its own navigation history.
   // Parent history is the single source of truth for both title and content.
   frame = document.createElement('iframe');
