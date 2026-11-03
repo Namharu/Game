@@ -3,6 +3,15 @@ const newItem=document.querySelector('#newItem'),newWeight=document.querySelecto
 const CURRENT='namharu-wheel-current-v2',OLD_CURRENT='namharu-wheel-current-v1',PRESETS='namharu-wheel-presets-v2',OLD_PRESETS='namharu-wheel-presets-v1',palette=['#ef1760','#2598df','#ffc928','#29bd91','#8d6de8','#ff714b','#3fcbd1','#f05cac','#6fb640','#ea9b26'];
 let items=loadCurrent(),rotation=0,mode='idle',speed=.012,speedScale=1,last=performance.now(),stopStart=0,stopFrom=0,stopDistance=0,stopDuration=4500;
 let pointerText='';
+const bulbLevels=new Float32Array(48);let bulbClock=0,bulbStep=0;
+function updateBulbs(dt){
+ const decay=Math.exp(-dt/360);
+ for(let i=0;i<48;i++)bulbLevels[i]=bulbLevels[i]<.003?0:bulbLevels[i]*decay;
+ if(mode==='idle')return;
+ bulbClock+=dt;
+ const interval=70/Math.sqrt(speedScale);
+ while(bulbClock>=interval){bulbClock-=interval;bulbStep=(bulbStep+1)%48;for(let k=0;k<3;k++)bulbLevels[(bulbStep+k*16)%48]=1;}
+}
 function cleanWeight(v){return Math.min(999,Math.max(1,Math.round(Number(v)||1)))}
 function consolidate(list){const grouped=[];for(const raw of list){const text=String(raw.text||'항목').trim()||'항목',key=text.toLocaleLowerCase('ko-KR'),found=grouped.find(x=>x.key===key),weight=cleanWeight(raw.weight);if(found)found.weight=cleanWeight(found.weight+weight);else grouped.push({text,color:raw.color||palette[grouped.length%palette.length],weight,key})}return grouped.map(({key,...x})=>x)}
 function loadCurrent(){let value=null;try{value=JSON.parse(localStorage.getItem(CURRENT)||localStorage.getItem(OLD_CURRENT))}catch{}if(Array.isArray(value)&&value.length>1)return consolidate(value);return[{text:'당첨',color:palette[0],weight:1},{text:'한번 더',color:palette[1],weight:1},{text:'꽝',color:palette[2],weight:3}]}
@@ -22,12 +31,12 @@ function draw(){
  const shine=ctx.createRadialGradient(-r*.2,-r*.3,0,0,0,r);shine.addColorStop(0,'#ffffff24');shine.addColorStop(.65,'#00000000');shine.addColorStop(1,'#00000065');ctx.fillStyle=shine;ctx.fill();ctx.strokeStyle='#ffe9a1';ctx.lineWidth=3;ctx.stroke();
  ctx.save();ctx.rotate(a+slice/2);ctx.translate(r*.64,0);ctx.rotate(Math.PI/2);const size=fitText(item.text,r*.56,slice);ctx.font='900 '+size+'px system-ui,sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.lineJoin='round';ctx.lineWidth=Math.max(3,size*.16);ctx.strokeStyle='#38220bcc';ctx.strokeText(item.text,0,0);ctx.fillStyle='#fffbea';ctx.fillText(item.text,0,0);ctx.restore();angle=b});
  ctx.restore();ctx.beginPath();ctx.arc(0,0,r,0,tau);ctx.lineWidth=5;ctx.strokeStyle='#ffdf84';ctx.stroke();
- for(let i=0;i<48;i++){const a=i*tau/48,x=Math.cos(a)*w*.448,y=Math.sin(a)*w*.448;ctx.save();ctx.translate(x,y);circle(8,'#a2651c','#2c1307',2);const glow=ctx.createRadialGradient(-2,-2,0,0,0,6);glow.addColorStop(0,'#fffef0');glow.addColorStop(.45,'#ffedaf');glow.addColorStop(1,'#edaa31');ctx.shadowColor='#ffd96b';ctx.shadowBlur=10;circle(5.5,glow);ctx.restore()}
+ for(let i=0;i<48;i++){const a=i*tau/48,x=Math.cos(a)*w*.448,y=Math.sin(a)*w*.448;ctx.save();ctx.translate(x,y);circle(8,'#a2651c','#2c1307',2);circle(5.5,'#95632a');const level=bulbLevels[i];if(level>0){const glow=ctx.createRadialGradient(-2,-2,0,0,0,6);glow.addColorStop(0,'#fffef0');glow.addColorStop(.45,'#ffedaf');glow.addColorStop(1,'#edaa31');ctx.globalAlpha=level;ctx.shadowColor='#ffd96b';ctx.shadowBlur=8+18*level;circle(5.5,glow);}ctx.restore()}
  circle(33,gold,'#61330c',3);circle(24,gold,'#ffe9a1',2);ctx.fillStyle='#774112';ctx.font='bold 28px serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('★',0,1);ctx.restore();
 }
 function winningIndex(){const tau=Math.PI*2,total=totalWeight(),local=(((-Math.PI/2-rotation)%tau)+tau)%tau;let angle=0;for(let i=0;i<items.length;i++){angle+=tau*items[i].weight/total;if(local<angle)return i}return items.length-1}
 function updatePointerLabel(){const item=items[winningIndex()];if(!item||item.text===pointerText)return;pointerText=item.text;pointerLabel.textContent=item.text;pointerLabel.style.borderColor=item.color;pointerLabel.style.textShadow=`0 0 18px ${item.color}`}
-function loop(now){const dt=Math.min(40,now-last);last=now;if(mode==='spinning')rotation+=speed*speedScale*dt;else if(mode==='stopping'){const t=Math.min(1,(now-stopStart)/stopDuration),m=speed*speedScale*stopDuration/stopDistance,p=(-2*t*t*t+3*t*t)+m*(t*t*t-2*t*t+t);rotation=stopFrom+stopDistance*p;if(t>=1)finish()}rotation%=Math.PI*2;draw();updatePointerLabel();requestAnimationFrame(loop)}
+function loop(now){const dt=Math.min(40,now-last);last=now;if(mode==='spinning')rotation+=speed*speedScale*dt;else if(mode==='stopping'){const t=Math.min(1,(now-stopStart)/stopDuration),m=speed*speedScale*stopDuration/stopDistance,p=(-2*t*t*t+3*t*t)+m*(t*t*t-2*t*t+t);rotation=stopFrom+stopDistance*p;if(t>=1)finish()}rotation%=Math.PI*2;updateBulbs(dt);draw();updatePointerLabel();requestAnimationFrame(loop)}
 function start(){if(items.length<2)return;mode='spinning';spinBtn.textContent='멈춤';spinBtn.classList.add('stop');setEditing(false)}
 function stop(){if(mode!=='spinning')return;mode='stopping';spinBtn.textContent='감속 중…';spinBtn.disabled=true;stopStart=performance.now();stopFrom=rotation;stopDistance=Math.max(Math.PI*5,speed*speedScale*stopDuration/2+(Math.random()-.5)*Math.PI*.8)}
 function finish(){mode='idle';spinBtn.textContent='시작';spinBtn.classList.remove('stop');spinBtn.disabled=false;setEditing(true)}
