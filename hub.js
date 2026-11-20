@@ -2,7 +2,7 @@
 const games = {
   draw: "통합 뽑기", ladder: "사다리",
   "high-low": "카드게임", pinball: "핀볼", "animal-race": "동물경주",
-  cannon: "대포", lotto: "로또번호 추첨기", wheel: "돌림판", coin: "동전 앞뒤", dice: "주사위 던지기"
+  cannon: "대포", lotto: "로또번호 추첨기", wheel: "돌림판", coin: "동전 앞뒤", dice: "주사위 던지기", survival: "동물 서바이벌"
 };
 const playWindow = document.querySelector('.play-window');
 const homeScreen = document.querySelector('#home-screen');

@@ -12,6 +12,8 @@
 - 대포: https://namharu.github.io/Game/cannon/
 - 로또번호 추첨기: https://namharu.github.io/Game/lotto/
 
+- 동물 서바이벌 (6개 맵): https://namharu.github.io/Game/survival/
+
 ## 주요 기능
 
 - 메인 화면을 방송용 1280×720 고정 프레임으로 구성
@@ -29,4 +31,3 @@
 - PC 및 모바일 화면 지원
 
 GitHub Pages에서는 저장소 루트에 이 파일들을 배치하고 `main` 브랜치의 루트를 배포 대상으로 설정하면 됩니다.
-

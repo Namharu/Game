@@ -1,0 +1,12 @@
+import * as THREE from '../vendor/three.module.js';
+import fs from 'node:fs';
+import assert from 'node:assert/strict';
+class Element{constructor(){this.children=[];this.value='';this.classList={add(){},remove(){}}}append(...x){this.children.push(...x)}replaceChildren(...x){this.children=x}setAttribute(){}addEventListener(){}getContext(){return new Proxy({},{get:(_,k)=>k==='createLinearGradient'?()=>({addColorStop(){}}):()=>{}})}}
+const nodes=new Map();const el=s=>{if(!nodes.has(s))nodes.set(s,new Element());return nodes.get(s)};
+el('#count').value='8';el('#duration').value='30';el('#map').value='cliff';
+globalThis.document={querySelector:el,createElement:()=>new Element(),body:new Element()};globalThis.innerWidth=880;globalThis.innerHeight=600;globalThis.devicePixelRatio=1;globalThis.addEventListener=()=>{};globalThis.requestAnimationFrame=()=>{};globalThis.localStorage={getItem:()=>null,setItem(){}};
+const T={...THREE,WebGLRenderer:class{constructor(){this.domElement=new Element();this.shadowMap={}}setPixelRatio(){}setSize(){}render(){}}};
+let source=fs.readFileSync(new URL('../game.js',import.meta.url),'utf8').replace(/import \* as T from .*?;\s*/,'');
+const test=new Function('T',source+`;return {run(m,n,seconds){$('#map').value=m;$('#count').value=n;$('#duration').value=seconds;names[0]='<script>literal</script>';sound=false;start();state='running';let steps=0;while(state==='running'&&steps<36000){simulate(1/60);steps++;}return {state,time,alive:players.filter(p=>p.alive).length,ranking:ranking.map(p=>p.i),players:players.map(p=>({x:p.x,z:p.z})),rows:$('#ranking').children.length,winner:$('#winner').textContent};},pause(){start();state='running';paused=true;const before=time;const x=players[0].x;frame(performance.now()+50);return before===time&&x===players[0].x},reset(){settings();return state==='setup'&&hazards.length===0&&ranking.length===0}}`)(T);
+let seed=20261120;Math.random=()=>{seed=(1664525*seed+1013904223)>>>0;return seed/4294967296};
+const results=[];for(const map of ['cliff','windmill','ice','bridge','bus','factory'])for(const n of [2,8,16])for(const seconds of [30,60,90,120]){const r=test.run(map,n,seconds);assert.equal(r.state,'finished',`${map} ${n} did not finish`);assert.equal(r.alive,1);assert.equal(r.ranking.length,n-1);assert.equal(new Set(r.ranking).size,n-1);assert.equal(r.rows,n);assert(r.players.every(p=>Number.isFinite(p.x)&&Number.isFinite(p.z)));assert(test.pause());assert(test.reset());results.push({map,n,seconds,finishedAt:+r.time.toFixed(1)});}console.log(JSON.stringify(results,null,2));
