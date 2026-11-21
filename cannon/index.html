@@ -1,13 +1,12 @@
 <!doctype html>
-<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>대포 — NAMHARU GAME</title><link rel="stylesheet" href="styles.css?v=number-cannon-1"><script>if(new URLSearchParams(location.search).get('embed')==='1')document.documentElement.classList.add('embedded');</script></head>
+<html lang="ko"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>대포 — NAMHARU GAME</title><link rel="stylesheet" href="styles.css?v=number-cannon-2"><script>if(new URLSearchParams(location.search).get('embed')==='1')document.documentElement.classList.add('embedded');</script></head>
 <body><header><b>남하루 · 대포 공뽑기</b><a href="../">게임 목록으로</a></header>
 <main>
   <section class="stage" aria-label="대포 게임 화면">
     <canvas id="scene" width="600" height="600" aria-label="대포에서 번호 공이 발사되는 화면"></canvas>
     <div class="stage-top"><span id="poolLabel">1 ~ 3번</span><span id="remaining">0 / 7발</span></div>
-    <div id="result" class="result" aria-live="polite"><small>준비 완료</small><strong>?</strong></div>
     <button id="barrelFire" class="barrel-fire" type="button" aria-label="대포에서 발사">발사</button>
-    <section class="history-box"><div class="history-heading"><h2>추첨 결과</h2><span id="drawCount">0회</span></div><ol id="history" aria-label="추첨 기록"><li class="empty">발사하면 결과가 표시됩니다.</li></ol></section>
+    <ol id="history" class="number-results" aria-label="추첨 결과" aria-live="polite"></ol>
     <p id="status" role="status">발사를 누르면 공을 하나씩 뽑습니다.</p>
   </section>
   <aside>
@@ -19,8 +18,10 @@
       <p class="hint">예: 3을 입력하면 매번 1~3번 중에서 뽑습니다.</p>
       <label for="shotLimit">공 개수</label><div class="count-row"><input id="shotLimit" type="number" min="1" max="1000000" step="1" value="7" required><span>개</span></div><p class="hint">입력한 개수만큼 발사합니다. 번호는 중복될 수 있습니다.</p>
 
+      <fieldset class="fire-mode"><legend>발사 방식</legend><label><input type="radio" name="fireMode" value="manual" checked> 수동</label><label><input type="radio" name="fireMode" value="auto"> 자동</label></fieldset>
+      <p class="hint">자동은 시작을 누르면 1초마다 발사합니다.</p>
     </form>
     <div class="actions"><button id="newGame" class="primary" type="submit" form="settings">새 게임</button></div>
   </aside>
 </main><footer>새 게임을 누르면 입력한 설정으로 추첨 기록이 초기화됩니다. · 게임 화면 600 × 600</footer>
-<script src="game.js?v=number-cannon-1"></script></body></html>
+<script src="game.js?v=number-cannon-2"></script></body></html>
