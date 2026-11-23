@@ -63,11 +63,11 @@ button, a { font: inherit; }
 .menu-heading { display: flex; align-items: center; justify-content: space-between; margin-top: 23px; padding: 9px 3px 9px 7px; border-bottom: 2px solid var(--ink); color: #746a59; font-size: 10px; font-weight: 900; letter-spacing: .14em; }
 .menu-heading strong { color: var(--blue); font-size: 14px; letter-spacing: -.18em; }
 .game-list { display: grid; gap: 5px; margin-top: 10px; }
-.game-list button { display: grid; grid-template-columns: 34px 1fr; align-items: center; min-height: 49px; padding: 0 10px 0 7px; color: var(--ink); background: transparent; border: 0; border-left: 4px solid transparent; border-radius: 0 7px 7px 0; text-align: left; cursor: pointer; transition: background .15s, transform .15s; }
-.game-list button:hover, .game-list button:focus-visible { background: var(--paper-deep); outline: 0; transform: translateX(2px); }
-.game-list button[aria-current="page"] { color: #fff; background: var(--blue); border-left-color: var(--yellow); box-shadow: 3px 3px 0 var(--ink); }
+.game-list :is(button, a) { display: grid; grid-template-columns: 34px 1fr; align-items: center; min-height: 49px; padding: 0 10px 0 7px; color: var(--ink); background: transparent; border: 0; border-left: 4px solid transparent; border-radius: 0 7px 7px 0; text-align: left; cursor: pointer; transition: background .15s, transform .15s; }
+.game-list :is(button, a):hover, .game-list :is(button, a):focus-visible { background: var(--paper-deep); outline: 0; transform: translateX(2px); }
+.game-list :is(button, a)[aria-current="page"] { color: #fff; background: var(--blue); border-left-color: var(--yellow); box-shadow: 3px 3px 0 var(--ink); }
 .game-list span { color: #8b806e; font: 700 10px/1 ui-monospace, monospace; }
-.game-list button[aria-current="page"] span { color: #d8ebff; }
+.game-list :is(button, a)[aria-current="page"] span { color: #d8ebff; }
 .game-list b { overflow: hidden; font-size: 13px; text-overflow: ellipsis; white-space: nowrap; }
 .menu-note { display: grid; gap: 3px; margin-top: auto; padding: 12px 13px; border: 2px dashed var(--line); background: var(--paper); }
 .menu-note span { color: var(--red); font: 900 8px/1.2 ui-monospace, monospace; letter-spacing: .14em; }
@@ -91,13 +91,13 @@ button, a { font: inherit; }
 .loading-cover span { width: 36px; height: 36px; border: 5px solid var(--paper-deep); border-top-color: var(--blue); border-radius: 50%; animation: spin .75s linear infinite; }
 @keyframes spin { to { transform: rotate(360deg); } }
 @media (max-width: 700px) { body { background-size: 16px 16px; } .frame-viewport { margin-top: 8px; margin-bottom: 8px; } }
-@media (prefers-reduced-motion: reduce) { .game-list button, .loading-cover { transition: none; } .loading-cover span { animation-duration: 1.8s; } }
+@media (prefers-reduced-motion: reduce) { .game-list :is(button, a), .loading-cover { transition: none; } .loading-cover span { animation-duration: 1.8s; } }
 /* Fixed capture size, with surrounding navigation reflowing instead of scaling. */
 .frame-viewport { position:relative; width:1060px; height:auto; margin:12px auto; }
 .broadcast-frame { position:relative; inset:auto; width:1060px; height:auto; min-height:676px; grid-template-columns:180px 880px; border:0; transform:none; overflow:visible; }
 .game-menu { padding:18px 10px; border-right:2px solid var(--ink); }
 .game-list b { font-size:16px; }
-.game-list button { grid-template-columns:25px 1fr; padding-left:3px; }
+.game-list :is(button, a) { grid-template-columns:25px 1fr; padding-left:3px; }
 .game-titlebar { padding:0 18px; }
 .game-titlebar h1 { font-size:26px; }
 .title-actions a { font-size:14px; }
@@ -110,7 +110,7 @@ button, a { font: inherit; }
  .game-menu { padding:8px; border:0; border-bottom:2px solid var(--ink); }
  .brand,.menu-heading { display:none; }
  .game-list { display:flex; flex-wrap:wrap; margin:0; gap:4px; }
- .game-list button { display:block; min-height:40px; padding:8px 12px; }
+ .game-list :is(button, a) { display:block; min-height:40px; padding:8px 12px; }
  .game-list span { display:none; }
  .game-list b { font-size:15px; }
 }
@@ -139,7 +139,7 @@ button, a { font: inherit; }
 
 .play-window[data-game="coin"],.play-window[data-game="dice"]{width:880px;height:600px}
 
-@media(min-width:1101px){.game-list{gap:3px}.game-list button{min-height:38px}}
+@media(min-width:1101px){.game-list{gap:3px}.game-list :is(button, a){min-height:38px}}
 
 
 #home-screen{position:relative}#home-screen #timer-launch{position:absolute;top:24px;right:24px;padding:12px 18px;border:1px solid #c8b894;border-radius:8px;background:#fffaf0;color:#254d91;font:700 15px system-ui,sans-serif;cursor:pointer}#home-screen #timer-launch:hover{background:#f1e5cc}
@@ -151,3 +151,5 @@ button, a { font: inherit; }
 
 /* Home uses the whole content area; games keep their own capture layout. */
 .play-window[data-game=""]{height:600px}
+
+.game-list a { text-decoration: none; }
