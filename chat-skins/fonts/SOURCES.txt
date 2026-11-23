@@ -1,0 +1,7 @@
+noto.woff2: https://github.com/google/fonts/tree/main/ofl/notosanskr (original: NotoSansKR[wght].ttf; lossless WOFF2 packaging; license: noto-OFL.txt)
+jua.woff2: https://github.com/google/fonts/tree/main/ofl/jua (original: Jua-Regular.ttf; lossless WOFF2 packaging; license: jua-OFL.txt)
+dohyeon.woff2: https://github.com/google/fonts/tree/main/ofl/dohyeon (original: DoHyeon-Regular.ttf; lossless WOFF2 packaging; license: dohyeon-OFL.txt)
+gowun.woff2: https://github.com/google/fonts/tree/main/ofl/gowundodum (original: GowunDodum-Regular.ttf; lossless WOFF2 packaging; license: gowun-OFL.txt)
+pen.woff2: https://github.com/google/fonts/tree/main/ofl/nanumpenscript (original: NanumPenScript-Regular.ttf; lossless WOFF2 packaging; license: pen-OFL.txt)
+gaegu.woff2: https://github.com/google/fonts/tree/main/ofl/gaegu (original: Gaegu-Regular.ttf; lossless WOFF2 packaging; license: gaegu-OFL.txt)
+myeongjo.woff2: https://github.com/google/fonts/tree/main/ofl/nanummyeongjo (original: NanumMyeongjo-Regular.ttf; lossless WOFF2 packaging; license: myeongjo-OFL.txt)

@@ -1,5 +1,15 @@
 "use strict";
 window.ChatSkins=(()=>{
+const fonts=[
+{id:'system',name:'기본 고딕',label:'기본 고딕 · 또렷한 기본 글꼴'},
+{id:'noto',name:'본고딕',label:'본고딕 · 깔끔하고 읽기 편하게',variable:true},
+{id:'jua',name:'주아체',label:'주아체 · 둥글고 귀엽게'},
+{id:'dohyeon',name:'도현체',label:'도현체 · 굵고 시원하게'},
+{id:'gowun',name:'고운돋움',label:'고운돋움 · 부드럽고 단정하게'},
+{id:'pen',name:'나눔손글씨 펜',label:'나눔손글씨 펜 · 편안한 손글씨'},
+{id:'gaegu',name:'개구체',label:'개구체 · 장난스러운 손글씨'},
+{id:'myeongjo',name:'나눔명조',label:'나눔명조 · 차분한 책 글씨'}
+];
 const themes=[
 {id:'retropink',name:'레트로 글라스 핑크',tag:'분홍 제목줄 · 대각선 반사광',fresh:true,bg:'#f9d4e9',ink:'#a94f82',accent:'#d987b2',line:'#c788ad'},
 {id:'arcane',name:'아케인 골드',tag:'청록 안개 · 연속 금속 프레임',fresh:true,bg:'#071d23',ink:'#f1d278',accent:'#43c7c1',line:'#ac9158'},
@@ -40,14 +50,16 @@ const themes=[
 ];
 const priority=['retropink','desktop','arcane','halloween'];themes.sort((a,b)=>(priority.includes(a.id)?priority.indexOf(a.id):-1)===-1?(priority.includes(b.id)?1:0):(priority.includes(b.id)?priority.indexOf(a.id)-priority.indexOf(b.id):-1));
 const aliases={pink:'heart','retro-blue':'desktop','retro-pink':'retropink',mint:'snow',cloud:'snow',pixel:'rpg',gold:'rpg',midnight:'neon'};
-function normalize(s={}){const id=aliases[s.theme]||s.theme;return{theme:themes.some(t=>t.id===id)?id:'heart',palette:['original','mint','lavender'].includes(s.palette)?s.palette:'original',size:Math.max(14,Math.min(32,Number(s.size)||22)),opacity:Math.max(20,Math.min(100,Number(s.opacity)||96)),gap:Math.max(8,Math.min(32,Number(s.gap)||14))};}
-function css(input){const s=normalize(input),t={...themes.find(t=>t.id===s.theme)},q='.message__wrapper.chat';
+function normalize(s={}){const id=aliases[s.theme]||s.theme;return{font:fonts.some(f=>f.id===s.font)?s.font:'system',theme:themes.some(t=>t.id===id)?id:'heart',palette:['original','mint','lavender'].includes(s.palette)?s.palette:'original',size:Math.max(14,Math.min(32,Number(s.size)||22)),opacity:Math.max(20,Math.min(100,Number(s.opacity)||96)),gap:Math.max(8,Math.min(32,Number(s.gap)||14))};}
+function css(input,fontBase="https://namharu.github.io/Game/chat-skins/fonts/"){const s=normalize(input),t={...themes.find(t=>t.id===s.theme)},q='.message__wrapper.chat';
+const selectedFont=fonts.find(f=>f.id===s.font),fontFamily=s.font==='system'?'"Malgun Gothic",system-ui,sans-serif':'"NHChat-'+s.font+'","Malgun Gothic",system-ui,sans-serif';
 const dark=['neon','rpg','chalk','arcane','scifi','tactical','gold','round','blackbox','hud','neonbright'].includes(t.id);
 if(s.palette!=='original'&&t.id!=='clear'){const mint=s.palette==='mint';t.accent=dark?(mint?'#a3edce':'#d8b5ff'):(mint?'#3d8a78':'#9364ae');t.bg=dark?(mint?'#162e2b':'#272039'):(mint?'#f0fff8':'#fcf4ff');t.ink=dark?'#f7f5ff':(mint?'#345e52':'#624776');t.line=mint?'#99ccb8':'#ceb0df';}
 const rgb=[1,3,5].map(i=>parseInt(t.bg.slice(i,i+2),16)).join(','),bg=`rgba(${rgb},${s.opacity/100})`;
 let out=`/* NAMHARU · ${t.name} · 팬더 방송도우미 / OBS 사용자 지정 CSS */\n`;
+if(s.font!=='system')out+=`@font-face{font-family:"NHChat-${s.font}";src:url("${fontBase}${s.font}.woff2") format("woff2");font-style:normal;font-weight:${selectedFont.variable?'100 900':'400'};font-display:swap;}\n`;
 const rule=(part,body)=>{out+=part.split(',').map(x=>q+x).join(',')+'{'+body.split(';').filter(Boolean).map(x=>x+'!important').join(';')+';}\n';};
-rule('',`box-sizing:border-box;position:relative;display:block;list-style:none;width:fit-content;min-width:140px;max-width:calc(100% - 32px);margin:${Math.round(s.gap/2)}px 16px;padding:13px 18px;overflow:visible;text-align:left;text-indent:0;background:${bg};color:${t.ink};border:1.5px solid ${t.line};border-radius:18px;box-shadow:0 3px 0 ${t.line}55;font:${s.size}px/1.5 "Malgun Gothic",system-ui,sans-serif`);
+rule('',`box-sizing:border-box;position:relative;display:block;list-style:none;width:fit-content;min-width:140px;max-width:calc(100% - 32px);margin:${Math.round(s.gap/2)}px 16px;padding:13px 18px;overflow:visible;text-align:left;text-indent:0;background:${bg};color:${t.ink};border:1.5px solid ${t.line};border-radius:18px;box-shadow:0 3px 0 ${t.line}55;font:${s.size}px/1.5 ${fontFamily}`);
 rule(' *, *::before, *::after','font-family:inherit;box-sizing:border-box');rule('::before,::after','content:none;pointer-events:none');
 rule(' .message__box','display:block;margin:0;padding:0;background:none;border:0;box-shadow:none;width:auto;max-width:100%');
 rule(' .message__nick',`display:block;position:relative;white-space:normal;margin:0 0 6px;padding:0;line-height:1.3;text-indent:0;font-size:${Math.round(s.size*.76)}px`);
@@ -204,5 +216,9 @@ if(t.id==='clear'){
 rule('','padding:0;min-width:0;background:none;border:0;border-radius:0;box-shadow:none');rule(' .message__nick, .message__text','display:inline');rule(' .message__text::before','content:"  ";white-space:pre');rule(' .message__name, .message__name *, .message__text, .message__text *','text-shadow:0 1px 3px #000,1px 0 2px #000,-1px 0 2px #000');
 }
 if(['halloween','crayon','snow','rpg','winter','dotted','messenger'].includes(t.id))rule('',`margin-top:${Math.max(23,s.gap)}px`);
+if(s.font!=='system'){
+rule(' .message__name, .message__name *, .message__text, .message__text *',`font-family:${fontFamily}`);
+if(!selectedFont.variable)rule(' .message__name, .message__name *, .message__text, .message__text *','font-weight:400');
+}
 return out;}
-return{themes,normalize,css};})();
+return{themes,fonts,normalize,css};})();

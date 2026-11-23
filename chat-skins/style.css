@@ -20,3 +20,5 @@
 .skin-thumb[data-skin=danmaku]>.message__wrapper.chat{animation:none!important;max-width:250px!important;white-space:normal!important}.skin-thumb[data-skin=desktop]>.message__wrapper.chat,.skin-thumb[data-skin=retropink]>.message__wrapper.chat{padding:0!important}
 
 .editor #feed[data-theme=arcane]>.message__wrapper.chat{width:calc(100% - 32px)!important}
+
+.font-control{grid-column:1/-1}#fontStatus{font-size:12px;line-height:1.5;margin:7px 0 0;min-height:18px;color:#795a83}
