@@ -1,45 +1,41 @@
 "use strict";
-window.ChatSkins = (() => {
-const themes = [
- {id:'pink',name:'로즈 밀크',tag:'말풍선',bg:'#ffe9f1',ink:'#694858',accent:'#b25582',line:'#f7b9d0',radius:'22px 22px 22px 5px',mark:'♥'},
- {id:'cat',name:'살구 고양이',tag:'캐릭터',bg:'#fff0d6',ink:'#704b36',accent:'#b46c39',line:'#daa575',radius:'20px',mark:'ฅ',type:'cat'},
- {id:'retro-blue',name:'블루 데스크',tag:'레트로',bg:'#e9f0ff',ink:'#334268',accent:'#536fc5',line:'#536fc5',radius:'5px',mark:'▣',type:'retro'},
- {id:'retro-pink',name:'핑크 데스크',tag:'레트로',bg:'#ffe9f4',ink:'#743d66',accent:'#b4669c',line:'#b4669c',radius:'5px',mark:'▣',type:'retro'},
- {id:'memo',name:'레몬 메모',tag:'메모지',bg:'#fff3ae',ink:'#625322',accent:'#9a7824',line:'#ead78a',radius:'2px 2px 22px 2px',mark:'✎',type:'memo'},
- {id:'mint',name:'민트 소다',tag:'말풍선',bg:'#e0f8ef',ink:'#29594e',accent:'#2b8d78',line:'#a0dbc9',radius:'5px 24px 24px 24px',mark:'✿'},
- {id:'cloud',name:'구름 편지',tag:'말풍선',bg:'#f3faff',ink:'#4d6683',accent:'#6b9ec6',line:'#c2e2f4',radius:'32px',mark:'☁',type:'cloud'},
- {id:'neon',name:'나이트 글로우',tag:'네온',bg:'#21182f',ink:'#f3e8ff',accent:'#dfb3ff',line:'#bb83f5',radius:'5px 20px 20px 20px',mark:'✦',type:'neon'},
- {id:'pixel',name:'픽셀 퀘스트',tag:'레트로',bg:'#263d35',ink:'#f2ffca',accent:'#d8ee96',line:'#adce70',radius:'0',mark:'◆',type:'pixel'},
- {id:'gold',name:'골드 라운지',tag:'클래식',bg:'#282623',ink:'#f6e7c8',accent:'#e7c277',line:'#b4965d',radius:'10px',mark:'♛',type:'gold'},
- {id:'midnight',name:'모던 다크',tag:'심플',bg:'#252a34',ink:'#edf0f8',accent:'#b2c3e6',line:'#505c72',radius:'12px',mark:'●'},
- {id:'clear',name:'클리어',tag:'심플',bg:'#ffffff',ink:'#ffffff',accent:'#ffcde5',line:'#ffffff',radius:'0',mark:'',type:'clear'}
+window.ChatSkins=(()=>{
+const themes=[
+{id:'clear',name:'기본 투명',tag:'한 줄 채팅',type:'clear',bg:'#ffffff',ink:'#ffffff',accent:'#ffd5e8',line:'#ffffff'},
+{id:'cat',name:'고양이 라운지',tag:'캐릭터 + 발바닥',type:'cat',bg:'#fff1db',ink:'#654530',accent:'#9d5835',line:'#c58d60'},
+{id:'retro',name:'레트로 데스크',tag:'제목 표시줄 + 창 버튼',type:'retro',bg:'#edf1ff',ink:'#303750',accent:'#4e60b8',line:'#2e3970'},
+{id:'memo',name:'붙여 둔 메모',tag:'테이프 + 줄노트',type:'memo',bg:'#fff6bd',ink:'#61552c',accent:'#967a27',line:'#d7c278'},
+{id:'comic',name:'톡! 코믹',tag:'굵은 외곽선 + 꼬리',type:'comic',bg:'#ffffff',ink:'#24212c',accent:'#b12869',line:'#27232d'},
+{id:'rpg',name:'퀘스트 대화창',tag:'이름표 + 이중 프레임',type:'rpg',bg:'#202735',ink:'#fff0cc',accent:'#f2d28c',line:'#bca16c'}
 ];
-function normalize(s={}){return {theme:themes.some(t=>t.id===s.theme)?s.theme:'pink',size:Math.max(14,Math.min(28,Number(s.size)||18)),opacity:Math.max(20,Math.min(100,Number(s.opacity)||90)),gap:Math.max(8,Math.min(32,Number(s.gap)||18))};}
-function css(input){const s=normalize(input),t=themes.find(t=>t.id===s.theme),r=parseInt(t.bg.slice(1,3),16),g=parseInt(t.bg.slice(3,5),16),b=parseInt(t.bg.slice(5,7),16),q='.message__wrapper.chat',box=q,name=q+' .message__name';
-let out=`/* NAMHARU · ${t.name} · 팬더 방송도우미 채팅용 CSS */
-${q}{display:block!important;position:relative!important;margin:${s.gap}px 6px!important;padding:0!important;background:none!important;border:0!important;box-shadow:none!important;overflow:visible!important;max-width:calc(100% - 12px)!important;}
-${box}{position:relative!important;display:block!important;padding:14px 18px!important;background:rgba(${r},${g},${b},${s.opacity/100})!important;color:${t.ink}!important;border:1px solid ${t.line}!important;border-radius:${t.radius}!important;box-shadow:0 4px 12px #00000016!important;font-family:"Malgun Gothic",system-ui,sans-serif!important;font-size:${s.size}px!important;line-height:1.55!important;text-shadow:none!important;overflow-wrap:anywhere!important;word-break:normal!important;}
-${box} *{font-family:inherit!important;text-shadow:inherit!important;}
-${name}{display:block!important;float:none!important;width:auto!important;margin:0 0 7px!important;padding:0!important;color:${t.accent}!important;font-size:${Math.round(s.size*.76)}px!important;font-weight:800!important;line-height:1.4!important;}
-${name} *{color:inherit!important;font-size:inherit!important;}
-${name}::before{content:"${t.mark}"!important;margin-right:6px!important;}
-${box}::before,${box}::after{content:none!important;}
-`;
-if(t.type==='retro')out+=`${box}{padding-top:38px!important;border-width:2px!important;box-shadow:3px 3px 0 ${t.line}70!important;}${box}::before{content:"CHAT                         −  □  ×"!important;position:absolute!important;top:0!important;left:0!important;right:0!important;padding:3px 9px!important;height:24px!important;background:${t.accent}!important;color:white!important;font-size:11px!important;white-space:pre!important;border-radius:2px 2px 0 0!important;}`;
-if(t.type==='cat')out+=`${box}{border-width:2px!important;margin-top:13px!important;}${box}::before{content:""!important;position:absolute!important;top:-13px!important;left:21px!important;width:20px!important;height:20px!important;background:${t.bg}!important;border-top:2px solid ${t.line}!important;border-left:2px solid ${t.line}!important;transform:rotate(45deg)!important;border-radius:5px 0 0!important;}${box}::after{content:"= ･ω･ ="!important;position:absolute!important;right:13px!important;top:8px!important;font-size:12px!important;color:${t.accent}!important;}${name}{padding-right:65px!important;}`;
-if(t.type==='memo')out+=`${box}{box-shadow:3px 5px 0 #8b712526!important;border:0!important;border-top:6px solid #ead573!important;}`;
-if(t.type==='neon')out+=`${box}{box-shadow:0 0 12px ${t.line}60,inset 3px 0 ${t.line}!important;}`;
-if(t.type==='pixel')out+=`${box}{border:3px solid ${t.line}!important;box-shadow:5px 5px 0 #18251b!important;font-family:monospace!important;}`;
-if(t.type==='gold')out+=`${box}{border-top:3px double ${t.line}!important;border-bottom:3px double ${t.line}!important;}`;
-if(t.type==='cloud')out+=`${box}{border:3px solid white!important;box-shadow:0 4px 0 #c9e5f08a!important;}`;
-if(t.type==='clear')out+=`${box}{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important;text-shadow:0 1px 3px #000,1px 0 2px #000,-1px 0 2px #000!important;}`;
-out+=`${q}{text-align:left!important;box-sizing:border-box!important;width:calc(100% - 12px)!important;list-style:none!important;}
-${q} .message__box{display:block!important;width:auto!important;margin:0!important;padding:0!important;background:none!important;border:0!important;box-shadow:none!important;}
-${q} .message__nick{display:block!important;white-space:normal!important;margin:0!important;padding:0!important;line-height:1.4!important;text-indent:0!important;}
-${q} .message__name{display:inline!important;}
-${q} .message__text,${q} .message__text *{display:revert!important;color:${t.ink}!important;font-size:${s.size}px!important;font-weight:500!important;line-height:1.55!important;text-shadow:${t.type==='clear'?'0 1px 3px #000,1px 0 2px #000,-1px 0 2px #000':'none'}!important;white-space:pre-wrap!important;overflow-wrap:anywhere!important;}
-${q} .message__text{display:block!important;float:none!important;width:auto!important;max-width:100%!important;margin:6px 0 0!important;padding:0!important;background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;}
+const aliases={'pink':'comic','retro-blue':'retro','retro-pink':'retro','mint':'memo','cloud':'comic','neon':'rpg','pixel':'rpg','gold':'rpg','midnight':'rpg'};
+function normalize(s={}){const id=aliases[s.theme]||s.theme;return{theme:themes.some(t=>t.id===id)?id:'cat',palette:['original','mint','lavender'].includes(s.palette)?s.palette:'original',size:Math.max(14,Math.min(28,Number(s.size)||18)),opacity:Math.max(20,Math.min(100,Number(s.opacity)||90)),gap:Math.max(8,Math.min(32,Number(s.gap)||18))};}
+function css(input){const s=normalize(input),t={...themes.find(t=>t.id===s.theme)},q='.message__wrapper.chat';
+if(s.palette!=='original'&&t.type!=='clear'){const mint=s.palette==='mint';t.accent=t.type==='rpg'?(mint?'#9be1be':'#d5b6ff'):(mint?'#327c69':'#8060a7');t.bg=t.type==='rpg'?(mint?'#18312d':'#2e223e'):(mint?'#edf9f0':'#f5edff');if(!['comic','retro'].includes(t.type))t.line=mint?'#79b59a':'#b398ce';}
+const rgb=[1,3,5].map(i=>parseInt(t.bg.slice(i,i+2),16)).join(',');const bg=`rgba(${rgb},${s.opacity/100})`;
+let out=`/* NAMHARU · ${t.name} · 팬더 방송도우미 / OBS 사용자 지정 CSS */
+${q}{box-sizing:border-box!important;position:relative!important;display:block!important;list-style:none!important;width:calc(100% - 24px)!important;max-width:calc(100% - 24px)!important;margin:${s.gap+12}px 12px!important;padding:18px 20px!important;overflow:visible!important;text-align:left!important;background:${bg}!important;color:${t.ink}!important;border:1px solid ${t.line}!important;border-radius:14px!important;box-shadow:none!important;font:${s.size}px/1.55 "Malgun Gothic",system-ui,sans-serif!important;}
+${q} *,${q} *::before,${q} *::after{font-family:inherit!important;}
+${q}::before,${q}::after{content:none!important;}
+${q} .message__box{display:block!important;margin:0!important;padding:0!important;background:none!important;border:0!important;box-shadow:none!important;width:auto!important;}
+${q} .message__nick{display:block!important;white-space:normal!important;margin:0 0 8px!important;padding:0!important;line-height:1.4!important;text-indent:0!important;}
+${q} .message__name,${q} .message__name *{color:${t.accent}!important;font-size:${Math.round(s.size*.78)}px!important;font-weight:800!important;text-shadow:none!important;}
+${q} .message__text,${q} .message__text *{color:${t.ink}!important;font-size:${s.size}px!important;font-weight:500!important;line-height:1.55!important;text-shadow:none!important;white-space:pre-wrap!important;overflow-wrap:anywhere!important;}
+${q} .message__text{display:block!important;float:none!important;width:auto!important;max-width:100%!important;margin:0!important;padding:0!important;background:none!important;border:0!important;border-radius:0!important;box-shadow:none!important;}
 ${q} .message__text img{display:inline-block!important;max-width:100%!important;height:auto!important;vertical-align:middle!important;}
+${q} .chat__nick-group{display:inline-flex!important;align-items:center!important;gap:4px!important;white-space:normal!important;}
+${q} .chat__grade-badge{display:inline-flex!important;align-items:center!important;flex:none!important;vertical-align:middle!important;font-size:${s.size}px!important;}
+${q} .chat__grade-badge svg,${q} .chat__grade-badge img{width:auto!important;height:1em!important;max-width:none!important;}
 `;
+if(t.type==='clear')out+=`${q}{padding:0!important;background:none!important;border:0!important;border-radius:0!important;margin:10px 12px!important;}${q} .message__nick,${q} .message__text{display:inline!important;}${q} .message__text::before{content:"  "!important;white-space:pre!important;}${q} .message__name,${q} .message__name *,${q} .message__text,${q} .message__text *{text-shadow:0 1px 3px #000,1px 0 2px #000,-1px 0 2px #000!important;}`;
+if(t.type==='retro')out+=`${q}{border:2px solid ${t.line}!important;border-radius:0!important;padding:44px 16px 17px!important;box-shadow:5px 5px 0 ${t.line}99!important;}${q}::before{content:"CHAT WINDOW"!important;position:absolute!important;top:0!important;left:0!important;right:0!important;height:29px!important;padding:4px 9px!important;box-sizing:border-box!important;background:${t.accent}!important;color:#fff!important;font:12px/20px monospace!important;}${q}::after{content:"−  □  ×"!important;position:absolute!important;right:8px!important;top:4px!important;color:#fff!important;font:14px monospace!important;}${q} .message__nick{border-bottom:1px dotted ${t.line}!important;padding-bottom:7px!important;}`;
+if(t.type==='memo')out+=`${q}{border:0!important;border-radius:0!important;padding:28px 24px 24px!important;transform:rotate(-1deg)!important;background:repeating-linear-gradient(transparent 0 29px,#bda86633 29px 30px),${bg}!important;box-shadow:3px 6px 9px #0002!important;clip-path:polygon(0 0,100% 0,100% 95%,95% 100%,90% 95%,85% 100%,80% 95%,75% 100%,70% 95%,65% 100%,60% 95%,55% 100%,50% 95%,45% 100%,40% 95%,35% 100%,30% 95%,25% 100%,20% 95%,15% 100%,10% 95%,5% 100%,0 95%)!important;}${q}::before{content:""!important;position:absolute!important;width:72px!important;height:19px!important;background:${t.line}88!important;top:0!important;left:calc(50% - 36px)!important;transform:rotate(4deg)!important;border-left:2px dotted #fff8!important;border-right:2px dotted #fff8!important;}${q} .message__name{font-style:italic!important;}`;
+if(t.type==='comic')out+=`${q}{border:3px solid ${t.line}!important;border-radius:45% 18px 30px 20px / 20px 18px 30px 20px!important;padding:20px 24px 24px!important;box-shadow:6px 6px 0 ${t.line}!important;margin-bottom:28px!important;}${q}::after{content:""!important;position:absolute!important;bottom:-13px!important;left:36px!important;width:20px!important;height:20px!important;background:${t.bg}!important;border-right:3px solid ${t.line}!important;border-bottom:3px solid ${t.line}!important;transform:skew(-20deg) rotate(45deg)!important;}${q} .chat__nick-group{background:${t.accent}!important;padding:3px 10px!important;transform:rotate(-3deg)!important;border:2px solid ${t.line}!important;box-shadow:2px 2px 0 ${t.line}!important;}${q} .message__name,${q} .message__name *{color:#fff!important;}${q} .message__text{font-weight:800!important;}`;
+if(t.type==='rpg')out+=`${q}{border:5px double ${t.line}!important;border-radius:3px!important;box-shadow:inset 0 0 0 3px #0008,4px 4px 0 #0006!important;padding:30px 23px 25px!important;background:linear-gradient(135deg,#ffffff09,transparent),${bg}!important;}${q} .message__nick{position:relative!important;margin-top:-46px!important;margin-bottom:18px!important;}${q} .chat__nick-group{background:${t.bg}!important;border:2px solid ${t.line}!important;padding:5px 14px!important;box-shadow:3px 3px 0 #0005!important;}${q}::after{content:"▼"!important;position:absolute!important;right:13px!important;bottom:5px!important;color:${t.accent}!important;font-size:12px!important;}${q}::before{content:"◆"!important;position:absolute!important;left:-10px!important;bottom:-13px!important;color:${t.line}!important;font-size:22px!important;}`;
+if(t.type==='cat'){
+const cat=`<svg xmlns="http://www.w3.org/2000/svg" width="84" height="70" viewBox="0 0 84 70"><path d="M10 40L8 5Q8 1 14 5L30 18Q42 13 54 18L71 5Q76 1 76 8L74 40Q80 65 42 66Q4 65 10 40" fill="${t.bg}" stroke="${t.line}" stroke-width="3"/><path d="M15 12L18 28L27 21M69 12L65 28L57 21" fill="#e5a3aa"/><path d="M25 39q4-6 8 0m18 0q4-6 8 0M37 46q5 6 10 0M42 47v6m0 0q-6 6-10 0m10 0q6 6 10 0M8 45l12 2M8 51l12-1M64 47l12-2m-12 5l12 1" fill="none" stroke="${t.ink}" stroke-width="2" stroke-linecap="round"/></svg>`;
+const url='url("data:image/svg+xml,'+encodeURIComponent(cat)+'")';
+out+=`${q}{border:2px solid ${t.line}!important;border-radius:34px 18px 24px 8px!important;padding:18px 22px 22px!important;margin-top:38px!important;box-shadow:0 5px 0 ${t.line}55!important;}${q}::before{content:""!important;position:absolute!important;top:-33px!important;left:7px!important;width:75px!important;height:63px!important;background-image:${url}!important;background-size:contain!important;background-repeat:no-repeat!important;}${q} .message__nick{padding-left:64px!important;min-height:22px!important;}${q}::after{content:"●"!important;position:absolute!important;right:13px!important;bottom:5px!important;font-size:20px!important;color:${t.line}88!important;text-shadow:-7px -9px 0 ${t.line}88,2px -12px 0 ${t.line}88,10px -7px 0 ${t.line}88!important;}`;
+}
 return out;}
-return {themes,normalize,css};})();
+return{themes,normalize,css};})();
