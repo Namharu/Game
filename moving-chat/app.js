@@ -1,6 +1,7 @@
 (() => {
   'use strict';
   const A=AvatarGarden,$=s=>document.querySelector(s),key='namharu-avatar-settings-v1';
+  let category='all';
   let settings=A.normalize(),custom=[],editing=null,draft={},slotJobs=0,db,pendingDelete=null;
   try{settings=A.normalize(JSON.parse(localStorage.getItem(key)||'{}'));}catch{}
   const feedback=text=>$('#feedback').textContent=text;
@@ -16,9 +17,11 @@
   function save(){try{localStorage.setItem(key,JSON.stringify(settings));}catch{feedback('설정을 저장하지 못했어요. 브라우저 저장 공간을 확인해 주세요.');}}
   function refresh(rebuild=false){garden.library=library();garden.configure(settings,rebuild);save();for(const k of ['size','speed','count','fontSize','duration'])$('#'+k+'Value').textContent=settings[k]+({size:'px',speed:'',count:'명',fontSize:'px',duration:'초'}[k]);$('#selectionStatus').textContent=`${library().filter(x=>settings.selected.includes(x.id)).length}종 선택됨 · 선택한 캐릭터만 등장합니다.`;}
   function renderCatalog(){const root=$('#catalog');root.replaceChildren();for(const avatar of library()){
+    const group=avatar.id.startsWith('panda')?'panda':avatar.id==='cat'||avatar.id.startsWith('cat-')?'cat':avatar.id==='dog'||avatar.id.startsWith('dog-')?'dog':avatar.id.startsWith('custom-')?'custom':'other';if(category!=='all'&&category!==group)continue;
     const card=document.createElement('div');card.className='avatar-card';const b=document.createElement('button');b.className='avatar-select';b.type='button';b.setAttribute('aria-pressed',String(settings.selected.includes(avatar.id)));b.setAttribute('aria-label',avatar.name+' 선택');const img=new Image();img.src=avatar.images.base;img.alt='';const title=document.createElement('span');title.textContent=avatar.name;b.append(img,title);b.onclick=()=>{settings.selected=settings.selected.includes(avatar.id)?settings.selected.filter(x=>x!==avatar.id):[...settings.selected,avatar.id];renderCatalog();refresh(true);};card.append(b);
     if(avatar.id.startsWith('custom-')){const actions=document.createElement('div');actions.className='mini-actions';for(const [label,fn] of [['수정',()=>edit(avatar)],['삭제',()=>remove(avatar)]]){const btn=document.createElement('button');btn.textContent=label;btn.setAttribute('aria-label',avatar.name+' '+label);btn.onclick=fn;actions.append(btn);}card.append(actions);}root.append(card);
   }}
+  for(const button of document.querySelectorAll('[data-category]'))button.onclick=()=>{category=button.dataset.category;for(const b of document.querySelectorAll('[data-category]'))b.setAttribute('aria-pressed',String(b===button));renderCatalog();};
   const preset=id=>{const s=A.skins.find(x=>x.id===id);settings.skin=id;A.colorKeys.forEach((k,i)=>settings[k]=s.colors[i]);sync();refresh();renderBubbles();garden.sample();};
   function renderBubbles(){const root=$('#bubbleCatalog');root.replaceChildren();for(const skin of A.skins){const b=document.createElement('button');b.type='button';b.className='bubble-choice';b.setAttribute('aria-pressed',String(settings.skin===skin.id));b.setAttribute('aria-label',skin.name+' 말풍선');const box=document.createElement('span');box.className='speech';box.dataset.skin=skin.id;box.textContent='안녕하세요 ♡';['--bubble-bg','--bubble-border','--bubble-text','--name-bg','--name-text'].forEach((k,i)=>box.style.setProperty(k,skin.colors[i]));const label=document.createElement('span');label.textContent=skin.name;b.append(box,label);b.onclick=()=>preset(skin.id);root.append(b);}}
   function sync(){for(const k of ['enabled','size','speed','count','background','font','fontSize','duration','showNames',...A.colorKeys]){const el=$('#'+k);if(el.type==='checkbox')el.checked=settings[k];else el.value=settings[k];}}

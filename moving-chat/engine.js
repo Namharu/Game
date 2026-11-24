@@ -3,9 +3,19 @@
   'use strict';
   const builtins = [
     {id:'panda',name:'인사하는 팬더',images:{base:'assets/panda.png'}},
+    {id:'panda-heart',name:'하트 팬더',images:{base:'assets/panda-heart.png'}},
+    {id:'panda-star',name:'별눈 팬더',images:{base:'assets/panda-star.png'}},
+    {id:'panda-tears',name:'눈물 팬더',images:{base:'assets/panda-tears.png'}},
     {id:'cat',name:'치즈 고양이',images:{base:'assets/cat.png'}},
+    {id:'cat-black',name:'검은 고양이',images:{base:'assets/cat-black.png'}},
+    {id:'cat-white',name:'흰 고양이',images:{base:'assets/cat-white.png'}},
+    {id:'cat-tuxedo',name:'턱시도 고양이',images:{base:'assets/cat-tuxedo.png'}},
     {id:'rabbit',name:'리본 토끼',images:{base:'assets/rabbit.png'}},
     {id:'dog',name:'골든 강아지',images:{base:'assets/dog.png'}},
+    {id:'dog-shiba',name:'시바견',images:{base:'assets/dog-shiba.png'}},
+    {id:'dog-corgi',name:'웰시코기',images:{base:'assets/dog-corgi.png'}},
+    {id:'dog-pomeranian',name:'포메라니안',images:{base:'assets/dog-pomeranian.png'}},
+    {id:'dog-poodle',name:'푸들',images:{base:'assets/dog-poodle.png'}},
     {id:'slime',name:'복숭아 슬라임',images:{base:'assets/slime.png'}}
   ];
   const skins = [
