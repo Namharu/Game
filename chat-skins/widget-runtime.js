@@ -26,14 +26,14 @@
         if(arg&&!off&&!['켜기','시작'].includes(arg))return {handled:true,ok:false,message:`사용법: !${cmd} / !${cmd} 끄기`};
         if(cmd==='시간')this.clock=!off;else this.streamVisible=!off;
       }
-      return {handled:true,ok:true,message:cmd==='방송시간'&&!off&&!this.obs?'방송시간 표시를 켰어요. OBS를 연결해야 실제 경과 시간이 나옵니다.':`${cmd} ${off?'표시를 껐어요.':'명령을 적용했어요.'}`};
+      return {handled:true,ok:true,message:cmd==='방송시간'&&!off&&!this.obs?'방송시간 표시를 켰어요. 방송 시작시간 연결을 확인하고 있습니다.':`${cmd} ${off?'표시를 껐어요.':'명령을 적용했어요.'}`};
     }
     snapshot(now=Date.now()){
       const r=[];
       if(this.notice)r.push({kind:'notice-item',text:'공지 · '+this.notice});
       if(this.clock)r.push({kind:'clock',text:'현재 시각 · '+new Intl.DateTimeFormat('ko-KR',{timeZone:'Asia/Seoul',hour12:false,hour:'2-digit',minute:'2-digit',second:'2-digit'}).format(now)});
       if(this.timerEnd!==null){const left=Math.max(0,this.timerEnd-now);r.push({kind:left?'timer':'timer-done',text:left?'남은 시간 · '+formatDuration(Math.ceil(left/1000)*1000):'타이머 종료!'});}
-      if(this.streamVisible){const o=this.obs;let text='OBS 연결 필요';if(o&&now-o.at<8000)text=o.active?(o.reconnecting?'재연결 중 · ':'방송 중 · ')+formatDuration(o.duration+Math.max(0,now-o.at)):'방송 대기 중';else if(o)text='OBS 연결 확인 중';r.push({kind:'stream',text});}
+      if(this.streamVisible){const o=this.obs;let text='방송시간 연결 필요';if(o&&now-o.at<(o.ttl||8000))text=o.active?(o.reconnecting?'재연결 중 · ':'방송 중 · ')+formatDuration(o.duration+Math.max(0,now-o.at)):'방송 대기 중';else if(o)text='방송시간 연결 확인 중';r.push({kind:'stream',text});}
       return r;
     }
   }

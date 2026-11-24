@@ -12,3 +12,11 @@ chat.receive({role:'manager',name:'매니저',text:'!공지 끄기'});assert.equ
 chat.receive({role:'broadcaster',name:'방송자',text:'!공지 <img src=x onerror=alert(1)>'});assert.equal(notice.textContent,'공지 · <img src=x onerror=alert(1)>');assert.equal(notice.children.length,0);
 for(let i=0;i<80;i++)chat.receive({role:'viewer',name:'테스트',text:String(i)});assert.equal(feed.children.length,60);assert.equal(feed.scrollTop,feed.scrollHeight);
 console.log('PASS combined chat: normal messages, notice roles/update/off, text safety, bounded history');
+
+const send=(text,role='manager')=>chat.receive({role,name:'테스트',text});
+send('!타이머 5:00');assert.equal(chat.commands.notice,'');assert.equal(chat.commands.snapshot().length,1);assert.match(notice.textContent,/남은 시간/);
+const end=chat.commands.timerEnd;send('!타이머 잘못된값');assert.equal(chat.commands.timerEnd,end);send('!시간','viewer');assert.equal(chat.commands.timerEnd,end);
+send('!시간');assert.equal(chat.commands.timerEnd,null);assert.match(notice.textContent,/현재 시각/);assert.equal(chat.commands.snapshot().length,1);
+chat.commands.obs={active:true,duration:65000,at:Date.now(),ttl:30000};send('!방송시간');assert.equal(chat.commands.clock,false);assert.match(notice.textContent,/방송 중 · 00:01:05/);assert.equal(chat.commands.snapshot().length,1);
+send('!공지 다시 공지');assert.equal(chat.commands.streamVisible,false);assert.equal(notice.textContent,'공지 · 다시 공지');send('!시간 끄기');assert.equal(notice.hidden,true);
+assert.equal(notice.style.fontSize,'29px');assert.equal(notice.style.minHeight,'110px');console.log('PASS exclusive display switching, invalid/unauthorized preservation, broadcast data, larger type');

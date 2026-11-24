@@ -9,8 +9,8 @@ for(const role of ['broadcaster','manager']){check(c.run('!공지 테스트',rol
 check(c.run('!타이머 1:30','manager',now).ok);check(c.timerEnd===190000);check(c.snapshot(190000).some(x=>x.text==='타이머 종료!'));
 for(const text of ['!타이머 1:99','!타이머 -10','!타이머 86401','!타이머 abc','!타이머 0']){check(!c.run(text,'manager',now).ok);check(c.timerEnd===190000);}
 check(c.run('!타이머 중지','manager',now).ok);check(c.timerEnd===null);check(c.run('!시간','manager',now).ok);check(c.snapshot(now).some(x=>x.kind==='clock'));
-check(c.run('!방송시간','manager',now).ok);check(c.snapshot(now).some(x=>x.text==='OBS 연결 필요'));
-c.obs={active:true,duration:65000,at:now};check(c.snapshot(now+1000).some(x=>x.text==='방송 중 · 00:01:06'));check(c.snapshot(now+9000).some(x=>x.text==='OBS 연결 확인 중'));
+check(c.run('!방송시간','manager',now).ok);check(c.snapshot(now).some(x=>x.text==='방송시간 연결 필요'));
+c.obs={active:true,duration:65000,at:now};check(c.snapshot(now+1000).some(x=>x.text==='방송 중 · 00:01:06'));check(c.snapshot(now+9000).some(x=>x.text==='방송시간 연결 확인 중'));
 c.obs={active:false,duration:65000,at:now};check(c.snapshot(now).some(x=>x.text==='방송 대기 중'));
 check(!c.run('일반 채팅','viewer',now).handled);check(!c.run('!공지사항','manager',now).handled);
 const s=normalize({count:Infinity,size:999,fontSize:-1,bubbleBg:'url(https://bad)',selected:'oops'});check(s.count===6&&s.size===160&&s.fontSize===14&&s.bubbleBg==='#ffffff');
