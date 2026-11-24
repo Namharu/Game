@@ -22,7 +22,9 @@ $('#background').onchange=()=>$('#stage').dataset.background=$('#background').va
 $('#pause').onclick=()=>{paused=!paused;$('#pause').textContent=paused?'미리보기 재생':'미리보기 정지';};$('#add').onclick=sample;
 $('#testForm').onsubmit=e=>{e.preventDefault();const text=$('#message').value.trim();if(text){add('미리보기',text);$('#message').value='';}};
 async function copy(text,field,message){try{await navigator.clipboard.writeText(text);$('#feedback').textContent=message;}catch{field.focus();field.select();$('#feedback').textContent='선택된 내용을 Ctrl+C로 복사해 주세요.';}}
-$('#copyAll').onclick=async()=>{await copy($('#cssOutput').value,$('#cssOutput'),'스킨과 공지를 함께 복사했어요. OBS 사용자 지정 CSS에 붙여 넣으세요.');$('#simpleFeedback').textContent=$('#feedback').textContent;};
+function combinedUrl(source, demo=false){const url=new URL('live.html',location.href);const q=new URLSearchParams(state);if(source)q.set('source',source);if(demo)q.set('demo','1');url.hash=q.toString();return url.href;}
+$('#copyAll').onclick=async()=>{const feedback=$('#simpleFeedback'),source=$('#combinedSource').value.trim();try{PandaChat.keyFromUrl(source);}catch(err){feedback.textContent=err.message;return;}const url=combinedUrl(source),output=$('#combinedOutput');output.value=url;try{await navigator.clipboard.writeText(url);output.hidden=true;feedback.textContent='OBS 적용 주소를 복사했어요. 채팅 브라우저 소스의 URL을 교체하고 기존 사용자 지정 CSS를 지우세요.';}catch{output.hidden=false;output.focus();output.select();feedback.textContent='아래 개인 주소를 Ctrl+C로 복사하세요. 공개하지 마세요.';}};
+$('#combinedTest').onclick=()=>{const link=$('#combinedTest');link.href=combinedUrl('',true);};
 $('#copyCss').onclick=()=>copy($('#cssOutput').value,$('#cssOutput'),'CSS를 복사했어요. OBS의 팬더 채팅 브라우저 소스 → 속성 → 사용자 지정 CSS에 붙여 넣으세요.');
 $('#copy').onclick=()=>copy($('#demoUrl').value,$('#demoUrl'),'OBS 미리보기 주소를 복사했어요. 이 주소는 가상 채팅 전용입니다.');
 $('#share').onclick=()=>{const url=new URL(location.pathname,location.href);url.search=settings();copy(url.href,$('#demoUrl'),'디자인 공유 주소를 복사했어요. 같은 설정으로 열립니다.');};

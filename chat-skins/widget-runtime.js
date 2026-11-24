@@ -1,10 +1,10 @@
-/* Chat widget commands. Live Panda transport is not enabled. */
+/* Chat widget commands. Transport supplies verified broadcaster/manager roles. */
 (() => {
 'use strict';
   const formatDuration=ms=>{const s=Math.max(0,Math.floor(ms/1000));return [Math.floor(s/3600),Math.floor(s/60)%60,s%60].map(n=>String(n).padStart(2,'0')).join(':');};
   class Commands{
     constructor(){this.notice='';this.clock=false;this.timerEnd=null;this.streamVisible=false;this.obs=null;}
-    // role is supplied by the local test UI. A future live adapter must use authenticated server roles, never nickname text.
+    // Live roles come from the Panda adapter, never from nickname text. The explicit demo UI uses simulated roles.
     run(text,role,now=Date.now()){
       const m=String(text).trim().match(/^!(공지|타이머|시간|방송시간)(?:\s+(.*))?$/s);
       if(!m)return {handled:false};

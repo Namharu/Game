@@ -24,3 +24,5 @@
 .font-control{grid-column:1/-1}#fontStatus{font-size:12px;line-height:1.5;margin:7px 0 0;min-height:18px;color:#795a83}
 
 .simple-notice{margin-top:16px;padding:18px;border:1px solid #dfd3e8;border-radius:14px;background:#fff}.simple-notice h3{margin:0 0 8px}.simple-notice p{font-size:12px;line-height:1.7;color:#786b84}.simple-notice textarea{box-sizing:border-box;width:100%;margin:8px 0 12px;padding:12px;border:1px solid #dfd3e8;border-radius:9px;font:inherit;resize:vertical}.simple-notice .primary{width:100%;margin-top:12px;background:#805b91;color:white;padding:12px;border-radius:8px}
+
+#combinedSource{width:100%;box-sizing:border-box;border:1px solid #d7c8e2;border-radius:8px;padding:12px;margin-top:8px}#combinedTest{display:block;text-decoration:underline;font-size:13px;cursor:pointer}#combinedOutput[hidden]{display:none}
