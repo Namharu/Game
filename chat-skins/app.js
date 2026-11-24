@@ -29,3 +29,8 @@ $('#saveCss').onclick=()=>{download(ChatSkins.css(state),'namharu-'+state.theme+
 $('#reset').onclick=()=>{state=ChatSkins.normalize();update();$('#feedback').textContent='기본 설정으로 되돌렸어요.';};
 $('#download').onclick=async()=>{try{const [html,engine,js]=await Promise.all(['overlay.html','themes.js','overlay.js'].map(async f=>{const r=await fetch(f);if(!r.ok)throw Error();return r.text();}));const content=html.replace('<script src="themes.js?v=8"></script>','<script>'+engine+'</script>').replace('<script src="overlay.js?v=8"></script>','<script>'+js.replace('location.search',JSON.stringify('?'+settings()))+'</script>');download(content,'namharu-'+state.theme+'-preview.html','text/html;charset=utf-8');$('#feedback').textContent='OBS 미리보기 HTML을 저장했어요.';}catch{$('#feedback').textContent='저장하지 못했어요. 미리보기 주소를 이용해 주세요.';}};
 update();for(let i=0;i<4;i++)sample();setInterval(()=>{if(!paused)sample();},2800);
+
+window.NamharuChatPreview={
+ setLive(enabled){paused=enabled;feed.replaceChildren();$('#add').disabled=enabled;$('#pause').disabled=enabled;$('#testForm').hidden=enabled;document.querySelector('.preview-toolbar>span').textContent=enabled?'실제 팬더 채팅 · 수신 대기':'가상 채팅 미리보기';if(!enabled)for(let i=0;i<4;i++)sample();},
+ receive(message){const row=item(message.name,message.text);const badge=row.querySelector('.chat__grade-badge');if(message.role==='manager'||message.role==='broadcaster'){badge.textContent=message.role==='manager'?'M':'BJ';badge.setAttribute('aria-label',message.role==='manager'?'매니저':'방송자');}else badge.remove();feed.append(row);while(feed.children.length>30||(feed.scrollHeight>feed.clientHeight&&feed.children.length>1))feed.firstElementChild.remove();document.querySelector('.preview-toolbar>span').textContent='실제 팬더 채팅 수신중';}
+};

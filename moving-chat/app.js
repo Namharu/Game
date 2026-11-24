@@ -7,7 +7,12 @@
   const dbReady=new Promise((resolve,reject)=>{const req=indexedDB.open('namharu-avatar-library',1);req.onupgradeneeded=()=>req.result.createObjectStore('avatars',{keyPath:'id'});req.onsuccess=()=>resolve(req.result);req.onerror=()=>reject(req.error);});
   const library=()=>[...A.builtins,...custom];
   const garden=new A.Garden($('#stage'),settings,library());
-  const obs=new A.ObsConnection(s=>$('#obsStatus').textContent=s,d=>garden.commands.obs=d);
+  let liveRequested=false,liveSource='';
+  const panda=new PandaChat.Connection({onStatus:info=>{$('#pandaStatus').textContent=info.text;$('#sourceBadge').textContent=liveRequested?(info.state==='live'?'실제 팬더 채팅 수신중':info.state==='ready'?'실제 채팅 연결 · 수신 대기':'실제 채팅 연결 확인중'):'가상 채팅 · 팬더 연결 없음';},onChat:m=>{if(!/^!(공지|타이머|시간|방송시간)(?:\s|$)/.test(m.text))garden.say(m.name,m.text,'base',m.id);}});
+  function liveMode(enabled){liveRequested=enabled;garden.setLive(enabled);$('#sample').disabled=enabled;$('#testForm button').disabled=enabled;$('#testForm').hidden=enabled;}
+  $('#connectPanda').onclick=()=>{liveSource=$('#pandaUrl').value.trim();liveMode(true);panda.connect(liveSource);};
+  $('#demoMode').onclick=()=>{liveSource='';$('#pandaUrl').value='';liveMode(false);panda.disconnect();};
+  $('#copyLive').onclick=async()=>{try{const source=$('#pandaUrl').value.trim()||liveSource;PandaChat.keyFromUrl(source);if(settings.selected.some(x=>x.startsWith('custom-')))throw Error('내 캐릭터는 HTML 저장 후 OBS 상호작용에서 주소를 입력하세요.');const url=new URL('overlay.html',location.href);url.hash=new URLSearchParams({settings:JSON.stringify(settings),source}).toString();await navigator.clipboard.writeText(url.href);$('#pandaStatus').textContent='OBS용 개인 주소를 복사했어요. 브라우저 소스에 붙여 넣으세요. 이 주소는 공개하지 마세요.';}catch(err){$('#pandaStatus').textContent=err.message||'복사하지 못했어요.';}};
   function save(){try{localStorage.setItem(key,JSON.stringify(settings));}catch{feedback('설정을 저장하지 못했어요. 브라우저 저장 공간을 확인해 주세요.');}}
   function refresh(rebuild=false){garden.library=library();garden.configure(settings,rebuild);save();for(const k of ['size','speed','count','fontSize','duration'])$('#'+k+'Value').textContent=settings[k]+({size:'px',speed:'',count:'명',fontSize:'px',duration:'초'}[k]);$('#selectionStatus').textContent=`${library().filter(x=>settings.selected.includes(x.id)).length}종 선택됨 · 선택한 캐릭터만 등장합니다.`;}
   function renderCatalog(){const root=$('#catalog');root.replaceChildren();for(const avatar of library()){
@@ -22,8 +27,7 @@
   $('#resetBubble').onclick=()=>preset(settings.skin);
   $('#pause').onclick=()=>{garden.paused=!garden.paused;$('#pause').textContent=garden.paused?'움직임 재생':'움직임 일시정지';};
   $('#jump').onclick=()=>garden.jump();$('#sample').onclick=()=>garden.sample();
-  $('#testForm').onsubmit=e=>{e.preventDefault();const text=$('#message').value.trim(),name=$('#nick').value.trim();if(!text||!name)return;const result=garden.commands.run(text,$('#role').value);if(result.handled)feedback(result.message);else if(!garden.choices().length)feedback('먼저 캐릭터를 하나 이상 선택하세요.');else{garden.say(name,text,$('#emotion').value);feedback('가상 채팅을 표시했어요. 실제 팬더 채팅으로 전송되지는 않습니다.');}$('#message').value='';};
-  $('#connectObs').onclick=()=>{const password=$('#obsPassword').value;$('#obsPassword').value='';obs.connect($('#obsPort').value,password);};$('#disconnectObs').onclick=()=>obs.disconnect();
+  $('#testForm').onsubmit=e=>{e.preventDefault();const text=$('#message').value.trim(),name=$('#nick').value.trim();if(!text||!name)return;if(/^!(공지|타이머|시간|방송시간)(?:\s|$)/.test(text))feedback('공지·시간 명령어는 팬더 채팅스킨의 위젯에서 설정하세요.');else if(!garden.choices().length)feedback('먼저 캐릭터를 하나 이상 선택하세요.');else{garden.say(name,text,$('#emotion').value);feedback('가상 채팅을 표시했어요. 실제 팬더 채팅으로 전송되지는 않습니다.');}$('#message').value='';};
   const slotNames={base:'기본 (필수)',idle:'멈춤',happy:'기쁨',sad:'슬픔',angry:'화남'};
   function renderSlots(){const root=$('#slots');root.replaceChildren();for(const [id,title] of Object.entries(slotNames)){
     const box=document.createElement('div');box.className='slot';const label=document.createElement('label');label.htmlFor='file-'+id;label.textContent=title;const preview=document.createElement('div');preview.className='slot-preview';if(draft[id]){const im=new Image();im.src=draft[id];im.alt=title+' 이미지';preview.append(im);}else preview.textContent='＋';const input=document.createElement('input');input.id='file-'+id;input.type='file';input.accept='image/png,image/gif,image/webp';input.setAttribute('aria-label',title+' 이미지 선택');
@@ -43,12 +47,12 @@
     const chosen=library().filter(x=>settings.selected.includes(x.id));if(!chosen.length)throw Error('캐릭터를 하나 이상 선택하세요.');
     const embedded=[];for(const a of chosen){const images={};for(const [k,src] of Object.entries(a.images))images[k]=src.startsWith('data:')?src:await dataUrl(await get(src,true));embedded.push({...a,images});}
     let css=await get('stage.css');for(const f of ['jua','gowun']){const url=await dataUrl(await get('../chat-skins/fonts/'+f+'.woff2',true));css=css.replace('../chat-skins/fonts/'+f+'.woff2',url);}
-    const engine=await get('engine.js'),overlay=await get('overlay.js');const json=JSON.stringify({settings,library:embedded}).replace(/</g,'\\u003c');
-    download('namharu-moving-chat-preview.html',`<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>움직이는 채팅 · 가상 미리보기</title><style>${css}</style><body class="overlay"><div class="demo-banner">가상 채팅 · 팬더 연결 없음</div><div id="stage" class="stage"><div class="hud"></div><div class="actors"></div></div><script type="application/json" id="overlayInit">${json}</script><script>${engine.replace(/<\/script/gi,'<\\/script')}</script><script>${overlay.replace(/<\/script/gi,'<\\/script')}</script></body></html>`);
-    $('#exportStatus').textContent='저장했어요. OBS 브라우저 소스의 ‘로컬 파일’에 선택하세요. 실제 팬더 채팅 연결은 포함되지 않습니다.';
+    const vendor=await get('../shared/centrifuge-2.8.5.min.js'),connector=await get('../shared/panda-chat.js'),engine=await get('engine.js'),overlay=await get('overlay.js');const json=JSON.stringify({settings,library:embedded}).replace(/</g,'\\u003c');
+    download('namharu-moving-chat-preview.html',`<!doctype html><html lang="ko"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>움직이는 채팅 · 가상 미리보기</title><style>${css}</style><body class="overlay"><div class="demo-banner">가상 채팅 · 팬더 연결 없음</div><div id="stage" class="stage"><div class="actors"></div></div><script type="application/json" id="overlayInit">${json}</script><script>${vendor.replace(/<\/script/gi,'<\\/script')}</script><script>${connector.replace(/<\/script/gi,'<\\/script')}</script><script>${engine.replace(/<\/script/gi,'<\\/script')}</script><script>${overlay.replace(/<\/script/gi,'<\\/script')}</script></body></html>`);
+    $('#exportStatus').textContent='저장했어요. OBS 브라우저 소스의 ‘로컬 파일’에 선택하세요. 실제 연결은 OBS 상호작용에서 개인 채팅 주소를 입력하세요.';
   }catch(err){$('#exportStatus').textContent=err.message||'파일 저장에 실패했어요.';}finally{btn.disabled=false;}};
   $('#copyUrl').onclick=async()=>{if(settings.selected.some(x=>x.startsWith('custom-'))){$('#exportStatus').textContent='내 캐릭터 이미지는 주소에 넣지 않아요. ‘OBS 미리보기 HTML 저장’을 사용하세요.';return;}const url=new URL('overlay.html',location.href);url.hash=new URLSearchParams({settings:JSON.stringify(settings)}).toString();try{await navigator.clipboard.writeText(url.href);$('#exportStatus').textContent='가상 채팅 미리보기 주소를 복사했어요. OBS 브라우저 소스에 넣으세요.';}catch{$('#exportStatus').textContent='복사가 차단됐어요. HTML 저장을 이용해 주세요.';}};
   sync();renderCatalog();renderBubbles();renderSlots();refresh();
   dbReady.then(async value=>{db=value;const req=db.transaction('avatars').objectStore('avatars').getAll();req.onsuccess=()=>{custom=req.result;settings.selected=settings.selected.filter(id=>library().some(x=>x.id===id));renderCatalog();refresh(true);};req.onerror=()=>feedback('저장한 캐릭터를 불러오지 못했어요.');}).catch(()=>feedback('브라우저 이미지 저장을 사용할 수 없어요. 기본 캐릭터는 사용할 수 있습니다.'));
-  addEventListener('pagehide',()=>{obs.disconnect(true);garden.destroy();});
+  addEventListener('pagehide',()=>{panda.disconnect(true);garden.destroy();});
 })();

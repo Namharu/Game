@@ -1,6 +1,8 @@
 const assert=require('node:assert/strict');
-require('./engine.js');
-const {Commands,normalize,ObsConnection}=global.AvatarGarden;
+require('./widget-runtime.js');
+require('../moving-chat/engine.js');
+const {Commands,ObsConnection}=global.ChatWidgets;
+const {normalize}=global.AvatarGarden;
 let checks=0;const check=(x)=>{assert.ok(x);checks++};const c=new Commands(),now=100000;
 for(const role of ['viewer','unknown','V','',undefined])for(const cmd of ['!공지 변조','!타이머 10','!시간','!방송시간']){check(c.run(cmd,role,now).ok===false);check(c.snapshot(now).length===0);}
 for(const role of ['broadcaster','manager']){check(c.run('!공지 테스트',role,now).ok);check(c.notice==='테스트');}
