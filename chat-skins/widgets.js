@@ -4,7 +4,7 @@
   const skins=[['plain','일반'],['halloween','할로윈'],['heart','하트 핑크'],['star','별빛'],['cat','고양이'],['gold','골드 프레임']];
   const state=Object.fromEntries(types.map(([id])=>[id,{skin:'plain',position:'top'}]));
   try{const saved=JSON.parse(localStorage.getItem('namharu-chat-widgets')||'{}');for(const [id] of types){const s=saved[id];if(skins.some(([k])=>k===s?.skin))state[id].skin=s.skin;if(['off','top','bottom'].includes(s?.position))state[id].position=s.position;}}catch{}
-  const commands=new ChatWidgets.Commands();commands.run('!공지 오늘도 반가워요 ♡','broadcaster');
+  const commands=new ChatWidgets.Commands();
   const obs=new ChatWidgets.ObsConnection(s=>$('#widgetObsStatus').textContent=s,d=>{commands.obs=d;render();});
   const stage=$('#stage');const top=document.createElement('div'),bottom=document.createElement('div');for(const [el,position] of [[top,'top'],[bottom,'bottom']]){el.className='chat-widget-layer';el.dataset.location=position;stage.append(el);}
   const feedback=text=>$('#widgetFeedback').textContent=text;
@@ -17,7 +17,7 @@
   function render(){const map=Object.fromEntries(commands.snapshot().map(row=>[row.kind==='notice-item'?'notice':row.kind==='timer-done'?'timer':row.kind,row]));top.replaceChildren();bottom.replaceChildren();for(const [id] of types){const cfg=state[id],row=map[id];if(cfg.position==='off'||!row)continue;const el=document.createElement('div');el.className='widget-bar '+row.kind;el.dataset.skin=cfg.skin;el.textContent=row.text;el.title=row.text;(cfg.position==='bottom'?bottom:top).append(el);}
     const active=top.children.length||bottom.children.length;stage.classList.toggle('widget-mode',!!active);stage.style.setProperty('--widget-top',top.children.length?top.offsetHeight+18+'px':'0px');stage.style.setProperty('--widget-bottom',bottom.children.length?bottom.offsetHeight+18+'px':'0px');
   }
-  function chooseTab(mode){$('#skinCollection').hidden=mode!=='skins';$('#widgetPanel').hidden=mode!=='widgets';for(const b of document.querySelectorAll('[data-chat-tab]'))b.setAttribute('aria-pressed',String(b.dataset.chatTab===mode));}
+  function chooseTab(mode){stage.dataset.settingsTab=mode;document.querySelector('.simple-notice').hidden=mode!=='skins';$('#skinCollection').hidden=mode!=='skins';$('#widgetPanel').hidden=mode!=='widgets';for(const b of document.querySelectorAll('[data-chat-tab]'))b.setAttribute('aria-pressed',String(b.dataset.chatTab===mode));}
   for(const b of document.querySelectorAll('[data-chat-tab]'))b.onclick=()=>chooseTab(b.dataset.chatTab);
   const list=$('#widgetGroups');
   for(const [id,title,example,sample] of types){const section=document.createElement('section');section.className='widget-group';const h=document.createElement('h3');h.textContent=title;section.append(h);const grid=document.createElement('div');grid.className='widget-skins';
