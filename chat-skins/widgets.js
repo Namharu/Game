@@ -1,6 +1,6 @@
 (() => {
   'use strict';
-  const $=s=>document.querySelector(s),types=[['notice','공지','공지 내용','!공지 오늘 밤 9시 이벤트!'],['timer','타이머','00:05:00','!타이머 5:00'],['clock','현재 시각','21:00:00','!시간'],['stream','방송시간','방송 중 · 01:23:45','!방송시간']];
+  const $=s=>document.querySelector(s),types=[['notice','공지','공지 내용','!공지 오늘 밤 9시 이벤트!'],['timer','타이머','00:05:00','!타이머 5분'],['clock','현재 시각','21:00:00','!시간'],['stream','방송시간','방송 중 · 01:23:45','!방송시간']];
   const skins=[['plain','일반'],['halloween','할로윈'],['heart','하트 핑크'],['star','별빛'],['cat','고양이'],['gold','골드 프레임']];
   const state=Object.fromEntries(types.map(([id])=>[id,{skin:'plain',position:'top'}]));
   try{const saved=JSON.parse(localStorage.getItem('namharu-chat-widgets')||'{}');for(const [id] of types){const s=saved[id];if(skins.some(([k])=>k===s?.skin))state[id].skin=s.skin;if(['off','top','bottom'].includes(s?.position))state[id].position=s.position;}}catch{}

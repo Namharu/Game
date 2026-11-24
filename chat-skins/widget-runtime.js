@@ -19,7 +19,8 @@
           let seconds=0;
           if(/^\d{1,5}$/.test(arg))seconds=Number(arg);
           else if(/^\d{1,4}:[0-5]\d$/.test(arg)){const [m,s]=arg.split(':').map(Number);seconds=m*60+s;}
-          if(!(seconds>0&&seconds<=86400))return {handled:true,ok:false,message:'사용법: !타이머 5:00 또는 !타이머 300 (1초~24시간)'};
+          else{const duration=arg.match(/^(?:(\d{1,5})\s*시간\s*)?(?:(\d{1,5})\s*분\s*)?(?:(\d{1,5})\s*초)?$/);if(duration)seconds=Number(duration[1]||0)*3600+Number(duration[2]||0)*60+Number(duration[3]||0);}
+          if(!(seconds>0&&seconds<=86400))return {handled:true,ok:false,message:'사용법: !타이머 1분 / 30초 / 1분 30초 / 1시간 (최대 24시간)'};
           this.timerEnd=now+seconds*1000;
         }
       }else{
