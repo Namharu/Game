@@ -10,6 +10,10 @@ check(c.run('!타이머 1:30','manager',now).ok);check(c.timerEnd===190000);chec
 for(const text of ['!타이머 1:99','!타이머 -10','!타이머 86401','!타이머 abc','!타이머 0']){check(!c.run(text,'manager',now).ok);check(c.timerEnd===190000);}
 for(const [text,seconds] of [['1분',60],['30초',30],['1분 30초',90],['1분30초',90],['1시간',3600],['1시간 2분 3초',3723],['24시간',86400],['1 분',60],['5:00',300],['300',300]]){check(c.run('!타이머 '+text,'manager',now).ok);check(c.timerEnd===now+seconds*1000);}
 const lastEnd=c.timerEnd;for(const text of ['0분','25시간','24시간 1초','-1분','1.5분','1분 abc','1분 2분','30초 1분','1시간2']){check(!c.run('!타이머 '+text,'manager',now).ok);check(c.timerEnd===lastEnd);}
+check(c.run('!타이머 1분','manager',now).ok);check(c.run('!타이머 추가 1분','manager',now+10000).ok);check(c.timerEnd===now+120000);
+check(c.run('!타이머 추가 30초','manager',now+20000).ok);check(c.timerEnd===now+150000);
+const before=c.timerEnd;check(!c.run('!타이머 추가 24시간','manager',now).ok);check(c.timerEnd===before);check(!c.run('!타이머 추가 1분','viewer',now).ok);check(c.timerEnd===before);
+const stopped=new Commands();check(!stopped.run('!타이머 추가 1분','manager',now).ok);check(stopped.timerEnd===null);stopped.timerEnd=now-1;check(!stopped.run('!타이머 추가 1분','manager',now).ok);
 check(c.run('!타이머 중지','manager',now).ok);check(c.timerEnd===null);check(c.run('!시간','manager',now).ok);check(c.snapshot(now).some(x=>x.kind==='clock'));
 check(c.run('!방송시간','manager',now).ok);check(c.snapshot(now).some(x=>x.text==='방송시간 연결 필요'));
 c.obs={active:true,duration:65000,at:now};check(c.snapshot(now+1000).some(x=>x.text==='방송 중 · 00:01:06'));check(c.snapshot(now+9000).some(x=>x.text==='방송시간 연결 확인 중'));

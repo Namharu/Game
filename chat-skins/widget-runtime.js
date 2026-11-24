@@ -16,12 +16,16 @@
       }else if(cmd==='타이머'){
         if(off)this.timerEnd=null;
         else{
+          const adding=/^추가(?:\s|$)/.test(arg),durationText=adding?arg.replace(/^추가\s*/, ''):arg;
+          if(adding&&(this.timerEnd===null||this.timerEnd<=now))return {handled:true,ok:false,message:'진행 중인 타이머가 없어요. !타이머 1분으로 시작하세요.'};
           let seconds=0;
-          if(/^\d{1,5}$/.test(arg))seconds=Number(arg);
-          else if(/^\d{1,4}:[0-5]\d$/.test(arg)){const [m,s]=arg.split(':').map(Number);seconds=m*60+s;}
-          else{const duration=arg.match(/^(?:(\d{1,5})\s*시간\s*)?(?:(\d{1,5})\s*분\s*)?(?:(\d{1,5})\s*초)?$/);if(duration)seconds=Number(duration[1]||0)*3600+Number(duration[2]||0)*60+Number(duration[3]||0);}
+          if(/^\d{1,5}$/.test(durationText))seconds=Number(durationText);
+          else if(/^\d{1,4}:[0-5]\d$/.test(durationText)){const [m,s]=durationText.split(':').map(Number);seconds=m*60+s;}
+          else{const duration=durationText.match(/^(?:(\d{1,5})\s*시간\s*)?(?:(\d{1,5})\s*분\s*)?(?:(\d{1,5})\s*초)?$/);if(duration)seconds=Number(duration[1]||0)*3600+Number(duration[2]||0)*60+Number(duration[3]||0);}
           if(!(seconds>0&&seconds<=86400))return {handled:true,ok:false,message:'사용법: !타이머 1분 / 30초 / 1분 30초 / 1시간 (최대 24시간)'};
-          this.timerEnd=now+seconds*1000;
+          const end=(adding?this.timerEnd:now)+seconds*1000;
+          if(end-now>86400000)return {handled:true,ok:false,message:'타이머는 남은 시간 기준 최대 24시간까지 설정할 수 있어요.'};
+          this.timerEnd=end;
         }
       }else{
         if(arg&&!off&&!['켜기','시작'].includes(arg))return {handled:true,ok:false,message:`사용법: !${cmd} / !${cmd} 끄기`};

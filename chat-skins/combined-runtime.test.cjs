@@ -20,3 +20,5 @@ send('!시간');assert.equal(chat.commands.timerEnd,null);assert.match(notice.te
 chat.commands.obs={active:true,duration:65000,at:Date.now(),ttl:30000};send('!방송시간');assert.equal(chat.commands.clock,false);assert.match(notice.textContent,/방송 중 · 00:01:05/);assert.equal(chat.commands.snapshot().length,1);
 send('!공지 다시 공지');assert.equal(chat.commands.streamVisible,false);assert.equal(notice.textContent,'공지 · 다시 공지');send('!시간 끄기');assert.equal(notice.hidden,true);
 assert.equal(notice.style.fontSize,'29px');assert.equal(notice.style.minHeight,'110px');console.log('PASS exclusive display switching, invalid/unauthorized preservation, broadcast data, larger type');
+
+send('!타이머 1분');const initialEnd=chat.commands.timerEnd;send('!타이머 추가 1분');assert.equal(chat.commands.timerEnd,initialEnd+60000);assert.equal(chat.commands.snapshot().length,1);send('!타이머 중지');assert.equal(chat.commands.timerEnd,null);assert.equal(notice.hidden,true);send('!공지 유지');send('!타이머 추가 1분');assert.equal(notice.textContent,'공지 · 유지');console.log('PASS timer extension preserves countdown and stop hides shared display');
