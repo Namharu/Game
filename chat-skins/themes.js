@@ -50,7 +50,7 @@ const themes=[
 ];
 const priority=['retropink','desktop','arcane','halloween'];themes.sort((a,b)=>(priority.includes(a.id)?priority.indexOf(a.id):-1)===-1?(priority.includes(b.id)?1:0):(priority.includes(b.id)?priority.indexOf(a.id)-priority.indexOf(b.id):-1));
 const aliases={pink:'heart','retro-blue':'desktop','retro-pink':'retropink',mint:'snow',cloud:'snow',pixel:'rpg',gold:'rpg',midnight:'neon'};
-function normalize(s={}){const id=aliases[s.theme]||s.theme;return{noticeScale:Math.max(100,Math.min(200,Number(s.noticeScale)||130)),notice:String(s.notice||'').slice(0,120),noticeSkin:['match','pink','night','gold'].includes(s.noticeSkin)?s.noticeSkin:'match',noticePosition:s.noticePosition==='bottom'?'bottom':'top',font:fonts.some(f=>f.id===s.font)?s.font:'system',theme:themes.some(t=>t.id===id)?id:'heart',palette:['original','mint','lavender'].includes(s.palette)?s.palette:'original',size:Math.max(14,Math.min(32,Number(s.size)||22)),opacity:Math.max(20,Math.min(100,Number(s.opacity)||96)),gap:Math.max(8,Math.min(32,Number(s.gap)||14))};}
+function normalize(s={}){const id=aliases[s.theme]||s.theme;return{alignment:['left','center','right'].includes(s.alignment)?s.alignment:'left',noticeScale:Math.max(100,Math.min(200,Number(s.noticeScale)||130)),notice:String(s.notice||'').slice(0,120),noticeSkin:['match','pink','night','gold'].includes(s.noticeSkin)?s.noticeSkin:'match',noticePosition:s.noticePosition==='bottom'?'bottom':'top',font:fonts.some(f=>f.id===s.font)?s.font:'system',theme:themes.some(t=>t.id===id)?id:'heart',palette:['original','mint','lavender'].includes(s.palette)?s.palette:'original',size:Math.max(14,Math.min(32,Number(s.size)||22)),opacity:Math.max(20,Math.min(100,Number(s.opacity)||96)),gap:Math.max(8,Math.min(32,Number(s.gap)||14))};}
 function css(input,fontBase="https://namharu.github.io/Game/chat-skins/fonts/"){const s=normalize(input),t={...themes.find(t=>t.id===s.theme)},q='.message__wrapper.chat';
 const selectedFont=fonts.find(f=>f.id===s.font),fontFamily=s.font==='system'?'"Malgun Gothic",system-ui,sans-serif':'"NHChat-'+s.font+'","Malgun Gothic",system-ui,sans-serif';
 const dark=['neon','rpg','chalk','arcane','scifi','tactical','gold','round','blackbox','hud','neonbright'].includes(t.id);
@@ -63,7 +63,7 @@ if(s.notice.trim()){
  const colors={match:[t.bg,t.ink,t.line],pink:['#fff0f6','#853b61','#e6a1bf'],night:['#20243b','#f8f5ff','#8e88b9'],gold:['#242129','#ffedb3','#c9a65f']}[s.noticeSkin];
  const content=JSON.stringify('공지  ·  '+s.notice.trim()).replace(/\\n/g,'\\a ').replace(/\\r/g,'').replace(/</g,'\\3c ').replace(/>/g,'\\3e ');
  out+=`#chat-preview-container{box-sizing:border-box!important;height:calc(100% - ${noticeSpace}px)!important;margin-${s.noticePosition}:${noticeSpace}px!important;overflow:hidden!important;clip-path:inset(0)!important;}
-body::before{content:${content};box-sizing:border-box!important;position:fixed!important;${s.noticePosition}:10px!important;left:12px!important;right:12px!important;height:${noticeHeight}px!important;padding:20px 22px!important;border:2px solid ${colors[2]}!important;border-radius:14px!important;background:${colors[0]}!important;color:${colors[1]}!important;font:700 ${noticeSize}px/1.55 ${fontFamily}!important;white-space:pre-wrap!important;overflow:hidden!important;overflow-wrap:anywhere!important;text-align:left!important;text-shadow:none!important;z-index:20!important;pointer-events:none!important;}
+body::before{content:${content};box-sizing:border-box!important;position:fixed!important;${s.noticePosition}:10px!important;left:12px!important;right:12px!important;height:${noticeHeight}px!important;padding:20px 22px!important;border:2px solid ${colors[2]}!important;border-radius:14px!important;background:${colors[0]}!important;color:${colors[1]}!important;font:700 ${noticeSize}px/1.55 ${fontFamily}!important;white-space:pre-wrap!important;overflow:hidden!important;overflow-wrap:anywhere!important;text-align:${s.alignment}!important;text-shadow:none!important;z-index:20!important;pointer-events:none!important;}
 `;
 }
 const rule=(part,body)=>{out+=part.split(',').map(x=>q+x).join(',')+'{'+body.split(';').filter(Boolean).map(x=>x+'!important').join(';')+';}\n';};
@@ -228,5 +228,7 @@ if(s.font!=='system'){
 rule(' .message__name, .message__name *, .message__text, .message__text *',`font-family:${fontFamily}`);
 if(!selectedFont.variable)rule(' .message__name, .message__name *, .message__text, .message__text *','font-weight:400');
 }
+rule('',`align-self:${s.alignment==='center'?'center':s.alignment==='right'?'flex-end':'flex-start'};margin-left:${s.alignment==='left'?'16px':'auto'};margin-right:${s.alignment==='right'?'16px':'auto'};text-align:${s.alignment}`);
+rule(' .message__nick, .message__text',`text-align:${s.alignment}`);
 return out;}
 return{themes,fonts,normalize,css};})();
