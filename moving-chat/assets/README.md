@@ -4,7 +4,7 @@
 
 Generated with the built-in image generation tool. Panda variants use panda.png as their edit reference; cats and dog breeds are new generated artwork. All source PNG alpha channels are preserved unchanged.
 
-Animal prompt: Create ONE full body cute 2D chibi streaming chat avatar, isolated genuinely transparent background, square canvas. Big rounded head, little body, four short paws standing at same baseline, three-quarter view facing right, upright curved tail, friendly bead eyes with white glints, blush cheeks, thick clean dark cocoa outline, flat soft colors, subtle cel shading. Cohesive professional sticker/game asset readable at 96px, character occupies 85% of canvas with clear transparent margin. No text, logo, floor, external shadow, collage or other subjects. Subject: 
+Animal prompt: Create ONE full body cute 2D chibi streaming chat avatar, isolated genuinely transparent background, square canvas. Big rounded head, little body, four short paws standing at same baseline, three-quarter view facing right, upright curved tail, friendly bead eyes with white glints, blush cheeks, thick clean dark cocoa outline, flat soft colors, subtle cel shading. Cohesive professional sticker/game asset readable at 96px, character occupies 85% of canvas with clear transparent margin. No text, logo, floor, external shadow, collage or other subjects. Subject:
 
 Panda edit prompt: Preserve the reference panda's enormous rounded head, long black eye patches, tiny body, gold necktie, outlines and proportions. One full-body character centered on transparent background, feet visible, no text, floor, external shadow or collage. Readable at 100px.
 
