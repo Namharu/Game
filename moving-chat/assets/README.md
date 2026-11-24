@@ -11,3 +11,9 @@ Subjects:
 - rabbit: a round white rabbit with pink ear interiors, one floppy ear, tiny paws and a small lavender neck ribbon
 - dog: a honey-golden floppy-eared puppy with cream muzzle, tiny paws and a short happy tail
 - slime: a peach-pink jelly slime with tiny rounded arm nubs, a smiling face and a small green leaf on its head
+
+## Panda (2026-11-24)
+
+`panda.png`: generated using the built-in image generation tool with the user's PandaTV emoticon screenshot as visual reference. Added to the built-in picker as 인사하는 팬더.
+
+Prompt: One transparent PNG game avatar sprite inspired by the panda emoticon in the reference screenshot. A single full-body cute panda, enormous rounded white head, round black ears, long vertically oval black eye patches with small white glints, tiny smiling mouth, faint pink cheeks, very small black-and-white body, short black feet, one paw lifted in a friendly wave, and a pale golden necktie. Front three-quarter view slightly right, feet level. Clean bold outlines, simple 2D sticker art, minimal shading, readable at 100px. Centered with transparent margin. No text, logos, UI, ground, external shadow, sprite sheet, or extra characters.

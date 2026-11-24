@@ -2,6 +2,7 @@
 (() => {
   'use strict';
   const builtins = [
+    {id:'panda',name:'인사하는 팬더',images:{base:'assets/panda.png'}},
     {id:'cat',name:'치즈 고양이',images:{base:'assets/cat.png'}},
     {id:'rabbit',name:'리본 토끼',images:{base:'assets/rabbit.png'}},
     {id:'dog',name:'골든 강아지',images:{base:'assets/dog.png'}},
@@ -16,7 +17,7 @@
     {id:'neon',name:'민트 네온',colors:['#202f3b','#73e4d2','#e1fff9','#478e8b','#ffffff']}
   ];
   const colorKeys=['bubbleBg','bubbleBorder','bubbleText','nameBg','nameText'];
-  const defaults={selected:['cat','rabbit','dog','slime'],enabled:true,size:112,speed:35,count:6,background:'garden',skin:'round',font:'jua',fontSize:18,duration:6,showNames:true,...Object.fromEntries(colorKeys.map((k,i)=>[k,skins[0].colors[i]]))};
+  const defaults={selected:['panda','cat','rabbit','dog','slime'],enabled:true,size:112,speed:35,count:6,background:'garden',skin:'round',font:'jua',fontSize:18,duration:6,showNames:true,...Object.fromEntries(colorKeys.map((k,i)=>[k,skins[0].colors[i]]))};
   const bounded=(x,min,max,fallback)=>Number.isFinite(Number(x))?Math.min(max,Math.max(min,Number(x))):fallback;
   function normalize(s={}){
     if(!s||typeof s!=='object')s={};
