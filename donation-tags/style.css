@@ -71,3 +71,7 @@ body.tabbed-control main{grid-template-columns:minmax(0,1fr)}.tabbed-control .co
 .tabbed-control #localTesting button{min-height:32px}
 }
 @media(max-width:850px){.tabbed-control .settings-tab>.preview .canvas{height:380px;min-height:280px;max-height:50vh}}
+
+/* Preview is a scaled copy of the OBS source, never a separate layout area. */
+.tabbed-control .settings-tab>.preview .canvas{padding:0;position:relative}
+.canvas #board{max-width:none;transform-origin:top left}
