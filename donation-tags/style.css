@@ -55,3 +55,19 @@ body.tabbed-control main{grid-template-columns:minmax(0,1fr)}.tabbed-control .co
 
 /* Compact editing surface and test controls. */
 .tabbed-control .settings-tab>.preview{max-width:640px;width:100%;justify-self:start}.tabbed-control .settings-tab>.preview .canvas{height:280px;min-height:180px;max-height:280px;aspect-ratio:auto}.tabbed-control .previewHead h2{font-size:16px}.tabbed-control .previewHead button{font-size:12px;padding:7px 10px}.tabbed-control #localTesting{padding:9px;margin-top:8px}.tabbed-control #localTesting h3{font-size:14px}.tabbed-control #localTesting form{gap:6px}.tabbed-control #localTesting button{padding:6px 9px;font-size:12px}
+
+/* A narrow test panel beside a taller placement canvas. */
+.tabbed-control .settings-tab>.preview{max-width:900px}
+.tabbed-control .settings-tab>.preview .canvas{height:clamp(380px,calc(100dvh - 400px),620px);min-height:380px;max-height:620px}
+@media(min-width:1150px){
+.tabbed-control .settings-tab>.preview:has(#localTesting){display:grid;grid-template-columns:minmax(300px,1fr) 210px;column-gap:14px;align-items:start}
+.tabbed-control .preview:has(#localTesting)>.previewHead{grid-column:1;grid-row:1}
+.tabbed-control .preview:has(#localTesting)>.placement-shortcuts{grid-column:1;grid-row:2}
+.tabbed-control .preview:has(#localTesting)>.canvas{grid-column:1;grid-row:3;margin-top:0}
+.tabbed-control .preview:has(#localTesting)>.canvas+p{grid-column:1;grid-row:4}
+.tabbed-control .preview #localTesting{grid-column:2;grid-row:3 / span 2;margin:0;min-width:0;width:100%;padding:12px}
+.tabbed-control #localTesting form{grid-template-columns:minmax(0,1fr);gap:10px}
+.tabbed-control #localTesting .actions{flex-wrap:wrap}
+.tabbed-control #localTesting button{min-height:32px}
+}
+@media(max-width:850px){.tabbed-control .settings-tab>.preview .canvas{height:380px;min-height:280px;max-height:50vh}}
