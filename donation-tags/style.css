@@ -75,3 +75,7 @@ body.tabbed-control main{grid-template-columns:minmax(0,1fr)}.tabbed-control .co
 /* Preview is a scaled copy of the OBS source, never a separate layout area. */
 .tabbed-control .settings-tab>.preview .canvas{padding:0;position:relative}
 .canvas #board{max-width:none;transform-origin:top left}
+
+/* The visible canvas itself matches the source aspect ratio; no letterbox area. */
+.tabbed-control .settings-tab>.preview .canvas{width:var(--source-preview-width,100%);height:var(--source-preview-height,380px);min-height:0;max-height:none;max-width:100%;aspect-ratio:auto;border:0;outline:1px solid #36415a;border-radius:0}
+@media(min-width:1150px){.tabbed-control .settings-tab>.preview:has(#localTesting){grid-template-columns:var(--source-preview-width,minmax(0,1fr)) 210px}}
