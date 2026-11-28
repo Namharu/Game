@@ -4,3 +4,6 @@
 #board{display:block;position:relative;max-width:none;padding:0!important;margin:8px}.group{position:absolute;transform-origin:top left}.canvas{height:540px;min-height:0;overflow:hidden}.canvas #board{margin:0}.custom-card{padding:14px;margin:14px 0;border:1px solid #526788;border-radius:12px;background:#101725}.custom-head{display:flex;gap:8px;justify-content:space-between;align-items:center}.custom-head button{font-size:13px;padding:8px}.custom-preview{display:block;width:100%;height:130px;object-fit:contain;background:#253047;margin:10px 0}.custom-preview[hidden]{display:none}
 
 #testPanel{max-height:calc(100vh - 30px);overflow:auto} #nicknameImages .ni-list img{vertical-align:middle} #nicknameImages .ni-list button{margin:4px}
+
+/* Scale the complete plate with its signature, not only the image. */
+.tag .plate{font-size:calc(14px * var(--tag-factor,1));padding:calc(5px * var(--tag-factor,1)) calc(8px * var(--tag-factor,1));border-width:calc(2px * var(--tag-factor,1));border-radius:calc(7px * var(--tag-factor,1));column-gap:calc(4px * var(--tag-factor,1))}.tag .fallback{font-size:calc(36px * var(--tag-factor,1))}.tag .fallback small{font-size:calc(14px * var(--tag-factor,1))}
