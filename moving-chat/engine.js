@@ -51,7 +51,7 @@
       if(this.stage.dataset.background)this.stage.dataset.background=v.background;
       this.layer.hidden=!v.enabled;
       if(rebuild)this.reset();
-      for(const m of this.members){const assigned=this.assigned(m.user);if(assigned||m.assigned){m.avatar=assigned||this.choices()[0]||m.avatar;m.assigned=!!assigned;m.img.src=m.avatar.images[m.emotion]||m.avatar.images.base;}m.speech.dataset.skin=v.skin;m.name.hidden=!v.showNames;m.nick.hidden=!v.showNames;}
+      for(const m of this.members){const assigned=this.assigned(m.user);{m.avatar=assigned||(m.assigned?this.choices()[0]:this.library.find(a=>a.id===m.avatar.id))||this.choices()[0]||m.avatar;m.assigned=!!assigned;m.img.src=m.avatar.images[m.emotion]||m.avatar.images.base;}m.speech.dataset.skin=v.skin;m.name.hidden=!v.showNames;m.nick.hidden=!v.showNames;}
     }
     assigned(name){const id=this.settings.assignments.find(x=>x.name===String(name).trim())?.avatar;return this.library.find(x=>x.id===id);}
     choices(){return this.library.filter(x=>this.settings.selected.includes(x.id));}

@@ -12,7 +12,9 @@ try {
  if((Get-FileHash -LiteralPath $RuntimePath -Algorithm SHA256).Hash.ToLower() -ne '247e9693d316da9857e44990e5e11709f596f18112251b8026ec6eed80bdf38a'){throw 'Bundled runtime checksum mismatch. Download the installation ZIP again.'}
  Copy-Item -LiteralPath (Join-Path $taskPackage 'runtime\LICENSE') -Destination (Join-Path $taskInstall 'NODE-LICENSE.txt') -Force
  if([IO.Path]::GetFullPath($RuntimePath) -ne $taskRuntime){
-  Get-Process node -ErrorAction SilentlyContinue | Where-Object {$_.Path -eq $taskRuntime} | Stop-Process
+  $taskProcesses=@(Get-Process node -ErrorAction SilentlyContinue | Where-Object {$_.Path -eq $taskRuntime})
+  foreach($taskProcess in $taskProcesses){Stop-Process -Id $taskProcess.Id -Force; Wait-Process -Id $taskProcess.Id -Timeout 10 -ErrorAction SilentlyContinue}
+  Start-Sleep -Milliseconds 300
   Copy-Item -LiteralPath $RuntimePath -Destination $taskRuntime -Force
  }
  Write-Host 'Installing files...'
