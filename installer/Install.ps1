@@ -1,4 +1,4 @@
-﻿param([string]$InstallDir=(Join-Path $env:LOCALAPPDATA 'NAMHARU\DonationControl'),[string]$RuntimePath='', [switch]$NoStart,[switch]$NoShortcuts)
+﻿param([string]$InstallDir=(Join-Path ([Environment]::GetFolderPath('MyDocuments')) '남하루 설치파일'),[string]$RuntimePath='', [switch]$NoStart,[switch]$NoShortcuts)
 $ErrorActionPreference='Stop'
 $taskPackage=Split-Path -Parent $MyInvocation.MyCommand.Path
 $taskInstall=[IO.Path]::GetFullPath($InstallDir)
@@ -36,11 +36,10 @@ try {
  $taskServer=Join-Path $taskInstall 'donation-tags\control-server.cjs'
  & $taskRuntime --check $taskServer
  if($LASTEXITCODE -ne 0){throw 'Installed runtime verification failed'}
- $taskOutputFile=if($NoShortcuts){Join-Path $taskInstall 'NAMHARU-OBS.html'}else{Join-Path ([Environment]::GetFolderPath('Desktop')) 'NAMHARU-OBS.html'}
+ $taskOutputFile=Join-Path $taskInstall 'NAMHARU-OBS.html'
  & $taskRuntime (Join-Path $taskInstall 'Initialize.cjs') $taskOutputFile
  if($LASTEXITCODE -ne 0){throw 'Output HTML creation failed'}
  if(-not $NoShortcuts){
-  Copy-Item -LiteralPath (Join-Path $taskInstall 'NAMHARU-OBS.html') -Destination (Join-Path ([Environment]::GetFolderPath('Desktop')) 'NAMHARU-OBS.html') -Force
   $taskShell=New-Object -ComObject WScript.Shell
   $taskLink=$taskShell.CreateShortcut((Join-Path ([Environment]::GetFolderPath('Startup')) 'NAMHARU Donation Control.lnk'))
   $taskLink.TargetPath=(Get-Command powershell.exe).Source
@@ -48,6 +47,6 @@ try {
   $taskLink.WindowStyle=7;$taskLink.Save()
  }
  if(-not $NoStart){& (Join-Path $taskInstall 'donation-tags\Control-Autostart.ps1');Start-Process 'https://namharu.github.io/Game/donation-tags/'}
- Write-Host 'Installation complete. Select Desktop NAMHARU-OBS.html as an OBS browser local file once.' -ForegroundColor Green
+ Write-Host ('Installation complete. OBS file: '+$taskOutputFile) -ForegroundColor Green
 } catch {Write-Host ('Installation failed: '+$_.Exception.Message) -ForegroundColor Red;Write-Host 'If the runtime download failed, install Node.js LTS from https://nodejs.org/ and run Install.cmd again.';exit 1}
 
