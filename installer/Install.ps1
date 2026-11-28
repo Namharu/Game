@@ -6,27 +6,11 @@ if($taskInstall -eq [IO.Path]::GetPathRoot($taskInstall)){throw 'Invalid install
 New-Item -ItemType Directory -Force -Path $taskInstall | Out-Null
 $taskRuntime=Join-Path $taskInstall 'node.exe'
 try {
- Write-Host 'Preparing runtime...'
- if(-not $RuntimePath){$taskExisting=Get-Command node.exe -ErrorAction SilentlyContinue;if($taskExisting){$RuntimePath=$taskExisting.Source}}
- if($RuntimePath){$taskVersion=(& $RuntimePath --version).TrimStart('v').Split('.')[0];if([int]$taskVersion -lt 22){$RuntimePath=''}}
- if(-not $RuntimePath){
-  [Net.ServicePointManager]::SecurityProtocol=[Net.SecurityProtocolType]::Tls12
-  $taskBase='https://nodejs.org/dist/latest-v22.x/'
-  $taskArch=if($env:PROCESSOR_ARCHITECTURE -eq 'ARM64'){'arm64'}else{'x64'}
-  $taskSums=(Invoke-WebRequest ($taskBase+'SHASUMS256.txt') -UseBasicParsing -TimeoutSec 30).Content
-  $taskLine=($taskSums -split "`n" | Where-Object {$_ -match ('  node-v[\d.]+-win-'+$taskArch+'\.zip$')} | Select-Object -First 1).Trim()
-  if(-not $taskLine){throw 'Official runtime archive not found'}
-  $taskParts=$taskLine -split '\s+'
-  $taskTemp=Join-Path ([IO.Path]::GetTempPath()) ('namharu-runtime-'+[guid]::NewGuid().ToString('N'))
-  New-Item -ItemType Directory -Path $taskTemp | Out-Null
-  $taskArchive=Join-Path $taskTemp 'node.zip'
-  Invoke-WebRequest ($taskBase+$taskParts[1]) -OutFile $taskArchive -UseBasicParsing -TimeoutSec 180
-  if((Get-FileHash -LiteralPath $taskArchive -Algorithm SHA256).Hash.ToLower() -ne $taskParts[0]){throw 'Runtime checksum mismatch'}
-  Expand-Archive -LiteralPath $taskArchive -DestinationPath $taskTemp
-  $taskNodeFolder=Get-ChildItem -LiteralPath $taskTemp -Directory | Select-Object -First 1
-  $RuntimePath=Join-Path $taskNodeFolder.FullName 'node.exe'
-  Copy-Item -LiteralPath (Join-Path $taskNodeFolder.FullName 'LICENSE') -Destination (Join-Path $taskInstall 'NODE-LICENSE.txt')
- }
+ Write-Host 'Preparing bundled runtime...'
+ $RuntimePath=Join-Path $taskPackage 'runtime\node.exe'
+ if(-not (Test-Path -LiteralPath $RuntimePath)){throw 'Bundled runtime missing. Extract the entire ZIP and run Install.cmd again.'}
+ if((Get-FileHash -LiteralPath $RuntimePath -Algorithm SHA256).Hash.ToLower() -ne '247e9693d316da9857e44990e5e11709f596f18112251b8026ec6eed80bdf38a'){throw 'Bundled runtime checksum mismatch. Download the installation ZIP again.'}
+ Copy-Item -LiteralPath (Join-Path $taskPackage 'runtime\LICENSE') -Destination (Join-Path $taskInstall 'NODE-LICENSE.txt') -Force
  if([IO.Path]::GetFullPath($RuntimePath) -ne $taskRuntime){
   Get-Process node -ErrorAction SilentlyContinue | Where-Object {$_.Path -eq $taskRuntime} | Stop-Process
   Copy-Item -LiteralPath $RuntimePath -Destination $taskRuntime -Force
@@ -48,5 +32,5 @@ try {
  }
  if(-not $NoStart){& (Join-Path $taskInstall 'donation-tags\Control-Autostart.ps1');Start-Process 'https://namharu.github.io/Game/donation-tags/'}
  Write-Host ('Installation complete. Register this local file in OBS once: '+$taskOutputFile) -ForegroundColor Green
-} catch {Write-Host ('Installation failed: '+$_.Exception.Message) -ForegroundColor Red;Write-Host 'If the runtime download failed, install Node.js LTS from https://nodejs.org/ and run Install.cmd again.';exit 1}
+} catch {Write-Host ('Installation failed: '+$_.Exception.Message) -ForegroundColor Red;Write-Host 'Extract the entire installation ZIP and run Install.cmd again. No separate Node.js download is required.';exit 1}
 
