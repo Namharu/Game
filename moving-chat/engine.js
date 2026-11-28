@@ -32,6 +32,7 @@
   function normalize(s={}){
     if(!s||typeof s!=='object')s={};
     const v={...defaults};
+    v.assignments=Array.isArray(s.assignments)?s.assignments.filter(x=>x&&typeof x.name==='string'&&typeof x.avatar==='string').map(x=>({name:x.name.trim(),avatar:x.avatar})).filter(x=>x.name):[];
     for(const k of colorKeys)if(/^#[0-9a-f]{6}$/i.test(s[k]||''))v[k]=s[k];
     for(const [k,min,max] of [['size',64,160],['speed',0,100],['count',1,12],['fontSize',14,26],['duration',2,15]])v[k]=bounded(s[k],min,max,defaults[k]);
     v.count=Math.round(v.count);
@@ -50,8 +51,9 @@
       if(this.stage.dataset.background)this.stage.dataset.background=v.background;
       this.layer.hidden=!v.enabled;
       if(rebuild)this.reset();
-      for(const m of this.members){m.speech.dataset.skin=v.skin;m.name.hidden=!v.showNames;m.nick.hidden=!v.showNames;}
+      for(const m of this.members){const assigned=this.assigned(m.user);if(assigned||m.assigned){m.avatar=assigned||this.choices()[0]||m.avatar;m.assigned=!!assigned;m.img.src=m.avatar.images[m.emotion]||m.avatar.images.base;}m.speech.dataset.skin=v.skin;m.name.hidden=!v.showNames;m.nick.hidden=!v.showNames;}
     }
+    assigned(name){const id=this.settings.assignments.find(x=>x.name===String(name).trim())?.avatar;return this.library.find(x=>x.id===id);}
     choices(){return this.library.filter(x=>this.settings.selected.includes(x.id));}
     setLive(enabled){this.liveMode=enabled;this.reset();}
     reset(){this.layer.replaceChildren();this.members=[];if(this.liveMode)return;const choices=this.choices();if(!choices.length)return;const names=['하루별','구름이','달빛토끼','별사탕','복숭아','몽실이','초코','새싹','바다','햇살','노을','솜솜'];for(let i=0;i<this.settings.count;i++)this.addMember(names[i],choices[i%choices.length],i);this.sample();}
@@ -62,9 +64,10 @@
       const m={el,body,img,nick,speech,name:tag,text,user:name,userId,avatar,x:Math.max(0,(this.stage.clientWidth-this.settings.size)*(index+.5)/this.settings.count),dir:index%2?-1:1,phase:index*1.7,until:0,jump:0,emotion:'base',changeAt:performance.now()+2000+Math.random()*4000};this.members.push(m);return m;
     }
     say(name,text,emotion='base',userId=name){
-      const choices=this.choices();if(!choices.length)return;
+      const assigned=this.assigned(name),choices=assigned?[assigned]:this.choices();if(!choices.length)return;
       let m=this.members.find(x=>x.userId===userId);if(!m){if(this.members.length>=12){const old=this.members.shift();old.el.remove();}m=this.addMember(name,choices[Math.floor(Math.random()*choices.length)],this.members.length,userId);}
       m.user=name;m.nick.textContent=name;m.name.textContent=name;
+      if(assigned||m.assigned)m.avatar=assigned||choices[0];m.assigned=!!assigned;
       m.text.textContent=String(text).slice(0,200);m.text.title=m.text.textContent;m.speech.hidden=false;m.until=Date.now()+this.settings.duration*1000;m.emotion=emotion;m.img.src=m.avatar.images[emotion]||m.avatar.images.base;m.jump=emotion==='happy'?performance.now():0;
       // Bound both the speech box and its tail after layout, including at narrow viewport edges.
       this.positionBubble(m);
