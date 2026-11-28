@@ -23,5 +23,9 @@ for(const f of fields){const el=$('#'+f);if(el.type==='checkbox')el.checked=conf
  addEventListener('keydown',e=>{if(e.repeat||e.ctrlKey||e.altKey||e.metaKey||e.shiftKey||e.target?.isContentEditable||['INPUT','TEXTAREA','SELECT'].includes(e.target?.tagName))return;if(e.code==='KeyH'){e.preventDefault();showPanel(panel.hidden);}});
  }
 
+ if(globalThis.DonationTagBundle?.localTesting||['localhost','127.0.0.1','[::1]'].includes(location.hostname)){
+ if(!globalThis.LocalDonationTest)await new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='local-test.js';script.onload=resolve;script.onerror=()=>reject(Error('로컬 테스트 도구를 불러오지 못했습니다.'));document.body.append(script);});
+ LocalDonationTest({receive,clear:()=>{D.clearTests(board);render();},accepts:d=>D.accepts(d,config)});
+ }
  render();const timer=setInterval(()=>{if(config.seconds&&board.groups.size)render();},1000);addEventListener('hashchange',()=>location.reload());addEventListener('pagehide',()=>{generation++;clearInterval(timer);connection.disconnect(true);});
 })();
