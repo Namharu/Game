@@ -7,3 +7,5 @@
 
 /* Scale the complete plate with its signature, not only the image. */
 .tag .plate{font-size:calc(14px * var(--tag-factor,1));padding:calc(5px * var(--tag-factor,1)) calc(8px * var(--tag-factor,1));border-width:calc(2px * var(--tag-factor,1));border-radius:calc(7px * var(--tag-factor,1));column-gap:calc(4px * var(--tag-factor,1))}.tag .fallback{font-size:calc(36px * var(--tag-factor,1))}.tag .fallback small{font-size:calc(14px * var(--tag-factor,1))}
+
+.plate-name.has-name-image{display:block;width:100%}.tag .plate .custom-name-image{display:block;width:100%;height:auto;max-height:none;object-fit:contain;filter:none}
