@@ -31,3 +31,5 @@ body:not(.overlay) .preview{height:100%;min-height:0;overflow:auto}body:not(.ove
 
 /* OBS renders the same page as interaction: never draw editing guides on air. */
 .overlay .group.placement-selected,.overlay .group:focus-visible{outline:none!important}.overlay .snap-guide{display:none!important}
+
+.control-output{padding:10px 12px;background:#192131;border:1px solid #6686b6;border-radius:10px;margin-bottom:10px;display:flex;align-items:center;gap:12px;flex-wrap:wrap}.control-output p{flex-basis:100%;margin:0;font-size:12px}.control-output button{font-size:13px;padding:7px}.separate-control #settings-tab-3,.separate-control .studio-tabs button:last-child{display:none}.separate-control .studio-tabs{grid-template-columns:repeat(3,1fr)}.separate-control .preview .canvas{height:auto;aspect-ratio:16/9;min-height:200px;padding:8px}.separate-control .previewHead{margin-top:10px}
