@@ -81,3 +81,6 @@ body.tabbed-control main{grid-template-columns:minmax(0,1fr)}.tabbed-control .co
 @media(min-width:1150px){.tabbed-control .settings-tab>.preview:has(#localTesting){grid-template-columns:var(--source-preview-width,minmax(0,1fr)) 210px}}
 
 .repeat-count{font-weight:800;white-space:nowrap} .plate b{white-space:nowrap}
+
+@font-face{font-family:DonationJua;src:url('../chat-skins/fonts/jua.woff2') format('woff2');font-display:swap}@font-face{font-family:DonationDohyeon;src:url('../chat-skins/fonts/dohyeon.woff2') format('woff2');font-display:swap}
+.plate[data-outline=black]>.plate-name,.plate[data-outline=black]>b{color:#fff;-webkit-text-stroke:2px #111;paint-order:stroke fill;text-shadow:0 1px 1px #111}.plate[data-outline=none]>.plate-name,.plate[data-outline=none]>b{color:#101725;-webkit-text-stroke:0;text-shadow:none}.plate .repeat-count{-webkit-text-stroke:0;text-shadow:none;paint-order:normal}.plate-name.has-name-image{-webkit-text-stroke:0!important;text-shadow:none!important}

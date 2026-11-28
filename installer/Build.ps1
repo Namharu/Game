@@ -11,7 +11,7 @@ foreach($taskFile in @('centrifuge-2.8.5.min.js','panda-chat.js','nickname-image
 New-Item -ItemType Directory -Force -Path (Join-Path $taskPayload 'moving-chat'),(Join-Path $taskPayload 'chat-skins\fonts') | Out-Null
 foreach($taskFile in @('index.html','studio-layout.js','app.js','engine.js','control-bridge.js','output.html','output.js','overlay.html','overlay.js','style.css','stage.css')){Copy-Item -LiteralPath (Join-Path $taskRepo ('moving-chat\'+$taskFile)) -Destination (Join-Path $taskPayload ('moving-chat\'+$taskFile))}
 Copy-Item -LiteralPath (Join-Path $taskRepo 'moving-chat\assets') -Destination (Join-Path $taskPayload 'moving-chat') -Recurse
-foreach($taskFile in @('jua.woff2','gowun.woff2')){Copy-Item -LiteralPath (Join-Path $taskRepo ('chat-skins\fonts\'+$taskFile)) -Destination (Join-Path $taskPayload ('chat-skins\fonts\'+$taskFile))}
+foreach($taskFile in @('jua.woff2','gowun.woff2','dohyeon.woff2','jua-OFL.txt','dohyeon-OFL.txt')){Copy-Item -LiteralPath (Join-Path $taskRepo ('chat-skins\fonts\'+$taskFile)) -Destination (Join-Path $taskPayload ('chat-skins\fonts\'+$taskFile))}
 if((Get-FileHash -LiteralPath (Join-Path $RuntimeDirectory 'node.exe') -Algorithm SHA256).Hash.ToLower() -ne '247e9693d316da9857e44990e5e11709f596f18112251b8026ec6eed80bdf38a'){throw 'Runtime checksum mismatch'}
 New-Item -ItemType Directory -Path (Join-Path $taskBuild 'runtime') | Out-Null
 Copy-Item -LiteralPath (Join-Path $RuntimeDirectory 'node.exe'),(Join-Path $RuntimeDirectory 'LICENSE') -Destination (Join-Path $taskBuild 'runtime')
