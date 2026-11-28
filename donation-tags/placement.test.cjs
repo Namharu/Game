@@ -1,0 +1,12 @@
+const assert=require('node:assert/strict');require('./core.js');require('./placement.js');
+const D=DonationTags,P=DonationPlacement,board=new D.Board(),config=D.normalize({mode:'all'});
+board.add({name:'A',count:100},config);board.add({name:'A',count:1000},config);board.add({name:'B',count:100},config);
+assert.equal(P.groups(board,'manual').length,3);assert.equal(P.groups(board,'right').length,2);assert.equal(P.groups(board,'largest')[0][1].length,2);
+const area={width:800,height:600},other={x:200,y:100,width:100,height:100};
+const aligned=P.snap({x:204,y:300,width:100,height:100},area,[other]);assert.equal(aligned.x,200);assert(aligned.guides.length);
+assert.equal(P.snap({x:204,y:301,width:100,height:100},area,[other],false).x,204);
+assert.deepEqual(P.snap({x:-100,y:900,width:100,height:100},area,[],false),{x:0,y:500,guides:[]});
+const positions=D.normalize({positions:{'m:1':{x:.25,y:.5},'g:nick:A':{x:2,y:-1},bad:{x:1,y:1},'m:2':{x:NaN,y:0}}}).positions;
+assert.deepEqual(positions,{'m:1':{x:.25,y:.5},'g:nick:A':{x:1,y:0}});
+assert.equal(D.normalize({stackDirection:'manual'}).stackDirection,'manual');
+console.log('PASS individual/group identity, edge snapping, bypass, bounds and coordinate-only persistence');
