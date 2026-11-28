@@ -47,6 +47,6 @@ try {
   $taskLink.WindowStyle=7;$taskLink.Save()
  }
  if(-not $NoStart){& (Join-Path $taskInstall 'donation-tags\Control-Autostart.ps1');Start-Process 'https://namharu.github.io/Game/donation-tags/'}
- Write-Host ('Installation complete. OBS file: '+$taskOutputFile) -ForegroundColor Green
+ Write-Host ('Installation complete. Register this local file in OBS once: '+$taskOutputFile) -ForegroundColor Green
 } catch {Write-Host ('Installation failed: '+$_.Exception.Message) -ForegroundColor Red;Write-Host 'If the runtime download failed, install Node.js LTS from https://nodejs.org/ and run Install.cmd again.';exit 1}
 
