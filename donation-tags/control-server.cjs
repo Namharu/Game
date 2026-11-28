@@ -4,7 +4,7 @@ function createServer({root=path.resolve(__dirname,'..'),settingsPath=path.join(
  const persist=()=>fs.writeFileSync(settingsPath,JSON.stringify(settings));persist();let state={version:0,width:1920,height:1080,nodes:[]},lastSeen=0,lastDigest="",owner="";
  const server=http.createServer(async(req,res)=>{const origin='http://'+req.headers.host;const json=(code,data)=>{res.writeHead(code,{'Content-Type':'application/json','Cache-Control':'no-store'});res.end(JSON.stringify(data));};
  if(!/^(127\.0\.0\.1|localhost):\d+$/.test(req.headers.host||''))return json(403,{error:'host'});
- const url=new URL(req.url,origin);if(req.headers.origin&&req.headers.origin!==origin)return json(403,{error:'origin'});
+ const url=new URL(req.url,origin);const allowedOrigins=new Set([origin,'http://127.0.0.1:8879','http://localhost:8879','http://127.0.0.1:8880','http://localhost:8880','https://namharu.github.io']);if(req.headers.origin&&!allowedOrigins.has(req.headers.origin))return json(403,{error:'origin'});if(req.headers.origin){res.setHeader('Access-Control-Allow-Origin',req.headers.origin);res.setHeader('Vary','Origin');}if(req.method==='OPTIONS'){res.setHeader('Access-Control-Allow-Methods','GET, POST, OPTIONS');res.setHeader('Access-Control-Allow-Headers','Authorization, Content-Type, X-Controller');res.setHeader('Access-Control-Allow-Private-Network','true');res.writeHead(204);return res.end();}
  if(url.pathname.startsWith('/__donation/')){
   if(url.pathname==='/__donation/session'&&req.method==='GET')return json(200,{token:settings.token,config:settings.config,source:settings.source||''});
   if(req.headers.authorization!=='Bearer '+settings.token)return json(403,{error:'token'});
