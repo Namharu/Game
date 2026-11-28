@@ -10,3 +10,4 @@ const positions=D.normalize({positions:{'m:1':{x:.25,y:.5},'g:nick:A':{x:2,y:-1}
 assert.deepEqual(positions,{'m:1':{x:.25,y:.5},'g:nick:A':{x:1,y:0}});
 assert.equal(D.normalize({stackDirection:'manual'}).stackDirection,'manual');
 console.log('PASS individual/group identity, edge snapping, bypass, bounds and coordinate-only persistence');
+const scaled=D.normalize({positions:{'m:1':{x:.2,y:.3,scale:.75},'g:nick:A':{x:0,y:0,scale:99}}}).positions;assert.equal(scaled['m:1'].scale,.75);assert.equal(scaled['g:nick:A'].scale,3);console.log('PASS per-card and group resize persistence');
