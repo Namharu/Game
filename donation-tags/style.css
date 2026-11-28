@@ -13,3 +13,13 @@
 .group[data-direction="down"] .signature-row{flex-direction:column}.group[data-direction="down"].stack .signature-row .tag+.tag{margin-left:0}
 
 .group[data-direction="largest"] .signature-row{flex-direction:column;gap:4px}.group[data-direction="largest"].stack .signature-row .tag+.tag{margin-left:0}
+
+/* Compact settings workspace: preview and local tests remain beside the active tab. */
+body:not(.overlay)>header{padding:12px 20px;font-size:14px}
+body:not(.overlay) main{padding:16px 20px;gap:20px;grid-template-columns:minmax(360px,420px) minmax(0,1fr);height:calc(100dvh - 49px);max-width:none;align-items:start}
+.controls{height:100%;overflow:auto;min-height:0;padding-right:8px}.controls h1{font-size:22px;margin-bottom:4px}.controls h1 br{display:none}.controls>p{margin:4px 0 12px;font-size:12px}
+.studio-tabs{display:grid;grid-template-columns:repeat(4,1fr);gap:4px;position:sticky;top:0;z-index:5;background:#10141f;padding:6px 0}.studio-tabs button{font-size:13px;padding:10px 4px;background:#243149;color:#d7e5ff}.studio-tabs button[aria-pressed=true]{background:#a9c8ff;color:#101725}
+.settings-tab[hidden]{display:none}.settings-tab fieldset{margin:12px 0;padding:12px}.settings-tab label{margin:7px 0;font-size:13px}.settings-tab input,.settings-tab select{padding:7px 9px;margin-top:4px}.settings-tab p{font-size:12px;line-height:1.5;margin:8px 0}.settings-tab button{font-size:13px;padding:9px 12px}.settings-tab .pair{gap:10px}.settings-tab .check{font-size:12px}
+body:not(.overlay) .preview{height:100%;min-height:0;overflow:auto}body:not(.overlay) .previewHead h2{font-size:20px}body:not(.overlay) .previewHead p{margin:4px 0;font-size:12px}body:not(.overlay) .canvas{height:clamp(180px,calc(100dvh - 420px),440px);margin-top:10px}body:not(.overlay) .preview>p{font-size:12px;margin:8px 0}
+#localTesting{max-width:none;margin:10px 0;padding:12px}#localTesting h3{margin:0 0 8px;font-size:16px}#localTesting form{display:grid;grid-template-columns:1fr 1fr;gap:8px}#localTesting label{margin:0;font-size:12px}#localTesting input{padding:7px;margin-top:4px}#localTesting .actions{grid-column:1/-1;gap:6px}#localTesting button{padding:7px 10px;font-size:13px}#localTesting p{font-size:12px;margin:6px 0}#localTesting p:last-child{display:none}
+@media(max-width:850px){body:not(.overlay) main{height:auto;grid-template-columns:1fr;padding:12px}.controls,body:not(.overlay) .preview{height:auto;overflow:visible}.preview{grid-row:auto}.controls{padding-right:0}body:not(.overlay) .canvas{height:260px}}
