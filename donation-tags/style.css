@@ -11,3 +11,5 @@
 .plate-name.has-name-image{display:block;width:100%}.tag .plate .custom-name-image{display:block;width:100%;height:auto;max-height:none;object-fit:contain;filter:none}
 
 .group[data-direction="down"] .signature-row{flex-direction:column}.group[data-direction="down"].stack .signature-row .tag+.tag{margin-left:0}
+
+.group[data-direction="largest"] .signature-row{flex-direction:column;gap:4px}.group[data-direction="largest"].stack .signature-row .tag+.tag{margin-left:0}
