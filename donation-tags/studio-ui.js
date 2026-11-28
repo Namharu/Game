@@ -1,7 +1,7 @@
 (() => {
  const controls=document.querySelector('.controls');if(!controls)return;
  const sections=[...controls.querySelectorAll(':scope > fieldset')];
- const tabs=document.createElement('nav');tabs.className='studio-tabs';tabs.setAttribute('aria-label','후원 시그 설정');
+ const tabs=document.createElement('nav');tabs.className='studio-tabs studio-nav';tabs.setAttribute('aria-label','후원 시그 설정');
  const labels=['방송 연결','크기·정렬','전용 네임택'];
  const panels=sections.map((section,i)=>{const panel=document.createElement('section');panel.className='settings-tab';panel.id='settings-tab-'+i;section.before(panel);panel.append(section);return panel;});
  // Keep download/copy buttons and their explanations with the file settings.
